@@ -1,0 +1,34 @@
+# dependencies
+node_modules/
+.pnpm-store/
+
+# build output
+dist/
+build/
+
+# environment & secrets  (NEVER commit these)
+.env
+.env.*
+*.pem
+*.key
+*secret*
+*credential*
+*Master_Info*
+*password*
+
+# logs
+*.log
+npm-debug.log*
+yarn-error.log*
+
+# editor / OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# large media
+*.zip
+*.rar
+*.pptx
