@@ -79,17 +79,17 @@ export default function Layout({
               key={it.to}
               to={it.to}
               className={({ isActive }) =>
-                `group relative flex items-center gap-3 rounded-lg py-2.5 pr-3 pl-4 text-[13.5px] font-semibold transition-all duration-200 ${
+                `group relative flex items-center gap-3 rounded-lg py-2.5 pr-3 pl-4 text-[13.5px] font-semibold ${
                   isActive
                     ? 'bg-white/12 text-white shadow-sm'
-                    : 'text-white/55 hover:translate-x-0.5 hover:bg-white/6 hover:text-white'
+                    : 'text-white/55 hover:bg-white/6 hover:text-white'
                 }`
               }
             >
               {({ isActive }) => (
                 <>
                   <span
-                    className={`absolute top-1/2 left-0 h-5 -translate-y-1/2 rounded-r bg-brand-400 transition-all duration-200 ${
+                    className={`absolute top-1/2 left-0 h-5 -translate-y-1/2 rounded-r bg-brand-400 ${
                       isActive ? 'w-1 opacity-100' : 'w-0 opacity-0'
                     }`}
                   />
@@ -103,7 +103,7 @@ export default function Layout({
         </nav>
 
         <div className="mt-auto border-t border-white/10 pt-3">
-          <div className="mb-1 flex items-center gap-2.5 rounded-lg px-2 py-2 transition-colors hover:bg-white/6">
+          <div className="mb-1 flex items-center gap-2.5 rounded-lg px-2 py-2 hover:bg-white/6">
             <span className="inline-flex h-8 w-8 flex-none items-center justify-center rounded-full bg-brand-400/25 text-[11px] font-bold text-white ring-1 ring-white/15">
               {initials(user)}
             </span>
@@ -117,7 +117,7 @@ export default function Layout({
               onSignOut()
               navigate('/')
             }}
-            className="flex w-full cursor-pointer items-center gap-3 rounded-lg px-3 py-2.5 text-[13px] font-semibold text-white/55 transition-all hover:bg-white/6 hover:text-white"
+            className="flex w-full cursor-pointer items-center gap-3 rounded-lg px-3 py-2.5 text-[13px] font-semibold text-white/55 hover:bg-white/6 hover:text-white"
           >
             <LogOut size={16} /> Sign out
           </button>
@@ -140,7 +140,7 @@ export default function Layout({
             </div>
 
             <div className="ml-auto flex items-center gap-2.5">
-              <div className="hidden items-center gap-2 rounded-lg border border-line bg-soft px-3 py-2 transition-all focus-within:border-brand-500 focus-within:bg-surface focus-within:shadow-sm md:flex">
+              <div className="hidden items-center gap-2 rounded-lg border border-line bg-soft px-3 py-2 focus-within:border-brand-500 focus-within:bg-surface focus-within:shadow-sm md:flex">
                 <Search size={14} className="text-ink-400" />
                 <input
                   placeholder="Search batch or learner…"
@@ -148,11 +148,11 @@ export default function Layout({
                 />
               </div>
               {user.role === 'auditor' && <Badge tone="gold">READ-ONLY</Badge>}
-              <button className="relative flex h-9 w-9 cursor-pointer items-center justify-center rounded-lg border border-line bg-surface text-ink-500 transition-all hover:-translate-y-0.5 hover:border-line2 hover:text-brand-500 hover:shadow-sm">
+              <button className="relative flex h-9 w-9 cursor-pointer items-center justify-center rounded-lg border border-line bg-surface text-ink-500 hover:border-line2 hover:text-brand-500 hover:shadow-sm">
                 <Bell size={16} />
                 <span className="absolute top-2 right-2.5 h-1.5 w-1.5 rounded-full bg-bad-600" />
               </button>
-              <button className="hidden h-9 w-9 cursor-pointer items-center justify-center rounded-lg border border-line bg-surface text-ink-500 transition-all hover:-translate-y-0.5 hover:border-line2 hover:text-brand-500 hover:shadow-sm sm:flex">
+              <button className="hidden h-9 w-9 cursor-pointer items-center justify-center rounded-lg border border-line bg-surface text-ink-500 hover:border-line2 hover:text-brand-500 hover:shadow-sm sm:flex">
                 <HelpCircle size={16} />
               </button>
               <span className="inline-flex h-9 w-9 items-center justify-center rounded-full bg-brand-50 text-[12px] font-bold text-brand-600 ring-1 ring-brand-500/12 lg:hidden">

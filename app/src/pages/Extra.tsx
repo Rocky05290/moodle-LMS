@@ -37,7 +37,7 @@ export function Batches() {
               const t = getUser(b.trainerId)
               const n = enrollments.filter((e) => e.batchId === b.id).length
               return (
-                <tr key={b.id} className="transition-colors hover:bg-soft">
+                <tr key={b.id} className="hover:bg-soft">
                   <Td className="font-bold">{b.batchCode}</Td>
                   <Td className="text-ink-700">{c.title}</Td>
                   <Td className="text-ink-500">{fullName(t)}</Td>
@@ -133,7 +133,7 @@ export function People() {
           </thead>
           <tbody>
             {users.map((u) => (
-              <tr key={u.id} className="transition-colors hover:bg-soft">
+              <tr key={u.id} className="hover:bg-soft">
                 <Td>
                   <div className="flex items-center gap-2.5">
                     <Avatar text={initials(u)} size={30} />
@@ -200,7 +200,7 @@ export function Grading() {
                       {[0, 1, 2].map((p) => (
                         <button
                           key={p}
-                          className="h-7 flex-1 cursor-pointer rounded-md border border-line2 bg-soft text-[11px] font-bold text-ink-500 transition-all hover:border-brand-500 hover:bg-brand-50 hover:text-white"
+                          className="h-7 flex-1 cursor-pointer rounded-md border border-line2 bg-soft text-[11px] font-bold text-ink-500 hover:border-brand-500 hover:bg-brand-50 hover:text-white"
                         >
                           {p}
                         </button>

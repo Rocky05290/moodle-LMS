@@ -17,9 +17,9 @@ export default function TrainerDashboard() {
   return (
     <div className="space-y-6">
       <div className="grid gap-4 sm:grid-cols-3">
-        <Stat icon={<ClipboardList size={18} />} value={mine.length} label="My Batches" delay={1} />
-        <Stat icon={<Users size={18} />} value={roster.length} label="Active Learners" delay={2} />
-        <Stat icon={<CalendarCheck size={18} />} value={pending} label="Pending to Grade" delay={3} />
+        <Stat icon={<ClipboardList size={18} />} value={mine.length} label="My Batches" />
+        <Stat icon={<Users size={18} />} value={roster.length} label="Active Learners" />
+        <Stat icon={<CalendarCheck size={18} />} value={pending} label="Pending to Grade" />
       </div>
 
       <div className="grid gap-4 xl:grid-cols-[1fr_1.4fr]">
@@ -83,7 +83,7 @@ export default function TrainerDashboard() {
                   const avg = averageGrade(r.learnerId, active.id)
                   const needs = avg === null || avg < 60
                   return (
-                    <tr key={r.id} className="transition-colors hover:bg-soft">
+                    <tr key={r.id} className="hover:bg-soft">
                       <Td>
                         <div className="flex items-center gap-2.5">
                           <Avatar text={initials(r.user)} size={28} />

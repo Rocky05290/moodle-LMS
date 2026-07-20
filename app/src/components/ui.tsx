@@ -1,61 +1,17 @@
-import { useEffect, useRef, useState } from 'react'
 import type { ReactNode } from 'react'
-
-/* --------------------- animated number counter -------------------- */
-export function useCountUp(target: number, duration = 900) {
-  const [n, setN] = useState(0)
-  const raf = useRef(0)
-  useEffect(() => {
-    const start = performance.now()
-    const tick = (t: number) => {
-      const p = Math.min(1, (t - start) / duration)
-      // easeOutCubic
-      setN(target * (1 - Math.pow(1 - p, 3)))
-      if (p < 1) raf.current = requestAnimationFrame(tick)
-    }
-    raf.current = requestAnimationFrame(tick)
-    return () => cancelAnimationFrame(raf.current)
-  }, [target, duration])
-  return n
-}
-
-function AnimatedValue({ value }: { value: string | number }) {
-  const str = String(value)
-  const num = parseFloat(str.replace(/[^\d.]/g, ''))
-  const isNumeric = !Number.isNaN(num)
-  const n = useCountUp(isNumeric ? num : 0)
-  if (!isNumeric) return <>{value}</>
-  const suffix = str.replace(/[\d.,]/g, '')
-  return (
-    <>
-      {Math.round(n)}
-      {suffix}
-    </>
-  )
-}
 
 /* ----------------------------- Card ----------------------------- */
 export function Card({
   children,
   className = '',
   hover = false,
-  reveal = false,
-  delay,
 }: {
   children: ReactNode
   className?: string
   hover?: boolean
-  reveal?: boolean
-  delay?: 1 | 2 | 3 | 4 | 5 | 6
 }) {
   return (
-    <div
-      className={`panel rounded-xl ${hover ? 'tilt3d' : ''} ${reveal ? 'reveal' : ''} ${
-        delay ? `d${delay}` : ''
-      } ${className}`}
-    >
-      {children}
-    </div>
+    <div className={`panel rounded-xl ${hover ? 'panel-hover' : ''} ${className}`}>{children}</div>
   )
 }
 
@@ -75,7 +31,6 @@ export function Stat({
   value,
   label,
   delta,
-  delay,
 }: {
   icon: ReactNode
   value: string | number
@@ -84,19 +39,17 @@ export function Stat({
   delay?: 1 | 2 | 3 | 4 | 5 | 6
 }) {
   return (
-    <Card hover reveal delay={delay} className="group relative overflow-hidden p-5">
+    <Card hover className="p-5">
       <div className="flex items-start justify-between">
-        <div className="relative flex h-10 w-10 items-center justify-center rounded-lg bg-brand-50 text-brand-500 transition-transform duration-300 group-hover:scale-110">
+        <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-brand-50 text-brand-500">
           {icon}
         </div>
         {delta && <span className="text-[11.5px] font-bold text-ok-600">{delta}</span>}
       </div>
       <div className="mt-4 text-[26px] leading-none font-extrabold tracking-tight text-navy-900">
-        <AnimatedValue value={value} />
+        {value}
       </div>
       <div className="mt-1.5 text-[12px] font-semibold text-ink-500">{label}</div>
-      {/* sheen sweep on hover */}
-      <span className="pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-brand-500/6 to-transparent transition-transform duration-700 group-hover:translate-x-full" />
     </Card>
   )
 }
@@ -125,11 +78,13 @@ export function Badge({ children, tone = 'muted' }: { children: ReactNode; tone?
 
 /* --------------------------- ProgressBar ------------------------ */
 export function ProgressBar({ value, className = '' }: { value: number; className?: string }) {
-  const v = useCountUp(value, 1100)
   const tone = value >= 80 ? 'bg-ok-600' : value >= 50 ? 'bg-brand-500' : 'bg-bad-600'
   return (
     <div className={`h-1.5 w-full overflow-hidden rounded-full bg-soft2 ${className}`}>
-      <div className={`h-full rounded-full ${tone}`} style={{ width: `${Math.min(100, v)}%` }} />
+      <div
+        className={`h-full rounded-full ${tone}`}
+        style={{ width: `${Math.max(0, Math.min(100, value))}%` }}
+      />
     </div>
   )
 }
@@ -138,7 +93,7 @@ export function ProgressBar({ value, className = '' }: { value: number; classNam
 export function Avatar({ text, size = 34 }: { text: string; size?: number }) {
   return (
     <span
-      className="inline-flex flex-none items-center justify-center rounded-full bg-brand-50 font-bold text-brand-600 ring-1 ring-brand-500/12 transition-transform duration-200 hover:scale-110"
+      className="inline-flex flex-none items-center justify-center rounded-full bg-brand-50 font-bold text-brand-600 ring-1 ring-brand-500/12"
       style={{ width: size, height: size, fontSize: size * 0.36 }}
     >
       {text}
@@ -148,21 +103,20 @@ export function Avatar({ text, size = 34 }: { text: string; size?: number }) {
 
 /* ---------------------------- Ring ------------------------------ */
 export function Ring({ value, size = 46 }: { value: number; size?: number }) {
-  const v = useCountUp(value, 1200)
   return (
     <div
       className="flex flex-none items-center justify-center rounded-full"
       style={{
         width: size,
         height: size,
-        background: `conic-gradient(var(--color-brand-500) ${v}%, var(--color-soft2) 0)`,
+        background: `conic-gradient(var(--color-brand-500) ${value}%, var(--color-soft2) 0)`,
       }}
     >
       <div
         className="flex items-center justify-center rounded-full bg-surface font-extrabold text-navy-900"
         style={{ width: size - 9, height: size - 9, fontSize: size * 0.24 }}
       >
-        {Math.round(v)}%
+        {value}%
       </div>
     </div>
   )
@@ -183,15 +137,15 @@ export function Button({
   type?: 'button' | 'submit'
 }) {
   const styles = {
-    primary: 'bg-brand-500 hover:bg-brand-600 text-white shadow-sm hover:shadow-lg hover:shadow-brand-500/25',
+    primary: 'bg-brand-500 hover:bg-brand-600 text-white',
     ghost: 'border border-line2 bg-surface hover:bg-soft text-ink-700',
-    gold: 'bg-gold-500 hover:bg-gold-600 text-white shadow-sm hover:shadow-lg hover:shadow-gold-500/25',
+    gold: 'bg-gold-500 hover:bg-gold-600 text-white',
   }[variant]
   return (
     <button
       type={type}
       onClick={onClick}
-      className={`cursor-pointer rounded-lg px-4 py-2.5 text-[13px] font-bold transition-all duration-200 hover:-translate-y-0.5 active:translate-y-0 active:scale-[.98] ${styles} ${className}`}
+      className={`cursor-pointer rounded-lg px-4 py-2.5 text-[13px] font-bold ${styles} ${className}`}
     >
       {children}
     </button>

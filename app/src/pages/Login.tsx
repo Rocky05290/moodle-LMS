@@ -1,9 +1,6 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import {
-  ShieldCheck, GraduationCap, Users, BookOpen, ArrowRight, Lock,
-  CalendarCheck, TrendingUp,
-} from 'lucide-react'
+import { ShieldCheck, GraduationCap, Users, BookOpen, ArrowRight, Lock, Check } from 'lucide-react'
 import type { Role, User } from '../data/mock'
 import { users } from '../data/mock'
 import { Button, Card } from '../components/ui'
@@ -15,79 +12,11 @@ const ROLES: { role: Role; label: string; icon: typeof Users; demoId: number; ho
   { role: 'auditor', label: 'Auditor', icon: ShieldCheck, demoId: 108, home: '/auditor' },
 ]
 
-/* ------------------- animated 3D stage ------------------- */
-function Scene3D() {
-  return (
-    <div className="stage3d pointer-events-none absolute inset-0 flex items-center justify-center">
-      <span className="drift-slow absolute top-6 -left-10 h-56 w-56 rounded-full bg-brand-400/25 blur-[70px]" />
-      <span
-        className="drift-slow absolute -right-8 bottom-4 h-48 w-48 rounded-full bg-gold-500/15 blur-[70px]"
-        style={{ animationDelay: '-6s' }}
-      />
-
-      <div className="sway-3d relative h-[290px] w-[290px]">
-        {/* back layer — batch card */}
-        <div
-          className="float-slow absolute top-2 left-1/2 w-56 rounded-2xl border border-line bg-surface p-4 shadow-[0_24px_50px_-24px_rgba(15,27,53,.45)]"
-          style={{ transform: 'translateX(-50%) translateZ(-90px)', animationDelay: '-2s' }}
-        >
-          <div className="flex items-center justify-between">
-            <span className="rounded-md bg-brand-50 px-2 py-0.5 text-[10px] font-bold text-brand-600">
-              CTC-CCNA-2601
-            </span>
-            <span className="text-[10px] font-bold text-ink-400">48h</span>
-          </div>
-          <div className="mt-2.5 h-1.5 w-full rounded-full bg-soft2">
-            <div className="h-full w-2/3 rounded-full bg-brand-500" />
-          </div>
-          <div className="mt-2 text-[10.5px] text-ink-400">12 learners · active</div>
-        </div>
-
-        {/* middle layer — attendance rows */}
-        <div
-          className="float-slow absolute top-1/2 left-1/2 w-64 rounded-2xl border border-line bg-surface p-4 shadow-[0_28px_60px_-24px_rgba(15,27,53,.5)]"
-          style={{ transform: 'translate(-50%,-50%) translateZ(30px)' }}
-        >
-          <div className="mb-2.5 flex items-center gap-2">
-            <CalendarCheck size={14} className="text-brand-500" />
-            <span className="text-[11.5px] font-bold text-navy-900">Attendance</span>
-          </div>
-          {[
-            ['Ali Al-Mansoori', 'P', 'bg-ok-600'],
-            ['Siddika Mahmood', 'L1', 'bg-warn-600'],
-            ['Jasem Al-Saffar', 'A', 'bg-bad-600'],
-          ].map(([n, c, bg]) => (
-            <div key={n} className="flex items-center gap-2 py-1">
-              <span className="h-6 w-6 flex-none rounded-full bg-brand-50" />
-              <span className="flex-1 truncate text-[10.5px] text-ink-700">{n}</span>
-              <span
-                className={`${bg} flex h-5 w-6 items-center justify-center rounded text-[9.5px] font-extrabold text-white`}
-              >
-                {c}
-              </span>
-            </div>
-          ))}
-        </div>
-
-        {/* front layer — KPI chip */}
-        <div
-          className="float-slow absolute bottom-3 left-1/2 w-44 rounded-2xl border border-line bg-surface p-3.5 shadow-[0_30px_60px_-22px_rgba(15,27,53,.55)]"
-          style={{ transform: 'translateX(-50%) translateZ(110px)', animationDelay: '-4s' }}
-        >
-          <div className="flex items-center gap-2">
-            <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-ok-50 text-ok-600">
-              <TrendingUp size={15} />
-            </span>
-            <div className="leading-tight">
-              <div className="text-[16px] font-extrabold text-navy-900">92%</div>
-              <div className="text-[9.5px] font-semibold text-ink-400">Batch attendance</div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  )
-}
+const POINTS = [
+  'Batch management with Tamkeen-ready attendance registers',
+  'Rubric grading, evaluations and learner progress tracking',
+  'Read-only auditor access with a full timestamped audit trail',
+]
 
 export default function Login({ onSignIn }: { onSignIn: (u: User) => void }) {
   const [role, setRole] = useState<Role>('admin')
@@ -103,27 +32,33 @@ export default function Login({ onSignIn }: { onSignIn: (u: User) => void }) {
   return (
     <div className="flex min-h-full items-center justify-center p-5">
       <div className="grid w-full max-w-5xl items-stretch gap-6 lg:grid-cols-[1.05fr_1fr]">
-        {/* ------------- brand panel with 3D scene ------------- */}
-        <Card reveal className="relative hidden overflow-hidden p-9 lg:flex lg:flex-col">
-          <div className="relative z-10 mb-6 flex items-center gap-3">
-            <img src="/logo.png" alt="Cordoba Training Center" className="h-11 w-auto" />
-          </div>
+        {/* ---------------- brand panel ---------------- */}
+        <Card className="hidden p-9 lg:flex lg:flex-col">
+          <img src="/logo.png" alt="Cordoba Training Center" className="h-11 w-auto self-start" />
 
-          <h2 className="relative z-10 text-[29px] leading-[1.15] font-extrabold tracking-tight">
-            One platform for
+          <h2 className="mt-9 text-[30px] leading-[1.18] font-extrabold tracking-tight text-navy-900">
+            One platform for training,
             <br />
-            <span className="bg-gradient-to-r from-brand-500 to-brand-700 bg-clip-text text-transparent">
-              training, compliance
-            </span>
-            <br />
-            and reporting.
+            compliance and reporting.
           </h2>
 
-          <div className="relative my-1 h-[290px]">
-            <Scene3D />
-          </div>
+          <p className="mt-4 max-w-md text-[13.5px] leading-relaxed text-ink-500">
+            Everything a Tamkeen-registered training provider needs — batches, attendance,
+            assessment and audit-ready reporting in one system.
+          </p>
 
-          <div className="relative z-10 grid grid-cols-3 gap-3">
+          <ul className="mt-7 space-y-3">
+            {POINTS.map((p) => (
+              <li key={p} className="flex items-start gap-3">
+                <span className="mt-0.5 flex h-5 w-5 flex-none items-center justify-center rounded-full bg-brand-50 text-brand-600">
+                  <Check size={12} strokeWidth={3} />
+                </span>
+                <span className="text-[13px] leading-relaxed text-ink-700">{p}</span>
+              </li>
+            ))}
+          </ul>
+
+          <div className="mt-auto grid grid-cols-3 gap-3 pt-9">
             {[
               ['Batches', 'CTC-CCNA-2601'],
               ['Attendance', 'P · L1 · L2 · L3'],
@@ -139,9 +74,11 @@ export default function Login({ onSignIn }: { onSignIn: (u: User) => void }) {
           </div>
         </Card>
 
-        {/* ------------------ sign-in panel ------------------ */}
-        <Card reveal delay={2} className="p-8">
-          <h1 className="text-[22px] font-extrabold tracking-tight">Sign in</h1>
+        {/* ---------------- sign-in panel ---------------- */}
+        <Card className="p-8">
+          <img src="/logo.png" alt="Cordoba Training Center" className="mb-7 h-9 w-auto lg:hidden" />
+
+          <h1 className="text-[22px] font-extrabold tracking-tight text-navy-900">Sign in</h1>
           <p className="mt-1 text-[13px] text-ink-500">Choose your role to continue.</p>
 
           <div className="mt-6 grid grid-cols-2 gap-2.5">
@@ -152,9 +89,9 @@ export default function Login({ onSignIn }: { onSignIn: (u: User) => void }) {
                 <button
                   key={r.role}
                   onClick={() => setRole(r.role)}
-                  className={`flex cursor-pointer items-center gap-2.5 rounded-xl border px-3.5 py-3 text-[13px] font-bold transition-all duration-200 hover:-translate-y-0.5 ${
+                  className={`flex cursor-pointer items-center gap-2.5 rounded-lg border px-3.5 py-3 text-[13px] font-bold ${
                     on
-                      ? 'border-brand-500 bg-brand-50 text-brand-600 shadow-md shadow-brand-500/15'
+                      ? 'border-brand-500 bg-brand-50 text-brand-600'
                       : 'border-line bg-soft text-ink-500 hover:bg-soft2'
                   }`}
                 >
@@ -173,14 +110,14 @@ export default function Login({ onSignIn }: { onSignIn: (u: User) => void }) {
               <input
                 readOnly
                 value={demoUser.email}
-                className="w-full rounded-xl border border-line bg-soft px-3.5 py-3 text-[13.5px] outline-none transition-colors focus:border-brand-500"
+                className="w-full rounded-lg border border-line bg-soft px-3.5 py-3 text-[13.5px] outline-none focus:border-brand-500"
               />
             </div>
             <div>
               <label className="mb-1.5 block text-[11px] font-bold tracking-wide text-ink-500 uppercase">
                 Password
               </label>
-              <div className="flex items-center gap-2 rounded-xl border border-line bg-soft px-3.5 py-3 transition-colors focus-within:border-brand-500">
+              <div className="flex items-center gap-2 rounded-lg border border-line bg-soft px-3.5 py-3 focus-within:border-brand-500">
                 <Lock size={14} className="text-ink-400" />
                 <input
                   type="password"

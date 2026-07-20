@@ -42,9 +42,9 @@ export default function LearnerToday() {
       </Card>
 
       <div className="grid gap-4 sm:grid-cols-3">
-        <Stat icon={<Clock size={18} />} value={`${att}%`} label="My Attendance" delay={1} />
-        <Stat icon={<Award size={18} />} value={avg ?? '—'} label="Average Grade" delay={2} />
-        <Stat icon={<CheckCircle2 size={18} />} value={`${enr.progress}%`} label="Course Progress" delay={3} />
+        <Stat icon={<Clock size={18} />} value={`${att}%`} label="My Attendance" />
+        <Stat icon={<Award size={18} />} value={avg ?? '—'} label="Average Grade" />
+        <Stat icon={<CheckCircle2 size={18} />} value={`${enr.progress}%`} label="Course Progress" />
       </div>
 
       <div className="grid gap-4 xl:grid-cols-[1.4fr_1fr]">
@@ -62,7 +62,7 @@ export default function LearnerToday() {
               return (
                 <div
                   key={m.num}
-                  className={`flex items-start gap-3.5 rounded-xl border p-4 transition-all ${
+                  className={`flex items-start gap-3.5 rounded-xl border p-4 ${
                     current
                       ? 'border-brand-500/30 bg-brand-50'
                       : 'border-line bg-soft hover:bg-soft'

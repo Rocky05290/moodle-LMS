@@ -18,7 +18,7 @@ export default function AdminDashboard() {
   return (
     <div className="space-y-5">
       {/* ---------------- hero band ---------------- */}
-      <Card reveal className="relative overflow-hidden border-navy-900/10 bg-gradient-to-br from-navy-800 to-navy-900 p-6">
+      <Card className="relative overflow-hidden border-navy-900/10 bg-gradient-to-br from-navy-800 to-navy-900 p-6">
         <div className="relative z-10 flex flex-wrap items-center gap-5">
           <div className="min-w-0">
             <div className="flex items-center gap-2">
@@ -41,7 +41,7 @@ export default function AdminDashboard() {
             <Button variant="gold" className="flex items-center gap-1.5">
               <Plus size={14} /> Create batch
             </Button>
-            <button className="flex cursor-pointer items-center gap-1.5 rounded-lg border border-white/18 bg-white/8 px-4 py-2.5 text-[13px] font-bold text-white transition-all hover:-translate-y-0.5 hover:bg-white/14">
+            <button className="flex cursor-pointer items-center gap-1.5 rounded-lg border border-white/18 bg-white/8 px-4 py-2.5 text-[13px] font-bold text-white hover:bg-white/14">
               <Upload size={14} /> Import learners
             </button>
           </div>
@@ -53,15 +53,15 @@ export default function AdminDashboard() {
 
       {/* ---------------- KPIs ---------------- */}
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-        <Stat icon={<Layers size={18} />} value={batches.length} label="Active Batches" delay={1} delta="▲ 1" />
-        <Stat icon={<Users size={18} />} value={learners.length} label="Enrolled Learners" delay={2} delta="▲ 3" />
-        <Stat icon={<CalendarCheck size={18} />} value={`${batchAttendancePct(activeBatch.id)}%`} label="Avg Attendance" delay={3} delta="▲ 4%" />
-        <Stat icon={<Trophy size={18} />} value={`${passRate}%`} label="Pass Rate" delay={4} />
+        <Stat icon={<Layers size={18} />} value={batches.length} label="Active Batches" delta="▲ 1" />
+        <Stat icon={<Users size={18} />} value={learners.length} label="Enrolled Learners" delta="▲ 3" />
+        <Stat icon={<CalendarCheck size={18} />} value={`${batchAttendancePct(activeBatch.id)}%`} label="Avg Attendance" delta="▲ 4%" />
+        <Stat icon={<Trophy size={18} />} value={`${passRate}%`} label="Pass Rate" />
       </div>
 
       <div className="grid gap-4 xl:grid-cols-[1.5fr_1fr]">
         {/* ---------------- Batch Health ---------------- */}
-        <Card reveal delay={2} className="p-5">
+        <Card className="p-5">
           <SectionTitle right={<Badge tone="brand">{activeBatch.batchCode}</Badge>}>
             Batch Health
           </SectionTitle>
@@ -84,7 +84,7 @@ export default function AdminDashboard() {
                   return (
                     <tr
                       key={r.id}
-                      className="transition-colors hover:bg-brand-50/60"
+                      className="hover:bg-brand-50/60"
                     >
                       <Td>
                         <div className="flex items-center gap-2.5">
@@ -114,7 +114,7 @@ export default function AdminDashboard() {
         </Card>
 
         {/* ---------------- Batches ---------------- */}
-        <Card reveal delay={3} className="p-5">
+        <Card className="p-5">
           <SectionTitle
             right={
               <Button variant="ghost" className="flex items-center gap-1.5 !px-3 !py-1.5 !text-[12px]">
@@ -133,7 +133,7 @@ export default function AdminDashboard() {
               return (
                 <div
                   key={b.id}
-                  className="group flex items-center gap-3.5 rounded-xl border border-line bg-soft p-3.5 transition-all duration-200 hover:-translate-y-0.5 hover:border-brand-500/25 hover:bg-surface hover:shadow-md"
+                  className="group flex items-center gap-3.5 rounded-xl border border-line bg-soft p-3.5 hover:border-brand-500/25 hover:bg-surface hover:shadow-md"
                 >
                   <Ring value={b.status === 'active' ? batchAttendancePct(b.id) : 0} size={42} />
                   <div className="min-w-0 flex-1">
@@ -160,7 +160,7 @@ export default function AdminDashboard() {
       </div>
 
       {/* ---------------- Course inventory ---------------- */}
-      <Card reveal delay={4} className="p-5">
+      <Card className="p-5">
         <SectionTitle right={<Badge tone="muted">{courses.length} courses</Badge>}>
           Master Course Inventory
         </SectionTitle>
@@ -168,13 +168,13 @@ export default function AdminDashboard() {
           {courses.map((c) => (
             <div
               key={c.id}
-              className="group cursor-pointer rounded-xl border border-line bg-soft p-4 transition-all duration-200 hover:-translate-y-1 hover:border-brand-500/30 hover:bg-surface hover:shadow-lg"
+              className="group cursor-pointer rounded-xl border border-line bg-soft p-4 hover:border-brand-500/30 hover:bg-surface hover:shadow-lg"
             >
               <div className="flex items-start justify-between gap-2">
                 <Badge tone="brand">{c.code}</Badge>
                 <span className="text-[11px] font-bold text-ink-400">{c.totalHours}h</span>
               </div>
-              <div className="mt-2.5 text-[13.5px] leading-snug font-bold text-navy-900 transition-colors group-hover:text-brand-600">
+              <div className="mt-2.5 text-[13.5px] leading-snug font-bold text-navy-900 group-hover:text-brand-600">
                 {c.title}
               </div>
               <div className="mt-1 text-[11.5px] text-ink-400">

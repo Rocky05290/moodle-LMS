@@ -128,7 +128,7 @@ export default function Attendance() {
               {roster.map((r) => {
                 const current = marks[keyFor(r.learnerId)]
                 return (
-                  <tr key={r.id} className="transition-colors hover:bg-soft">
+                  <tr key={r.id} className="hover:bg-soft">
                     <Td>
                       <div className="flex items-center gap-2.5">
                         <Avatar text={initials(r.user)} size={30} />
@@ -146,7 +146,7 @@ export default function Attendance() {
                             key={c}
                             onClick={() => setMark(r.learnerId, c)}
                             title={ATTENDANCE_META[c].label}
-                            className={`h-8 w-9 cursor-pointer rounded-lg border text-[11.5px] font-extrabold transition-all active:scale-95 ${
+                            className={`h-8 w-9 cursor-pointer rounded-lg border text-[11.5px] font-extrabold active:scale-95 ${
                               current === c
                                 ? codeStyle[c]
                                 : 'border-line2 bg-soft text-ink-400 hover:bg-soft2'

@@ -48,9 +48,9 @@ export default function AuditorDashboard() {
       </Card>
 
       <div className="grid gap-4 sm:grid-cols-3">
-        <Stat icon={<ShieldCheck size={18} />} value={roster.length} label="Records in Batch" delay={1} />
-        <Stat icon={<FileCheck2 size={18} />} value={`${batchAttendancePct(batch.id)}%`} label="Batch Attendance" delay={2} />
-        <Stat icon={<FileDown size={18} />} value={batch.totalHours} label="Contracted Hours" delay={3} />
+        <Stat icon={<ShieldCheck size={18} />} value={roster.length} label="Records in Batch" />
+        <Stat icon={<FileCheck2 size={18} />} value={`${batchAttendancePct(batch.id)}%`} label="Batch Attendance" />
+        <Stat icon={<FileDown size={18} />} value={batch.totalHours} label="Contracted Hours" />
       </div>
 
       {/* verification table */}
@@ -75,7 +75,7 @@ export default function AuditorDashboard() {
                 const avg = averageGrade(r.learnerId, batch.id)
                 const eligible = att >= 75 && (avg ?? 0) >= 60
                 return (
-                  <tr key={r.id} className="transition-colors hover:bg-soft">
+                  <tr key={r.id} className="hover:bg-soft">
                     <Td>
                       <div className="flex items-center gap-2.5">
                         <Avatar text={initials(r.user)} size={28} />
