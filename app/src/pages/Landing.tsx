@@ -1,10 +1,12 @@
-import { useNavigate } from 'react-router-dom'
 import {
   ArrowRight, CalendarCheck, ShieldCheck, Layers, ClipboardCheck, BarChart3,
   QrCode, FileCheck2, Users, GraduationCap, Play, Check,
 } from 'lucide-react'
+import type { User } from '../data/mock'
 import PublicHeader from '../components/PublicHeader'
 import Reveal from '../components/Reveal'
+import SiteFooter from '../components/SiteFooter'
+import LoginCard from '../components/LoginCard'
 import { IconTile, type IconTone } from '../components/ui'
 
 const FEATURES: { icon: typeof Layers; title: string; desc: string; tone: IconTone }[] = [
@@ -23,30 +25,25 @@ const ROLES: { icon: typeof Users; k: string; v: string; tone: IconTone }[] = [
   { icon: ShieldCheck, k: 'Auditor', v: 'Read-only verification & exports', tone: 'amber' },
 ]
 
-export default function Landing() {
-  const navigate = useNavigate()
-  const goLogin = () => navigate('/login')
+export default function Landing({ onSignIn }: { onSignIn: (u: User) => void }) {
+  const scrollTop = () => document.getElementById('top')?.scrollIntoView({ behavior: 'smooth' })
 
   return (
     <div id="top" className="min-h-full bg-white">
-      <PublicHeader onSignIn={goLogin} />
+      <PublicHeader onSignIn={scrollTop} />
 
       {/* ============================ HERO ============================ */}
       <section className="relative flex min-h-[92vh] items-center overflow-hidden">
-        {/* background: image if present, else rich gradient */}
         <div
           className="kenburns absolute inset-0 bg-navy-900 bg-cover bg-center"
           style={{ backgroundImage: 'url(/hero.jpg)' }}
         />
-        {/* gradient wash for legibility */}
-        <div className="absolute inset-0 bg-gradient-to-br from-navy-950/94 via-navy-900/88 to-brand-700/72" />
-        {/* animated colour glows */}
+        <div className="absolute inset-0 bg-gradient-to-br from-navy-950/94 via-navy-900/90 to-brand-700/70" />
         <div className="floaty pointer-events-none absolute -top-24 -left-16 h-96 w-96 rounded-full bg-brand-500/25 blur-[120px]" />
         <div
           className="floaty pointer-events-none absolute right-0 bottom-0 h-96 w-96 rounded-full bg-brand-400/18 blur-[120px]"
           style={{ animationDelay: '-3s' }}
         />
-        {/* subtle grid */}
         <div
           className="absolute inset-0 opacity-[0.06]"
           style={{
@@ -56,8 +53,9 @@ export default function Landing() {
           }}
         />
 
-        <div className="relative z-10 mx-auto w-full max-w-6xl px-5 py-28 lg:px-8">
-          <div className="max-w-3xl">
+        <div className="relative z-10 mx-auto grid w-full max-w-6xl items-center gap-12 px-5 py-28 lg:grid-cols-[1.08fr_0.92fr] lg:px-8">
+          {/* left — marketing */}
+          <div>
             <span
               className="rise inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-3.5 py-1.5 text-[12px] font-bold text-white backdrop-blur-sm"
               style={{ animationDelay: '.05s' }}
@@ -67,7 +65,7 @@ export default function Landing() {
             </span>
 
             <h1
-              className="rise mt-6 text-[42px] leading-[1.06] font-extrabold tracking-tight text-white sm:text-[58px]"
+              className="rise mt-6 text-[40px] leading-[1.07] font-extrabold tracking-tight text-white sm:text-[52px]"
               style={{ animationDelay: '.15s' }}
             >
               Training, attendance &amp;
@@ -79,34 +77,14 @@ export default function Landing() {
             </h1>
 
             <p
-              className="rise mt-6 max-w-xl text-[16px] leading-relaxed text-white/75"
+              className="rise mt-6 max-w-lg text-[16px] leading-relaxed text-white/75"
               style={{ animationDelay: '.28s' }}
             >
               Cordoba runs your whole training operation — batches, signed attendance registers,
               rubric grading and audit-ready reporting — in one fast, modern system.
             </p>
 
-            <div
-              className="rise mt-9 flex flex-wrap items-center gap-3.5"
-              style={{ animationDelay: '.4s' }}
-            >
-              <button
-                onClick={goLogin}
-                className="group flex items-center gap-2 rounded-xl bg-white px-6 py-3.5 text-[14.5px] font-bold text-navy-900 shadow-xl shadow-black/20 transition-all hover:-translate-y-0.5 hover:bg-brand-50"
-              >
-                Sign in to your portal
-                <ArrowRight size={17} className="transition-transform group-hover:translate-x-1" />
-              </button>
-              <button className="flex items-center gap-2 rounded-xl border border-white/25 bg-white/8 px-6 py-3.5 text-[14.5px] font-bold text-white backdrop-blur-sm transition-all hover:bg-white/16">
-                <Play size={15} /> Watch overview
-              </button>
-            </div>
-
-            {/* trust chips */}
-            <div
-              className="rise mt-12 flex flex-wrap gap-x-8 gap-y-3"
-              style={{ animationDelay: '.55s' }}
-            >
+            <div className="rise mt-9 flex flex-wrap gap-x-8 gap-y-3" style={{ animationDelay: '.4s' }}>
               {[
                 ['5', 'role-based portals'],
                 ['CTC-2601', 'batch codes'],
@@ -118,13 +96,18 @@ export default function Landing() {
                 </div>
               ))}
             </div>
-          </div>
-        </div>
 
-        {/* scroll cue */}
-        <div className="absolute inset-x-0 bottom-6 flex justify-center">
-          <div className="floaty flex h-9 w-5 items-start justify-center rounded-full border-2 border-white/40 p-1.5">
-            <span className="h-2 w-1 rounded-full bg-white/70" />
+            <button className="rise mt-8 flex items-center gap-2 text-[13.5px] font-bold text-white/80 transition-colors hover:text-white" style={{ animationDelay: '.5s' }}>
+              <span className="flex h-8 w-8 items-center justify-center rounded-full border border-white/25 bg-white/10">
+                <Play size={13} />
+              </span>
+              Watch a 2-minute overview
+            </button>
+          </div>
+
+          {/* right — login card (the red-box area) */}
+          <div className="rise w-full max-w-md justify-self-stretch lg:justify-self-end" style={{ animationDelay: '.2s' }}>
+            <LoginCard onSignIn={onSignIn} />
           </div>
         </div>
       </section>
@@ -176,10 +159,10 @@ export default function Landing() {
                 </h2>
               </div>
               <button
-                onClick={goLogin}
-                className="flex items-center gap-2 rounded-xl bg-navy-900 px-5 py-3 text-[13.5px] font-bold text-white transition-all hover:-translate-y-0.5 hover:bg-navy-800"
+                onClick={scrollTop}
+                className="flex items-center gap-2 rounded-md bg-navy-900 px-5 py-3 text-[13.5px] font-bold text-white transition-all hover:-translate-y-0.5 hover:bg-navy-800"
               >
-                Explore the portal <ArrowRight size={15} />
+                Sign in to explore <ArrowRight size={15} />
               </button>
             </div>
           </Reveal>
@@ -214,15 +197,12 @@ export default function Landing() {
             <p className="mx-auto mt-4 max-w-xl text-[15px] text-white/65">
               Sign in to explore the admin, trainer, learner and auditor portals.
             </p>
-            <div className="mt-8 flex flex-wrap justify-center gap-3.5">
+            <div className="mt-8 flex justify-center">
               <button
-                onClick={goLogin}
-                className="flex items-center gap-2 rounded-xl bg-white px-6 py-3.5 text-[14.5px] font-bold text-navy-900 transition-all hover:-translate-y-0.5 hover:bg-brand-50"
+                onClick={scrollTop}
+                className="flex items-center gap-2 rounded-md bg-white px-6 py-3.5 text-[14.5px] font-bold text-navy-900 transition-all hover:-translate-y-0.5 hover:bg-brand-50"
               >
                 Sign in <ArrowRight size={16} />
-              </button>
-              <button className="rounded-xl border border-white/25 bg-white/8 px-6 py-3.5 text-[14.5px] font-bold text-white transition-all hover:bg-white/16">
-                Book a demo
               </button>
             </div>
             <div className="mt-8 flex flex-wrap justify-center gap-x-7 gap-y-2 text-[12.5px] text-white/55">
@@ -236,21 +216,7 @@ export default function Landing() {
         </div>
       </section>
 
-      {/* =========================== FOOTER ========================== */}
-      <footer className="border-t border-line bg-white py-10">
-        <div className="mx-auto flex max-w-6xl flex-wrap items-center gap-4 px-5 lg:px-8">
-          <img src="/logo.png" alt="Cordoba Training Center" className="h-7 w-auto" />
-          <span className="text-[12.5px] text-ink-400">
-            © 2026 Cordoba Training Center · Tamkeen-ready academic &amp; compliance platform
-          </span>
-          <button
-            onClick={goLogin}
-            className="ml-auto text-[13px] font-bold text-brand-600 hover:text-brand-700"
-          >
-            Sign in →
-          </button>
-        </div>
-      </footer>
+      <SiteFooter />
     </div>
   )
 }

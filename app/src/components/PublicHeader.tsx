@@ -12,14 +12,14 @@ export default function PublicHeader({ onSignIn }: { onSignIn: () => void }) {
     <header
       className={`fixed inset-x-0 top-0 z-50 transition-all duration-300 ${
         scrolled
-          ? 'border-b border-line bg-white/90 py-2.5 shadow-[0_4px_20px_-8px_rgba(15,27,53,0.25)] backdrop-blur-xl'
+          ? 'border-b border-line bg-white/[0.87] py-2.5 shadow-[0_4px_20px_-8px_rgba(15,27,53,0.25)] backdrop-blur-xl'
           : 'border-b border-transparent bg-transparent py-4'
       }`}
     >
       <div className="mx-auto flex max-w-6xl items-center gap-6 px-5 lg:px-8">
         {/* logo — always on a white chip so it reads on any background */}
         <a href="#top" className="flex items-center">
-          <span className="inline-flex items-center rounded-lg bg-white px-2.5 py-1.5 shadow-sm ring-1 ring-black/5">
+          <span className="inline-flex items-center rounded-md bg-white px-2.5 py-1.5 shadow-sm ring-1 ring-black/5">
             <img src="/logo.png" alt="Cordoba Training Center" className="h-6 w-auto" />
           </span>
         </a>
@@ -30,7 +30,7 @@ export default function PublicHeader({ onSignIn }: { onSignIn: () => void }) {
             <a
               key={l}
               href="#top"
-              className={`rounded-lg px-3.5 py-2 text-[13.5px] font-semibold transition-colors ${
+              className={`rounded-md px-3.5 py-2 text-[13.5px] font-semibold transition-colors ${
                 scrolled ? 'text-ink-700 hover:bg-soft2' : 'text-white/85 hover:bg-white/10'
               }`}
             >
@@ -43,27 +43,19 @@ export default function PublicHeader({ onSignIn }: { onSignIn: () => void }) {
         <div className="ml-auto flex items-center gap-2.5">
           <button
             onClick={onSignIn}
-            className={`hidden rounded-lg px-3.5 py-2 text-[13.5px] font-bold transition-colors sm:block ${
-              scrolled ? 'text-ink-700 hover:bg-soft2' : 'text-white hover:bg-white/10'
-            }`}
-          >
-            Sign in
-          </button>
-          <button
-            onClick={onSignIn}
-            className={`flex items-center gap-1.5 rounded-lg px-4 py-2 text-[13.5px] font-bold shadow-sm transition-all hover:-translate-y-0.5 ${
+            className={`flex items-center gap-1.5 rounded-md px-5 py-2 text-[13.5px] font-bold shadow-sm transition-all hover:-translate-y-0.5 ${
               scrolled
                 ? 'bg-brand-500 text-white hover:bg-brand-600'
-                : 'bg-white text-navy-900 hover:bg-white/90'
+                : 'bg-white text-navy-900 hover:bg-brand-50'
             }`}
           >
-            Book a demo <ArrowRight size={14} />
+            Sign in <ArrowRight size={14} />
           </button>
 
           {/* mobile toggle */}
           <button
             onClick={() => setOpen((v) => !v)}
-            className={`flex h-9 w-9 items-center justify-center rounded-lg lg:hidden ${
+            className={`flex h-9 w-9 items-center justify-center rounded-md lg:hidden ${
               scrolled ? 'text-ink-700' : 'text-white'
             }`}
           >
@@ -74,23 +66,17 @@ export default function PublicHeader({ onSignIn }: { onSignIn: () => void }) {
 
       {/* mobile menu */}
       {open && (
-        <div className="mx-4 mt-2 rounded-xl border border-line bg-white p-2 shadow-lg lg:hidden">
+        <div className="mx-4 mt-2 rounded-lg border border-line bg-white p-2 shadow-lg lg:hidden">
           {LINKS.map((l) => (
             <a
               key={l}
               href="#top"
               onClick={() => setOpen(false)}
-              className="block rounded-lg px-3 py-2.5 text-[13.5px] font-semibold text-ink-700 hover:bg-soft2"
+              className="block rounded-md px-3 py-2.5 text-[13.5px] font-semibold text-ink-700 hover:bg-soft2"
             >
               {l}
             </a>
           ))}
-          <button
-            onClick={onSignIn}
-            className="mt-1 w-full rounded-lg bg-brand-500 px-3 py-2.5 text-[13.5px] font-bold text-white"
-          >
-            Sign in
-          </button>
         </div>
       )}
     </header>

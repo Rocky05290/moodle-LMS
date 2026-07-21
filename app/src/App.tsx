@@ -4,7 +4,6 @@ import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-route
 import type { User } from './data/mock'
 import Layout from './components/Layout'
 import Landing from './pages/Landing'
-import Login from './pages/Login'
 import AdminDashboard from './pages/AdminDashboard'
 import TrainerDashboard from './pages/TrainerDashboard'
 import LearnerToday from './pages/LearnerToday'
@@ -61,12 +60,9 @@ export default function App() {
       <Routes>
         <Route
           path="/"
-          element={user ? <Navigate to={`/${user.role}`} replace /> : <Landing />}
+          element={user ? <Navigate to={`/${user.role}`} replace /> : <Landing onSignIn={setUser} />}
         />
-        <Route
-          path="/login"
-          element={user ? <Navigate to={`/${user.role}`} replace /> : <Login onSignIn={setUser} />}
-        />
+        <Route path="/login" element={<Navigate to="/" replace />} />
 
         <Route path="/admin" element={guard(<AdminDashboard />)} />
         <Route path="/batches" element={guard(<Batches />)} />

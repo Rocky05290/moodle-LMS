@@ -40,12 +40,12 @@ export default function Attendance() {
       {/* toolbar */}
       <Card className="flex flex-wrap items-center gap-3 p-4">
         <div className="flex items-center gap-2.5">
-          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-brand-50 text-brand-500">
+          <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-brand-50 text-brand-500">
             <CalendarDays size={18} />
           </div>
           <div className="leading-tight">
             <div className="text-[13.5px] font-bold">{batch.batchCode}</div>
-            <div className="text-[11.5px] text-ink-400">
+            <div className="text-[11.5px] text-ink-500">
               {course.title} · {batch.startTime}–{batch.endTime}
             </div>
           </div>
@@ -55,7 +55,7 @@ export default function Attendance() {
           <select
             value={date}
             onChange={(e) => setDate(e.target.value)}
-            className="cursor-pointer rounded-xl border border-line bg-surface px-3 py-2.5 text-[13px] font-semibold outline-none"
+            className="cursor-pointer rounded-md border border-line bg-surface px-3 py-2.5 text-[13px] font-semibold outline-none"
           >
             {sessionDates.map((d) => (
               <option key={d} value={d}>
@@ -79,12 +79,11 @@ export default function Attendance() {
       {showQr && (
         <Card className="flex flex-col items-center gap-3 p-7">
           <SectionTitle>Scan to check in</SectionTitle>
-          <div className="rounded-2xl bg-white p-4">
+          <div className="rounded-lg bg-white p-4 ring-1 ring-line">
             <div
               className="h-40 w-40"
               style={{
-                backgroundImage:
-                  'repeating-conic-gradient(#000 0% 25%, #fff 0% 50%)',
+                backgroundImage: 'repeating-conic-gradient(#0f1b35 0% 25%, #fff 0% 50%)',
                 backgroundSize: '13px 13px',
               }}
             />
@@ -100,7 +99,9 @@ export default function Attendance() {
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-5">
         {CODES.map((c) => (
           <Card key={c} className="p-3.5 text-center">
-            <div className="text-[22px] leading-none font-extrabold">{counts[c] ?? 0}</div>
+            <div className="text-[22px] leading-none font-extrabold text-navy-900">
+              {counts[c] ?? 0}
+            </div>
             <div className="mt-1.5 text-[10.5px] font-bold tracking-wide text-ink-400 uppercase">
               {ATTENDANCE_META[c].label}
             </div>
@@ -108,7 +109,7 @@ export default function Attendance() {
         ))}
       </div>
 
-      {/* grid */}
+      {/* register */}
       <Card className="p-5">
         <SectionTitle right={<Badge tone="muted">{roster.length} learners</Badge>}>
           Attendance register
@@ -133,7 +134,7 @@ export default function Attendance() {
                       <div className="flex items-center gap-2.5">
                         <Avatar text={initials(r.user)} size={30} />
                         <div className="leading-tight">
-                          <div className="font-semibold">{fullName(r.user)}</div>
+                          <div className="font-semibold text-navy-900">{fullName(r.user)}</div>
                           <div className="text-[11px] text-ink-400">{r.user.company}</div>
                         </div>
                       </div>
@@ -146,10 +147,10 @@ export default function Attendance() {
                             key={c}
                             onClick={() => setMark(r.learnerId, c)}
                             title={ATTENDANCE_META[c].label}
-                            className={`h-8 w-9 cursor-pointer rounded-lg border text-[11.5px] font-extrabold active:scale-95 ${
+                            className={`h-8 w-9 cursor-pointer rounded-md border text-[11.5px] font-extrabold transition-all active:scale-95 ${
                               current === c
                                 ? codeStyle[c]
-                                : 'border-line2 bg-soft text-ink-400 hover:bg-soft2'
+                                : 'border-line bg-soft text-ink-400 hover:bg-soft2'
                             }`}
                           >
                             {c}
@@ -160,7 +161,7 @@ export default function Attendance() {
                     <Td>
                       <input
                         placeholder="—"
-                        className="w-full rounded-lg border border-line bg-soft px-2.5 py-1.5 text-[12px] outline-none focus:border-brand-500"
+                        className="w-full rounded-md border border-line bg-soft px-2.5 py-1.5 text-[12px] outline-none focus:border-brand-500"
                       />
                     </Td>
                   </tr>
@@ -178,4 +179,3 @@ export default function Attendance() {
     </div>
   )
 }
-

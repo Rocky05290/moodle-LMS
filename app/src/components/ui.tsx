@@ -30,7 +30,7 @@ export function IconTile({
 }) {
   return (
     <div
-      className={`flex flex-none items-center justify-center rounded-xl bg-gradient-to-br text-white shadow-md ${iconTones[tone]} ${className}`}
+      className={`flex flex-none items-center justify-center rounded-lg bg-gradient-to-br text-white shadow-md ${iconTones[tone]} ${className}`}
       style={{ width: size, height: size }}
     >
       {icon}
@@ -186,7 +186,7 @@ export function Button({
     <button
       type={type}
       onClick={onClick}
-      className={`cursor-pointer rounded-lg px-4 py-2.5 text-[13px] font-bold ${styles} ${className}`}
+      className={`cursor-pointer rounded-md px-4 py-2.5 text-[13px] font-bold ${styles} ${className}`}
     >
       {children}
     </button>
