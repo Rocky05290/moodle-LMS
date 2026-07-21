@@ -2,12 +2,12 @@
 
 /* ------------------------------------------------------------------
    Cordoba Training Center — Enterprise light design system
-   Clean, corporate, institutional. No animation — instant and fast.
+   Calm work screens · animated marketing surfaces (landing / login)
 ------------------------------------------------------------------- */
 @theme {
   --font-sans: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+  --font-display: 'Plus Jakarta Sans', system-ui, sans-serif;
 
-  /* canvas & surfaces */
   --color-canvas: #f4f7fc;
   --color-surface: #ffffff;
   --color-soft: #f7f9fd;
@@ -15,7 +15,6 @@
   --color-line: #e3e9f4;
   --color-line2: #d5deee;
 
-  /* brand — professional blue */
   --color-brand-50: #eef4ff;
   --color-brand-100: #dbe6ff;
   --color-brand-400: #5b8def;
@@ -23,13 +22,13 @@
   --color-brand-600: #1f4dc0;
   --color-brand-700: #173c96;
 
-  /* navy — headings / sidebar */
   --color-navy-700: #21304f;
-  --color-navy-800: #172440;
-  --color-navy-900: #0f1b35;
+  --color-navy-800: #131f3c;
+  --color-navy-900: #0b1428;
+  --color-navy-950: #070d1c;
 
-  /* accents */
   --color-gold-100: #fdf2dc;
+  --color-gold-400: #edb43d;
   --color-gold-500: #c98a06;
   --color-gold-600: #a97205;
 
@@ -40,7 +39,6 @@
   --color-bad-50: #fdecec;
   --color-bad-600: #cf3434;
 
-  /* text */
   --color-ink-900: #0f1b35;
   --color-ink-700: #33415c;
   --color-ink-500: #64748b;
@@ -52,7 +50,9 @@ body,
 #root {
   height: 100%;
 }
-
+html {
+  scroll-behavior: smooth;
+}
 body {
   margin: 0;
   font-family: var(--font-sans);
@@ -78,25 +78,110 @@ body {
   background: #b3c0d6;
 }
 
-/* ---------------------------- utilities --------------------------- */
+/* ============================== MOTION ============================= */
 
-/** standard white panel */
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes kenburns {
+  from {
+    transform: scale(1.08) translateY(0);
+  }
+  to {
+    transform: scale(1.16) translateY(-1.5%);
+  }
+}
+@keyframes floaty {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-14px);
+  }
+}
+@keyframes gradientPan {
+  0% {
+    background-position: 0% 50%;
+  }
+  100% {
+    background-position: 100% 50%;
+  }
+}
+@keyframes shine {
+  0% {
+    transform: translateX(-120%) skewX(-18deg);
+  }
+  60%,
+  100% {
+    transform: translateX(320%) skewX(-18deg);
+  }
+}
+
+/* hero entrance — stagger with inline animation-delay */
+@utility rise {
+  opacity: 0;
+  animation: fadeUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+@utility kenburns {
+  animation: kenburns 18s ease-out forwards alternate;
+}
+@utility floaty {
+  animation: floaty 6s ease-in-out infinite;
+}
+
+/* scroll reveal — toggled by the <Reveal> component */
+@utility reveal {
+  opacity: 0;
+  transform: translateY(26px);
+  transition:
+    opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+  &.in {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* ---------------------------- utilities --------------------------- */
 @utility panel {
   background: var(--color-surface);
   border: 1px solid var(--color-line);
   box-shadow: 0 1px 2px rgba(15, 27, 53, 0.04);
 }
-
-/** hover state — colour/shadow only, no movement */
 @utility panel-hover {
+  transition:
+    border-color 0.18s ease,
+    box-shadow 0.18s ease,
+    transform 0.18s ease;
   &:hover {
     border-color: var(--color-line2);
-    box-shadow: 0 4px 12px rgba(15, 27, 53, 0.07);
+    box-shadow: 0 10px 26px -12px rgba(15, 27, 53, 0.22);
+    transform: translateY(-2px);
   }
 }
-
-/** subtle inner block inside a panel */
 @utility tile {
   background: var(--color-soft);
   border: 1px solid var(--color-line);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  .reveal {
+    opacity: 1 !important;
+    transform: none !important;
+  }
 }

@@ -3,6 +3,7 @@ import type { ReactNode } from 'react'
 import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom'
 import type { User } from './data/mock'
 import Layout from './components/Layout'
+import Landing from './pages/Landing'
 import Login from './pages/Login'
 import AdminDashboard from './pages/AdminDashboard'
 import TrainerDashboard from './pages/TrainerDashboard'
@@ -60,6 +61,10 @@ export default function App() {
       <Routes>
         <Route
           path="/"
+          element={user ? <Navigate to={`/${user.role}`} replace /> : <Landing />}
+        />
+        <Route
+          path="/login"
           element={user ? <Navigate to={`/${user.role}`} replace /> : <Login onSignIn={setUser} />}
         />
 

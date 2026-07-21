@@ -5,9 +5,7 @@ import tailwindcss from '@tailwindcss/vite'
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [react(), tailwindcss()],
-  server: {
-    host: '127.0.0.1', // bind IPv4 so Chrome's localhost resolves correctly
-    port: 5173,
-    strictPort: false,
-  },
+  // bind to all interfaces so both localhost (IPv6 ::1) and 127.0.0.1 work
+  server: { host: true, port: 5173, strictPort: true },
+  preview: { host: true, port: 5173, strictPort: true },
 })

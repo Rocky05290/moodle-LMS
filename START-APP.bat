@@ -1,15 +1,25 @@
 @echo off
-title Cordoba App - Dev Server
+title CORDOBA APP  --  KEEP THIS WINDOW OPEN
 cd /d D:\CordobaApp\app
 echo.
-echo  ============================================
-echo    CORDOBA TRAINING CENTER - Starting app
-echo  ============================================
+echo  ============================================================
+echo     CORDOBA TRAINING CENTER  -  starting the app
+echo  ============================================================
 echo.
-echo  Wait for "Local: http://localhost:XXXX/"
-echo  then open that link in Chrome.
+echo   Please wait ~15 seconds for it to build...
 echo.
-echo  Keep THIS WINDOW OPEN while using the app.
+echo   When you see:   Local:  http://localhost:5173/
+echo   open that link in Chrome.
 echo.
-call npm.cmd run dev
+echo   ^>^>^>  KEEP THIS BLACK WINDOW OPEN while using the app.  ^<^<^<
+echo.
+echo  ------------------------------------------------------------
+echo.
+call npm.cmd run build
+echo.
+echo   Build done. Starting server...
+echo.
+call npm.cmd run preview
+echo.
+echo   (If it closed, there was an error above. Send me a photo.)
 pause

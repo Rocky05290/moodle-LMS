@@ -1,0 +1,2252 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full bg-[#151a54]">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CTC - Cordoba Premium Academic Hub</title>
+    <!-- Tailwind CSS CDN for high fidelity design -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght=0,600;0,700;1,400&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            royalBlue: '#1a237e', // Core color from Screenshot 2026-07-14 174618.jpg
+                            deepNavy: '#11164c',
+                            lavender: '#818cf8', // Welcome badge purple from Screenshot
+                            buttonGray: '#64748b',
+                            gold: '#f59e0b',
+                            goldlight: '#fef3c7',
+                            emerald: '#10b981',
+                            rose: '#f43f5e',
+                            electricBlue: '#3b82f6'
+                        },
+                    },
+                    fontFamily: {
+                        sans: ['Plus Jakarta Sans', 'system-ui', 'sans-serif'],
+                        serif: ['Playfair Display', 'Georgia', 'serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .premium-transition {
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        
+        /* Vibrant Blue Glassmorphism cards */
+        .glass-card {
+            background: rgba(26, 35, 126, 0.45);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(129, 140, 248, 0.25);
+        }
+
+        .glass-card-hover:hover {
+            transform: translateY(-4px);
+            border-color: rgba(129, 140, 248, 0.5);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4), 0 0 25px rgba(59, 130, 246, 0.2);
+        }
+
+        /* Animated 3D blocks floating effect inspired by Screenshot 2026-07-14 174618.jpg */
+        @keyframes floatBlock1 {
+            0%, 100% { transform: translateY(0px) rotate(0deg) scale(1); }
+            50% { transform: translateY(-15px) rotate(8deg) scale(1.05); }
+        }
+        @keyframes floatBlock2 {
+            0%, 100% { transform: translateY(0px) rotate(0deg) scale(1); }
+            50% { transform: translateY(-25px) rotate(-12deg) scale(0.95); }
+        }
+        @keyframes floatBlock3 {
+            0%, 100% { transform: translateY(0px) rotate(0deg) scale(1); }
+            50% { transform: translateY(-8px) rotate(15deg) scale(1.1); }
+        }
+
+        .animated-block-1 { animation: floatBlock1 6s ease-in-out infinite; }
+        .animated-block-2 { animation: floatBlock2 8s ease-in-out infinite; }
+        .animated-block-3 { animation: floatBlock3 7s ease-in-out infinite; }
+
+        /* Ambient glowing circles */
+        .glow-accent {
+            filter: blur(140px);
+            opacity: 0.35;
+            pointer-events: none;
+        }
+
+        /* Custom scrollbars */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #11164c;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #1a237e;
+            border-radius: 99px;
+            border: 2px solid #11164c;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #283593;
+        }
+
+        /* Strict A4 Print Formatting for Tamkeen & Dossiers */
+        @media print {
+            body {
+                background: white !important;
+                color: black !important;
+            }
+            #toast, header, nav, .no-print, footer, #main-content-section, #holiday-modal, #profile-modal, #course-detail-section, #welcome-landing-section, #auth-section {
+                display: none !important;
+            }
+            #page-tamkeen-calendar, #print-individual-profile-view {
+                display: block !important;
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100% !important;
+                margin: 0 !important;
+                padding: 0 !important;
+                background: white !important;
+            }
+            #tamkeen-document, #print-individual-profile-view {
+                border: none !important;
+                box-shadow: none !important;
+                max-width: 100% !important;
+                width: 100% !important;
+                margin: 0 !important;
+                padding: 0 !important;
+                background: white !important;
+                color: #000 !important;
+            }
+            #tamkeen-document *, #print-individual-profile-view * {
+                color: #000 !important;
+                border-color: #000 !important;
+                background: transparent !important;
+            }
+            * {
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+            }
+        }
+    </style>
+</head>
+<body class="h-full text-slate-100 flex flex-col font-sans selection:bg-indigo-600 selection:text-white bg-gradient-to-br from-[#1a237e] via-[#121640] to-[#0a0d2a] overflow-x-hidden relative">
+
+    <!-- Luminous background spheres generating the vibrant celestial atmosphere of the screenshot -->
+    <div class="absolute w-[600px] h-[600px] rounded-full bg-indigo-600 glow-accent top-[-200px] left-[-200px] z-0"></div>
+    <div class="absolute w-[600px] h-[600px] rounded-full bg-cyan-500 glow-accent bottom-[-200px] right-[-100px] z-0"></div>
+    <div class="absolute w-[700px] h-[700px] rounded-full bg-[#7c7df2]/20 glow-accent top-[30%] left-[50%] -translate-x-1/2 z-0"></div>
+
+    <!-- Dynamic Toast Feedback HUD -->
+    <div id="toast" class="fixed bottom-6 right-6 z-50 bg-[#121640]/95 text-white px-5 py-4 rounded-2xl shadow-2xl flex items-center gap-3 border border-indigo-400/40 hidden premium-transition transform translate-y-10 opacity-0 backdrop-blur-md">
+        <div class="bg-emerald-500/20 p-2 rounded-xl border border-emerald-500/30">
+            <svg class="w-5 h-5 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7" />
+            </svg>
+        </div>
+        <div>
+            <p id="toast-title" class="font-extrabold text-[10px] text-indigo-300 uppercase tracking-widest">System Alert</p>
+            <p id="toast-message" class="text-xs text-slate-200 mt-0.5 font-medium">Operation completed successfully.</p>
+        </div>
+    </div>
+
+    <!-- Holiday Exception Management Overlay -->
+    <div id="holiday-modal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-md z-50 flex items-center justify-center hidden">
+        <div class="bg-[#121640] border border-indigo-500/30 p-7 rounded-3xl shadow-2xl max-w-sm w-full mx-4 space-y-5 text-xs relative">
+            <div>
+                <h4 class="font-black text-sm text-white tracking-wide">Manage Date Exceptions</h4>
+                <p class="text-indigo-200/60 text-[10px] mt-1">Specify custom holidays or operational pauses. Dynamic counts recalculate instantly.</p>
+            </div>
+            <div class="space-y-1.5">
+                <label class="text-slate-300 font-bold block uppercase tracking-wider text-[9px]">Exception / Holiday Label</label>
+                <input id="modal-holiday-name" type="text" placeholder="e.g. Eid Al-Fitr Holiday" class="w-full bg-[#0a0d2a] border border-indigo-500/30 rounded-xl p-3 text-white placeholder-indigo-300/40 focus:outline-none focus:border-indigo-400">
+            </div>
+            <div class="flex gap-2 pt-2">
+                <button onclick="saveHolidayToggle()" class="flex-1 bg-gradient-to-r from-indigo-500 to-purple-500 hover:brightness-110 text-white font-black py-3 rounded-xl premium-transition shadow-lg">
+                    Save Exception
+                </button>
+                <button onclick="closeHolidayModal()" class="flex-1 bg-slate-800 text-slate-300 font-black py-3 rounded-xl border border-slate-700 hover:bg-slate-700 premium-transition">
+                    Cancel
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Interactive Learner Dossier Modal with real-avatar visualization -->
+    <div id="profile-modal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-md z-50 flex items-center justify-center hidden">
+        <div class="bg-[#121640] border border-indigo-500/30 p-8 rounded-3xl shadow-2xl max-w-lg w-full mx-4 space-y-6 relative max-h-[90vh] overflow-y-auto">
+            <div class="flex justify-between items-start border-b border-indigo-950 pb-4">
+                <div class="flex items-center gap-4">
+                    <img id="profile-avatar-img" src="" alt="Student Profile" class="w-14 h-14 rounded-2xl object-cover border border-indigo-400/40 shadow-lg">
+                    <div>
+                        <h4 id="profile-full-name" class="font-black text-lg text-white">Ali Al-Mansoori</h4>
+                        <p class="text-[9px] text-brand-gold font-extrabold uppercase tracking-widest mt-0.5">Ministry Audited Candidate Dossier</p>
+                    </div>
+                </div>
+                <button onclick="closeProfileModal()" class="text-slate-400 hover:text-slate-200 transition bg-slate-800 p-1.5 rounded-lg border border-slate-700">
+                    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12" /></svg>
+                </button>
+            </div>
+
+            <div class="grid grid-cols-2 gap-4 text-xs bg-[#0a0d2a] p-4 rounded-2xl border border-indigo-950">
+                <div>
+                    <span class="text-indigo-300/70 block text-[9px] uppercase font-bold tracking-wider">CPR Number / Registration ID</span>
+                    <span id="profile-cpr-text" class="text-white font-mono font-black mt-1 block text-sm">961234567</span>
+                </div>
+                <div>
+                    <span class="text-indigo-300/70 block text-[9px] uppercase font-bold tracking-wider">Mobile Number</span>
+                    <span id="profile-mobile-text" class="text-white font-mono font-black mt-1 block text-sm">+973 39441122</span>
+                </div>
+                <div class="col-span-2 pt-2 border-t border-indigo-950">
+                    <span class="text-indigo-300/70 block text-[9px] uppercase font-bold tracking-wider">Contact Email Address</span>
+                    <span id="profile-email-text" class="text-indigo-300 font-bold mt-1 block text-sm font-mono font-mono">ali@batelco.com.bh</span>
+                </div>
+            </div>
+
+            <div class="space-y-3">
+                <h5 class="text-slate-200 font-black text-[10px] uppercase tracking-widest border-b border-indigo-950 pb-1.5 flex justify-between items-center">
+                    <span>Enrolled Progression Track</span>
+                    <span class="text-emerald-400 font-bold uppercase text-[9px] bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20">Ongoing</span>
+                </h5>
+                <div id="profile-enrollments-list" class="space-y-3">
+                    <!-- Loaded dynamically -->
+                </div>
+            </div>
+
+            <div class="flex gap-2.5 pt-4 border-t border-indigo-950">
+                <button onclick="printIndividualProfile()" class="flex-1 bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-black text-xs py-3.5 rounded-xl shadow-lg hover:brightness-110 premium-transition flex items-center justify-center gap-2">
+                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" /></svg>
+                    Print Dossier Record
+                </button>
+                <button onclick="closeProfileModal()" class="flex-1 bg-slate-800 text-slate-300 font-black text-xs py-3.5 rounded-xl border border-slate-700 hover:bg-slate-700 premium-transition">
+                    Close Dossier
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Individual profile layout configured strictly for printing processes -->
+    <div id="print-individual-profile-view" class="hidden max-w-[650px] mx-auto bg-white text-slate-900 p-10 font-sans border-2 border-slate-900 rounded-lg">
+        <div class="flex justify-between items-center border-b-2 border-slate-900 pb-4">
+            <div>
+                <h2 class="font-extrabold text-base tracking-wider text-slate-900">CORDOBA TRAINING CENTER</h2>
+                <p class="text-[9px] text-slate-500 uppercase tracking-widest font-semibold">Candidate Academic Performance Record</p>
+            </div>
+            <div class="text-right">
+                <span class="text-[10px] bg-slate-900 text-white font-mono px-3 py-1 font-bold rounded">STUDENT FILE</span>
+            </div>
+        </div>
+        <div class="grid grid-cols-2 gap-4 mt-6 border-b border-slate-200 pb-6 text-xs">
+            <div>
+                <span class="text-slate-400 font-bold block text-[9px] uppercase">Candidate Name:</span>
+                <span id="print-prof-name" class="font-extrabold text-slate-900 block mt-0.5 text-sm">Ali Al-Mansoori</span>
+            </div>
+            <div>
+                <span class="text-slate-400 font-bold block text-[9px] uppercase">CPR Identity Code:</span>
+                <span id="print-prof-cpr" class="font-mono font-bold text-slate-900 block mt-0.5 text-sm">961234567</span>
+            </div>
+            <div class="mt-2">
+                <span class="text-slate-400 font-bold block text-[9px] uppercase">Contact Mobile:</span>
+                <span id="print-prof-mobile" class="font-mono font-bold text-slate-900 block mt-0.5 text-sm font-mono">+973 39441122</span>
+            </div>
+            <div class="mt-2">
+                <span class="text-slate-400 font-bold block text-[9px] uppercase">Registered Email ID:</span>
+                <span id="print-prof-email" class="font-bold text-slate-900 block mt-0.5 text-sm font-mono">ali@batelco.com.bh</span>
+            </div>
+        </div>
+        <div class="mt-6">
+            <h4 class="font-bold text-[10px] uppercase tracking-wider text-slate-900 border-b border-slate-800 pb-1 mb-3">Enrolled Course & Syllabus Progress</h4>
+            <div id="print-prof-enrollment-rows" class="space-y-4">
+                <!-- Loaded during print action -->
+            </div>
+        </div>
+        <div class="mt-12 text-center text-[9px] font-bold text-slate-400 border-t border-slate-200 pt-4">
+            Authorized Ministry of Labour Vocational Database Records. Cordoba Academic Hub.
+        </div>
+    </div>
+
+    <!-- Premium Global Navigation Bar with exact color matching -->
+    <header class="no-print bg-[#1a237e]/80 border-b border-indigo-500/20 px-4 lg:px-8 py-3.5 flex items-center justify-between transition-all shadow-md">
+        <div class="flex items-center gap-3.5">
+            <div class="bg-gradient-to-tr from-indigo-500 to-purple-500 p-2.5 rounded-2xl shadow-lg border border-indigo-400/20 cursor-pointer" onclick="goToLandingPage()">
+                <span class="font-black text-white text-base tracking-widest">CTC</span>
+            </div>
+            <div>
+                <h1 class="font-extrabold text-base text-white tracking-wide flex items-center gap-2">
+                    CORDOBA HUB
+                </h1>
+                <p class="text-[10px] text-indigo-200 font-bold">Vocational Development Suite</p>
+            </div>
+        </div>
+
+        <!-- Desktop Navigation Items -->
+        <nav class="hidden md:flex items-center gap-1 bg-[#11164c] p-1 rounded-2xl border border-indigo-950 text-xs font-semibold">
+            <button onclick="goToLandingPage()" id="nav-public-home" class="px-4 py-2 rounded-xl text-white bg-indigo-600 shadow-sm premium-transition">
+                Course Catalog
+            </button>
+            <button onclick="openSignInDesk()" id="nav-secure-desk" class="px-4 py-2 rounded-xl text-slate-400 hover:text-white premium-transition">
+                Academic Dashboard
+            </button>
+        </nav>
+
+        <!-- Right Side Controls -->
+        <div class="flex items-center gap-2">
+            <button onclick="openSignInDesk()" id="header-status-btn" class="bg-gradient-to-r from-indigo-500 to-purple-600 text-white px-5 py-2 rounded-xl text-xs font-bold shadow-lg premium-transition hover:brightness-115">
+                Sign In Desk
+            </button>
+            <button onclick="handleSignOut()" id="header-signout-btn" class="hidden bg-slate-800 hover:bg-slate-700 text-slate-200 px-4 py-2 rounded-xl text-xs font-bold border border-slate-700 premium-transition">
+                Sign Out
+            </button>
+        </div>
+    </header>
+
+    <!-- ================= STAGE 1: PREMIUM PUBLIC LANDING & COURSE CATALOG ================= -->
+    <div id="welcome-landing-section" class="no-print space-y-16 py-12 px-4 lg:px-8 max-w-7xl mx-auto z-10 relative animate-fadeIn">
+        
+        <!-- Hero Section matching the exact elements of Screenshot 2026-07-14 174618.jpg -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center py-8">
+            <div class="lg:col-span-7 space-y-6 text-left">
+                <!-- Welcome Badge in top left exactly as shown in screenshot -->
+                <span class="inline-flex items-center px-4 py-1.5 rounded-full bg-[#818cf8]/20 border border-[#818cf8]/40 text-[#a5b4fc] text-xs font-extrabold tracking-widest uppercase shadow-sm">
+                    Welcome
+                </span>
+                <h1 class="text-4xl md:text-6xl font-black tracking-tight text-white leading-tight">
+                    Your Road to Academic <span class="text-transparent bg-clip-text bg-gradient-to-r from-indigo-300 to-[#818cf8]">Excellence</span>
+                </h1>
+                <p class="text-indigo-200/80 text-sm md:text-base leading-relaxed font-normal">
+                    We offer structured learning opportunities and experiences to help people learn, grow, and become experts in a range of professional arenas. Mapped to Bahrain's ministry-compliant criteria.
+                </p>
+                
+                <!-- Email signup and landing query bar mimicking the exact pill in the screenshot -->
+                <div class="bg-white/10 backdrop-blur-md rounded-full p-1.5 pl-6 flex items-center justify-between border border-indigo-400/30 shadow-xl max-w-lg">
+                    <input type="text" id="landing-email-input" placeholder="Enter your email to receive syllabus details..." class="bg-transparent border-none text-white placeholder-indigo-200/40 focus:outline-none w-full text-xs">
+                    <button onclick="registerLandingNewsletter()" class="bg-gradient-to-r from-indigo-600 to-[#818cf8] hover:brightness-110 text-white font-bold px-6 py-3 rounded-full text-xs transition duration-200 shadow-md shrink-0">
+                        Sign Up
+                    </button>
+                </div>
+            </div>
+
+            <!-- Beautiful animated custom 3D Graphic element mimicking the laptop layout in Screenshot 2026-07-14 174618.jpg -->
+            <div class="lg:col-span-5 flex justify-center relative">
+                <div class="relative w-full max-w-[440px] h-[340px] flex items-center justify-center">
+                    
+                    <!-- Luminous screen glow behind laptop -->
+                    <div class="absolute w-44 h-44 bg-blue-500/30 rounded-full blur-3xl top-10 pointer-events-none"></div>
+
+                    <!-- 3D Silver Laptop SVG Structure -->
+                    <svg class="w-full h-auto drop-shadow-2xl" viewBox="0 0 512 384" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <!-- Laptop Display Outer Lid -->
+                        <rect x="64" y="48" width="384" height="256" rx="16" fill="#1e1e1e" stroke="#718096" stroke-width="4"/>
+                        <!-- Inner Screen Screen Bezel -->
+                        <rect x="76" y="60" width="360" height="232" rx="6" fill="#151b54"/>
+                        <!-- Bright vibrant screen gradient background -->
+                        <rect x="80" y="64" width="352" height="224" rx="4" fill="url(#screenGrad)"/>
+                        
+                        <!-- Laptop Body Bottom Base -->
+                        <path d="M16 304 H496 C508 304 512 312 496 324 L448 356 C440 360 432 364 420 364 H92 C80 364 72 360 64 356 L16 324 C0 312 4 304 16 304 Z" fill="#e2e8f0"/>
+                        <path d="M32 308 H480 C488 308 492 312 480 318 L440 350 C436 352 428 354 420 354 H92 C84 354 76 352 72 350 L32 318 C20 312 24 308 32 308 Z" fill="#cbd5e0"/>
+                        <!-- Center opening notch -->
+                        <path d="M224 304 H288 V310 H224 Z" fill="#718096"/>
+
+                        <!-- Gradients definition -->
+                        <defs>
+                            <linearGradient id="screenGrad" x1="80" y1="64" x2="432" y2="288" gradientUnits="userSpaceOnUse">
+                                <stop stop-color="#1a237e"/>
+                                <stop offset="0.5" stop-color="#121640"/>
+                                <stop offset="1" stop-color="#312e81"/>
+                            </linearGradient>
+                        </defs>
+                    </svg>
+
+                    <!-- Cascade of Exploding Floating Educational Cubes as pictured in Screenshot 2026-07-14 174618.jpg -->
+                    <!-- 1st Block: Emerald Cube (Academic Success) -->
+                    <div class="absolute top-[8%] right-[14%] w-12 h-12 animated-block-1 z-20">
+                        <svg viewBox="0 0 64 64" class="w-full h-full drop-shadow-lg">
+                            <path d="M32 4 L56 16 L56 44 L32 56 L8 44 L8 16 Z" fill="#10b981" />
+                            <path d="M32 4 L56 16 L32 28 L8 16 Z" fill="#34d399" />
+                            <path d="M32 28 L56 16 L56 44 L32 56 Z" fill="#059669" />
+                            <!-- Academic Hat Emblem inside Cube Face -->
+                            <path d="M26 18 L32 15 L38 18 L32 21 Z M29 20 V24 C29 25.5 32 26 32 26 C32 26 35 25.5 35 24 V20" fill="none" stroke="white" stroke-width="2" stroke-linecap="round"/>
+                        </svg>
+                    </div>
+
+                    <!-- 2nd Block: Vivid Gold Cube (Technical Standards) -->
+                    <div class="absolute top-[35%] right-[5%] w-14 h-14 animated-block-2 z-20">
+                        <svg viewBox="0 0 64 64" class="w-full h-full drop-shadow-xl">
+                            <path d="M32 4 L56 16 L56 44 L32 56 L8 44 L8 16 Z" fill="#f59e0b" />
+                            <path d="M32 4 L56 16 L32 28 L8 16 Z" fill="#fbbf24" />
+                            <path d="M32 28 L56 16 L56 44 L32 56 Z" fill="#d97706" />
+                            <!-- Settings Gear Icon in gold cube -->
+                            <circle cx="32" cy="30" r="4" fill="none" stroke="white" stroke-width="2"/>
+                        </svg>
+                    </div>
+
+                    <!-- 3rd Block: Bright Rose/Purple Cube (Interactive Networks) -->
+                    <div class="absolute bottom-[28%] right-[22%] w-11 h-11 animated-block-3 z-20">
+                        <svg viewBox="0 0 64 64" class="w-full h-full drop-shadow-md">
+                            <path d="M32 4 L56 16 L56 44 L32 56 L8 44 L8 16 Z" fill="#ec4899" />
+                            <path d="M32 4 L56 16 L32 28 L8 16 Z" fill="#f472b6" />
+                            <path d="M32 28 L56 16 L56 44 L32 56 Z" fill="#db2777" />
+                        </svg>
+                    </div>
+
+                    <!-- 4th Block: Electric Blue Cloud Cube -->
+                    <div class="absolute top-[20%] right-[32%] w-10 h-10 animated-block-2 z-20">
+                        <svg viewBox="0 0 64 64" class="w-full h-full drop-shadow-md">
+                            <path d="M32 4 L56 16 L56 44 L32 56 L8 44 L8 16 Z" fill="#3b82f6" />
+                            <path d="M32 4 L56 16 L32 28 L8 16 Z" fill="#60a5fa" />
+                            <path d="M32 28 L56 16 L56 44 L32 56 Z" fill="#2563eb" />
+                        </svg>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Academic Metrics Grid with dynamic "Good" ratings -->
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-5xl mx-auto pt-4">
+            <div class="glass-card p-6 rounded-3xl text-center space-y-1">
+                <p class="text-3xl font-black text-white">BQA Grade</p>
+                <p class="text-emerald-400 font-extrabold text-sm tracking-widest uppercase">Good</p>
+            </div>
+            <div class="glass-card p-6 rounded-3xl text-center space-y-1">
+                <p class="text-3xl font-black text-white">100%</p>
+                <p class="text-slate-300 font-extrabold text-xs tracking-wider uppercase">Tamkeen Compliant</p>
+            </div>
+            <div class="glass-card p-6 rounded-3xl text-center space-y-1">
+                <p class="text-3xl font-black text-white">15+</p>
+                <p class="text-slate-300 font-extrabold text-xs tracking-wider uppercase">Expert Faculty Leads</p>
+            </div>
+            <div class="glass-card p-6 rounded-3xl text-center space-y-1">
+                <p class="text-3xl font-black text-white">1,500+</p>
+                <p class="text-slate-300 font-extrabold text-xs tracking-wider uppercase">Graduated Candidates</p>
+            </div>
+        </div>
+
+        <!-- Interactive Course Catalog Section -->
+        <div id="catalog-section" class="space-y-8 pt-10 border-t border-indigo-950">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-end gap-4">
+                <div>
+                    <h2 class="text-2xl font-black text-white tracking-wide">Academic Course Catalog</h2>
+                    <p class="text-xs text-indigo-200/60 mt-1">Select from our verified standard syllabus maps to accelerate your technical skills.</p>
+                </div>
+                <!-- Dynamic Category Filter Tabs -->
+                <div class="flex flex-wrap gap-2 bg-[#11164c] p-1.5 rounded-2xl border border-indigo-950">
+                    <button onclick="setCatalogFilter('all')" id="catalog-filter-all" class="px-4 py-2 rounded-xl text-xs font-bold bg-gradient-to-r from-indigo-500 to-[#818cf8] text-white shadow-md premium-transition">
+                        All Classes
+                    </button>
+                    <button onclick="setCatalogFilter('Networking')" id="catalog-filter-Networking" class="px-4 py-2 rounded-xl text-xs font-bold text-slate-400 hover:text-white premium-transition">
+                        Networking
+                    </button>
+                    <button onclick="setCatalogFilter('Cybersecurity')" id="catalog-filter-Cybersecurity" class="px-4 py-2 rounded-xl text-xs font-bold text-slate-400 hover:text-white premium-transition">
+                        Cybersecurity
+                    </button>
+                    <button onclick="setCatalogFilter('Cloud Systems')" id="catalog-filter-CloudSystems" class="px-4 py-2 rounded-xl text-xs font-bold text-slate-400 hover:text-white premium-transition">
+                        Cloud Systems
+                    </button>
+                </div>
+            </div>
+
+            <!-- Certified Syllabus Grid -->
+            <div id="public-courses-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Dynamically Rendered -->
+            </div>
+        </div>
+    </div>
+
+    <!-- ================= STAGE 2: IMMERSIVE COURSE DETAILS SUITE ================= -->
+    <div id="course-detail-section" class="no-print hidden flex-1 py-12 px-4 lg:px-8 max-w-7xl mx-auto z-10 relative animate-fadeIn">
+        <!-- Back Navigation Control -->
+        <div class="mb-8">
+            <button onclick="goToLandingPage()" class="inline-flex items-center gap-2 text-xs font-bold text-slate-200 hover:text-white bg-[#11164c] border border-indigo-950 px-4 py-2.5 rounded-2xl premium-transition shadow-sm">
+                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+                </svg>
+                Back to Standard Catalog
+            </button>
+        </div>
+
+        <!-- Rendered Full Page Structure -->
+        <div id="course-detail-content" class="space-y-12">
+            <!-- Loaded Dynamically with Rich Graphics and Interactive Timelines -->
+        </div>
+    </div>
+
+    <!-- ================= STAGE 3: PREMIUM SPLIT-SCREEN AUTHENTICATION HUB ================= -->
+    <div id="auth-section" class="no-print hidden flex-1 flex flex-col justify-center py-12 px-4 lg:px-8 z-10 relative">
+        <div class="max-w-[1000px] w-full mx-auto glass-card rounded-3xl overflow-hidden grid grid-cols-1 md:grid-cols-12 shadow-2xl border border-indigo-500/20 min-h-[550px]">
+            
+            <!-- Left Info Panel with academic brand pitch and visuals -->
+            <div class="md:col-span-5 bg-gradient-to-br from-[#121640] to-indigo-950 p-8 flex flex-col justify-between border-r border-indigo-950 relative overflow-hidden text-white">
+                <div class="absolute w-64 h-64 bg-indigo-500/10 rounded-full blur-3xl -top-10 -left-10"></div>
+                <div class="absolute w-64 h-64 bg-cyan-500/5 rounded-full blur-3xl -bottom-10 -right-10"></div>
+
+                <div class="space-y-4 z-10">
+                    <span class="bg-[#818cf8]/20 text-indigo-200 border border-[#818cf8]/30 px-3 py-1 rounded-xl text-[10px] font-black uppercase tracking-wider">
+                        CTC Secure Sign-On
+                    </span>
+                    <h3 class="text-xl font-extrabold text-white leading-tight">Access Your Academic Profile</h3>
+                    <p class="text-xs text-indigo-200/70 leading-relaxed">
+                        Sign in to check ongoing course timelines, update CPR credentials, print Tamkeen schedules, and track training benchmarks.
+                    </p>
+                </div>
+
+                <!-- Easy test-bypass interface -->
+                <div class="space-y-4 z-10 pt-6">
+                    <span class="text-brand-gold font-bold uppercase text-[9px] tracking-widest block">Quick Test Bypass</span>
+                    <div class="grid grid-cols-2 gap-2">
+                        <button onclick="autofillCredential('admin')" class="bg-white/10 border border-white/15 hover:border-white/30 p-2.5 rounded-xl text-[10px] font-bold text-left text-indigo-200 transition">
+                            🔑 Admin Bypass
+                        </button>
+                        <button onclick="autofillCredential('trainer')" class="bg-white/10 border border-white/15 hover:border-white/30 p-2.5 rounded-xl text-[10px] font-bold text-left text-indigo-200 transition">
+                            💼 Trainer Bypass
+                        </button>
+                    </div>
+                </div>
+
+                <div class="text-[9px] text-indigo-200/55 font-bold border-t border-indigo-950 pt-4 z-10">
+                    Authorized Ministry of Labour System Suite.
+                </div>
+            </div>
+
+            <!-- Right Secure Login Form Container -->
+            <div class="md:col-span-7 p-8 md:p-12 flex flex-col justify-center space-y-6 bg-[#11164c]/90">
+                <div class="space-y-2">
+                    <h2 class="text-2xl font-black text-white tracking-wide">Portal Workspace Access</h2>
+                    <p class="text-xs text-slate-400" id="role-workspace-subtitle">Choose your dynamic portal role below to authorize database workspace.</p>
+                </div>
+
+                <!-- Dynamic Role Picker Cards -->
+                <div class="grid grid-cols-4 gap-1.5 bg-[#0a0d2a] p-1.5 rounded-2xl border border-indigo-950">
+                    <button onclick="switchRoleTab('admin')" id="role-btn-admin" class="py-2.5 rounded-xl font-extrabold text-[9px] uppercase tracking-wider bg-indigo-600 border border-indigo-500 text-white shadow-sm">Admin</button>
+                    <button onclick="switchRoleTab('trainer')" id="role-btn-trainer" class="py-2.5 rounded-xl font-extrabold text-[9px] uppercase tracking-wider text-slate-400 hover:text-white">Trainer</button>
+                    <button onclick="switchRoleTab('learner')" id="role-btn-learner" class="py-2.5 rounded-xl font-extrabold text-[9px] uppercase tracking-wider text-slate-400 hover:text-white">Learner</button>
+                    <button onclick="switchRoleTab('quality')" id="role-btn-quality" class="py-2.5 rounded-xl font-extrabold text-[9px] uppercase tracking-wider text-slate-400 hover:text-white">Quality</button>
+                </div>
+
+                <!-- Main Authorization Form -->
+                <form onsubmit="handleUnifiedAuth(event)" class="space-y-4 text-xs">
+                    <input type="hidden" id="selected-role-id" value="admin">
+
+                    <div class="space-y-1.5">
+                        <label id="auth-username-label" class="text-slate-300 font-bold block uppercase tracking-wider text-[9px]">Registrar Admin ID / Email</label>
+                        <input id="auth-username" type="text" required placeholder="admin@cordoba.bh" class="w-full bg-[#0a0d2a] border border-indigo-950 rounded-xl p-3 text-white placeholder-slate-600 focus:outline-none focus:border-indigo-500 font-bold">
+                    </div>
+
+                    <div class="space-y-1.5">
+                        <div class="flex justify-between items-center">
+                            <label class="text-slate-300 font-bold block uppercase tracking-wider text-[9px]">Access Key / Password</label>
+                            <button type="button" onclick="toggleAuthPassword()" id="auth-pwd-toggle" class="text-[9px] font-black text-indigo-400 uppercase hover:underline">Show Key</button>
+                        </div>
+                        <input id="auth-password" type="password" required placeholder="••••••••" class="w-full bg-[#0a0d2a] border border-indigo-950 rounded-xl p-3 text-white placeholder-slate-600 focus:outline-none focus:border-indigo-500">
+                    </div>
+
+                    <div class="pt-2">
+                        <button type="submit" id="auth-submit-btn" class="w-full bg-gradient-to-r from-indigo-500 to-purple-600 hover:brightness-110 text-white font-black py-4 rounded-xl premium-transition text-xs shadow-lg uppercase tracking-widest">
+                            Access Registrar Dashboard
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================= STAGE 4: WORKSPACE & ADMINISTRATIVE SUITE ================= -->
+    <div id="main-content-section" class="no-print hidden flex-1 flex flex-col">
+        
+        <!-- Academic Navigation Sub-Bar -->
+        <nav class="bg-[#0a0d2a] border-b border-indigo-500/20 px-4 lg:px-8 shadow-sm">
+            <div class="max-w-7xl mx-auto flex gap-1 overflow-x-auto py-1.5 text-xs font-extrabold text-slate-400">
+                <button onclick="switchDashboardTab('operations')" id="dash-nav-operations" class="py-3 px-4 text-indigo-400 border-b-2 border-indigo-500 flex items-center gap-2.5 focus:outline-none font-extrabold premium-transition">
+                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" /></svg>
+                    Registrar Operations Workspace
+                </button>
+                <button onclick="switchDashboardTab('calendars')" id="dash-nav-calendars" class="py-3 px-4 border-b-2 border-transparent hover:text-indigo-400 flex items-center gap-2.5 focus:outline-none premium-transition">
+                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
+                    Academics & Batch Registry
+                </button>
+                <button onclick="switchDashboardTab('directory')" id="dash-nav-directory" class="py-3 px-4 border-b-2 border-transparent hover:text-indigo-400 flex items-center gap-2.5 focus:outline-none premium-transition">
+                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" /></svg>
+                    Student & Learner Dossiers
+                </button>
+            </div>
+        </nav>
+
+        <main class="max-w-7xl w-full mx-auto p-4 lg:p-8 space-y-8 flex-1">
+
+            <!-- ================= WORKSPACE SUB-PAGE 1: REGISTRAR OPERATIONS ================= -->
+            <div id="panel-operations" class="space-y-6 premium-transition">
+                
+                <!-- Quick Operations Navigator Panel -->
+                <div class="bg-[#121640] border border-indigo-500/20 p-5 rounded-2xl shadow-sm space-y-4">
+                    <span class="text-[9px] font-black text-indigo-300 uppercase tracking-widest block pl-1">
+                        System Action Selector
+                    </span>
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+                        <button id="op-tab-learner" onclick="switchOpSubTab('learner')" class="py-3.5 px-3 rounded-xl font-extrabold text-xs flex items-center justify-center gap-2 border transition-all duration-300 bg-gradient-to-r from-indigo-500 to-purple-500 text-white border-transparent shadow-md scale-[1.01]">
+                            👤 1. Create Profile
+                        </button>
+                        <button id="op-tab-class" onclick="switchOpSubTab('class')" class="py-3.5 px-3 rounded-xl font-extrabold text-xs flex items-center justify-center gap-2 border transition-all duration-300 bg-[#0a0d2a] border-indigo-950 text-slate-200 hover:bg-[#11164c]">
+                            📚 2. Create Batch
+                        </button>
+                        <button id="op-tab-enroll" onclick="switchOpSubTab('enroll')" class="py-3.5 px-3 rounded-xl font-extrabold text-xs flex items-center justify-center gap-2 border transition-all duration-300 bg-[#0a0d2a] border-indigo-950 text-slate-200 hover:bg-[#11164c]">
+                            ✅ 3. Enroll Learner
+                        </button>
+                        <button id="op-tab-publish" onclick="switchOpSubTab('publish')" class="py-3.5 px-3 rounded-xl font-extrabold text-xs flex items-center justify-center gap-2 border transition-all duration-300 bg-[#0a0d2a] border-indigo-950 text-slate-200 hover:bg-[#11164c]">
+                            📅 4. Publish Calendar
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Form Card Workspace -->
+                <div class="bg-[#121640] border border-indigo-500/20 p-6 md:p-8 rounded-3xl shadow-lg relative min-h-[400px]">
+                    
+                    <!-- Sub-Form 1: Create Profile (Learner, Trainer, Company) -->
+                    <div id="form-sec-learner" class="space-y-4 premium-transition">
+                        <div class="border-b border-indigo-950 pb-3">
+                            <h4 class="font-black text-base text-white flex items-center gap-2">
+                                <span class="p-1.5 rounded-lg bg-[#0a0d2a] text-indigo-300">👤</span>
+                                Initialize New Registry Profile
+                            </h4>
+                        </div>
+                        <form onsubmit="handleCreateProfile(event)" class="space-y-4 text-xs max-w-3xl">
+                            <!-- Profile Type Dropdown -->
+                            <div class="space-y-1.5 max-w-sm">
+                                <label class="text-slate-300 font-extrabold text-[9px] uppercase tracking-wider block">Registry Profile Type</label>
+                                <select id="profile-type" onchange="adjustProfileFields()" class="w-full bg-[#0a0d2a] border border-indigo-950 rounded-xl p-3 text-white font-bold focus:outline-none focus:border-indigo-500">
+                                    <option value="learner" selected>Learner</option>
+                                    <option value="trainer">Trainer / Instructor</option>
+                                    <option value="company">Company Account</option>
+                                </select>
+                            </div>
+
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                <div class="space-y-1.5">
+                                    <label id="label-first-name" class="text-slate-300 font-extrabold text-[9px] uppercase tracking-wider block">First Name</label>
+                                    <input id="learner-first-name" type="text" required placeholder="e.g. Ali" class="w-full bg-[#0a0d2a] border border-indigo-950 rounded-xl p-3 text-white focus:outline-none focus:border-indigo-400">
+                                </div>
+                                <div id="container-last-name" class="space-y-1.5">
+                                    <label class="text-slate-300 font-extrabold text-[9px] uppercase tracking-wider block">Last Name</label>
+                                    <input id="learner-last-name" type="text" required placeholder="e.g. Al-Mansoori" class="w-full bg-[#0a0d2a] border border-indigo-950 rounded-xl p-3 text-white focus:outline-none focus:border-indigo-400">
+                                </div>
+                            </div>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                <div class="space-y-1.5">
+                                    <label id="label-cpr" class="text-slate-300 font-extrabold text-[9px] uppercase tracking-wider block">Bahrain CPR Card Number (9 Digits)</label>
+                                    <input id="learner-cpr" type="text" pattern="[0-9]{9}" required placeholder="e.g. 961234567" class="w-full bg-[#0a0d2a] border border-indigo-950 rounded-xl p-3 text-white focus:outline-none focus:border-indigo-400 font-mono">
+                                </div>
+                                <div class="space-y-1.5">
+                                    <label class="text-slate-300 font-extrabold text-[9px] uppercase tracking-wider block">Contact Mobile (8 Digits)</label>
+                                    <div class="flex">
+                                        <span class="inline-flex items-center px-4 rounded-l-xl border border-r-0 border-indigo-950 bg-[#0a0d2a] text-indigo-300 font-mono font-bold text-xs">+973</span>
+                                        <input id="learner-mobile" type="text" pattern="[0-9]{8}" required placeholder="39441122" class="w-full bg-[#0a0d2a] border border-indigo-950 rounded-r-xl p-3 text-white focus:outline-none focus:border-indigo-400 font-mono">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="space-y-1.5">
+                                <label class="text-slate-300 font-extrabold text-[9px] uppercase tracking-wider block">Official Contact Email</label>
+                                <input id="learner-email" type="email" required placeholder="e.g. ali@batelco.com.bh" class="w-full bg-[#0a0d2a] border border-indigo-950 rounded-xl p-3 text-white focus:outline-none focus:border-indigo-400">
+                            </div>
+                            <div class="pt-2">
+                                <button type="submit" class="bg-gradient-to-r from-indigo-500 to-purple-500 hover:brightness-110 text-white font-black py-3 px-8 rounded-xl transition text-xs shadow-lg uppercase tracking-wider">
+                                    Create Profile Card
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- Sub-Form 2: Create Class Batch -->
+                    <div id="form-sec-class" class="space-y-4 premium-transition hidden">
+                        <div class="border-b border-indigo-950 pb-3">
+                            <h4 class="font-black text-base text-white flex items-center gap-2">
+                                <span class="p-1.5 rounded-lg bg-[#0a0d2a] text-indigo-300">📚</span>
+                                Deploy Certified Training Batch
+                            </h4>
+                        </div>
+                        <form onsubmit="handleCreateClass(event)" class="space-y-4 text-xs max-w-3xl">
+                            <div class="space-y-1.5">
+                                <label class="text-slate-300 font-extrabold text-[9px] uppercase tracking-wider block">Select Registered Core Program</label>
+                                <select id="class-title" onchange="updateBatchCodeGenerated()" class="w-full bg-[#0a0d2a] border border-indigo-950 rounded-xl p-3 text-white focus:outline-none">
+                                    <option value="CCNA">Cisco CCNA (200-301) Masterclass</option>
+                                    <option value="CompTIA Security+">CompTIA Security+ Certification Guide</option>
+                                    <option value="AWS Cloud Solutions">AWS Certified Solutions Architect</option>
+                                    <option value="Certified Ethical Hacker">Certified Ethical Hacker BootCamp</option>
+                                </select>
+                            </div>
+                            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                                <div class="space-y-1.5">
+                                    <label class="text-slate-300 font-extrabold text-[9px] uppercase tracking-wider block">Academic Target Year</label>
+                                    <select id="class-year" onchange="updateBatchCodeGenerated()" class="w-full bg-[#0a0d2a] border border-indigo-950 rounded-xl p-3 text-white focus:outline-none">
+                                        <option value="2026">2026</option>
+                                        <option value="2027">2027</option>
+                                    </select>
+                                </div>
+                                <div class="space-y-1.5">
+                                    <label class="text-slate-300 font-extrabold text-[9px] uppercase tracking-wider block">Sequence Batch No.</label>
+                                    <select id="class-sequence" onchange="updateBatchCodeGenerated()" class="w-full bg-[#0a0d2a] border border-indigo-950 rounded-xl p-3 text-white focus:outline-none">
+                                        <option value="01">01</option>
+                                        <option value="02">02</option>
+                                        <option value="03">03</option>
+                                        <option value="04">04</option>
+                                    </select>
+                                </div>
+                                <div class="space-y-1.5">
+                                    <label class="text-slate-300 font-extrabold text-[9px] uppercase tracking-wider block">Resulting Batch Code</label>
+                                    <input id="class-batch-code-preview" type="text" readonly class="w-full bg-slate-800 border border-indigo-950 rounded-xl p-3 text-indigo-300 font-mono font-black uppercase tracking-widest focus:outline-none">
+                                </div>
+                            </div>
+                            <div class="space-y-1.5">
+                                <label class="text-slate-300 font-extrabold text-[9px] uppercase tracking-wider block">Assign Lead Instructor</label>
+                                <select id="class-instructor" class="w-full bg-[#0a0d2a] border border-indigo-950 rounded-xl p-3 text-white focus:outline-none">
+                                    <!-- Populated dynamically via profiles list in JS -->
+                                </select>
+                            </div>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 border-t border-indigo-950 pt-4">
+                                <div class="space-y-1.5">
+                                    <label class="text-slate-300 font-extrabold text-[9px] uppercase tracking-wider block">Start Date</label>
+                                    <input type="date" id="class-start-date" required class="w-full bg-[#0a0d2a] border border-indigo-950 rounded-xl p-3 text-white focus:outline-none font-mono">
+                                </div>
+                                <div class="space-y-1.5">
+                                    <label class="text-slate-300 font-extrabold text-[9px] uppercase tracking-wider block">End Date</label>
+                                    <input type="date" id="class-end-date" required class="w-full bg-[#0a0d2a] border border-indigo-950 rounded-xl p-3 text-white focus:outline-none font-mono font-bold">
+                                </div>
+                            </div>
+                            <div class="space-y-1.5 border-t border-indigo-950 pt-4">
+                                <label class="text-slate-300 font-extrabold text-[9px] uppercase tracking-wider block">Daily Schedule Hours Configuration</label>
+                                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                                    <div>
+                                        <span class="text-slate-400 text-[9px] font-bold block mb-1 uppercase tracking-wide">Daily Start</span>
+                                        <select id="class-start-time" onchange="autoCalculateClassEndTime()" class="w-full bg-[#0a0d2a] border border-indigo-950 rounded-xl p-3 text-white focus:outline-none">
+                                            <option value="08:00 AM">08:00 AM</option>
+                                            <option value="10:00 AM" selected>10:00 AM</option>
+                                            <option value="05:00 PM">05:00 PM</option>
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <span class="text-slate-400 text-[9px] font-bold block mb-1 uppercase tracking-wide">Daily Class hours</span>
+                                        <select id="class-duration-hours" onchange="autoCalculateClassEndTime()" class="w-full bg-[#0a0d2a] border border-indigo-950 rounded-xl p-3 text-white focus:outline-none">
+                                            <option value="3">3 Hours per Day</option>
+                                            <option value="4" selected>4 Hours per Day</option>
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <span class="text-slate-400 text-[9px] font-bold block mb-1 uppercase tracking-wide">Calculated End</span>
+                                        <div id="calculated-end-time-preview" class="bg-[#0a0d2a] border border-indigo-950 rounded-xl p-3 text-indigo-300 font-mono font-black text-center">02:00 PM</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="pt-2">
+                                <button type="submit" class="w-full bg-gradient-to-r from-indigo-500 to-purple-500 hover:brightness-110 text-white font-black py-3.5 rounded-xl transition text-xs shadow-lg uppercase tracking-wider">
+                                    Deploy Certified Batch
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- Sub-Form 3: Enroll Learner -->
+                    <div id="form-sec-enroll" class="space-y-4 premium-transition hidden">
+                        <div class="border-b border-indigo-950 pb-3">
+                            <h4 class="font-black text-base text-white flex items-center gap-2">
+                                <span class="p-1.5 rounded-lg bg-[#0a0d2a] text-indigo-300">✅</span>
+                                Enroll Learner into Target Training Batch
+                            </h4>
+                        </div>
+                        <form onsubmit="handleEnrollLearner(event)" class="space-y-4 text-xs max-w-3xl">
+                            <div class="space-y-1.5">
+                                <label class="text-slate-300 font-extrabold text-[9px] uppercase tracking-wider block">Select Learner Candidate Profile</label>
+                                <select id="enroll-student-id" class="w-full bg-[#0a0d2a] border border-indigo-950 rounded-xl p-3 text-white focus:outline-none"></select>
+                            </div>
+                            <div class="space-y-1.5">
+                                <label class="text-slate-300 font-extrabold text-[9px] uppercase tracking-wider block">Select Target Active Calendar Batch</label>
+                                <select id="enroll-course-id" class="w-full bg-[#0a0d2a] border border-indigo-950 rounded-xl p-3 text-white focus:outline-none"></select>
+                            </div>
+                            <div class="pt-2">
+                                <button type="submit" class="bg-gradient-to-r from-indigo-500 to-purple-500 hover:brightness-110 text-white font-black py-3 px-8 rounded-xl transition text-xs shadow-lg uppercase tracking-wider">
+                                    Enroll Candidate
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- Sub-Form 4: Publish Calendar / Modify Calendar Parameters -->
+                    <div id="form-sec-publish" class="space-y-4 premium-transition hidden">
+                        <div class="border-b border-indigo-950 pb-3">
+                            <h4 class="font-black text-base text-white flex items-center gap-2">
+                                <span class="p-1.5 rounded-lg bg-[#0a0d2a] text-indigo-300">📅</span>
+                                Modify & Publish Target Training Calendar
+                            </h4>
+                        </div>
+                        <form onsubmit="handleSaveCalendarModifications(event)" class="space-y-4 text-xs max-w-3xl">
+                            <div class="space-y-1.5">
+                                <label class="text-slate-300 font-extrabold text-[9px] uppercase tracking-wider block">Select Target Batch Code to Edit</label>
+                                <select id="calendar-batch-select" onchange="autoPopulateCalendarBatchPreview()" class="w-full bg-[#0a0d2a] border border-indigo-950 rounded-xl p-3 text-indigo-300 font-mono font-black uppercase tracking-wider focus:outline-none"></select>
+                            </div>
+                            <div class="bg-[#0a0d2a] border border-indigo-950 p-5 rounded-2xl space-y-4">
+                                <div class="flex justify-between items-center border-b border-indigo-950 pb-2">
+                                    <h5 class="text-indigo-400 font-black text-[10px] uppercase tracking-widest">Active Schedule Parameters</h5>
+                                    <button type="button" onclick="enableCalendarEditing()" class="bg-indigo-950 hover:bg-indigo-900 text-indigo-400 border border-indigo-500/30 px-3 py-1 rounded-lg text-[9px] font-black uppercase transition-all">Unlock Changes</button>
+                                </div>
+                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                    <div class="space-y-1.5">
+                                        <span class="text-slate-400 block text-[9px] uppercase font-bold tracking-wider">Trainer Instructor</span>
+                                        <select id="edit-batch-trainer" disabled class="w-full bg-[#11164c] disabled:opacity-60 border border-indigo-950 rounded-xl p-2.5 text-white focus:outline-none">
+                                            <!-- Dynamically generated select option values in JS -->
+                                        </select>
+                                    </div>
+                                    <div class="space-y-1.5">
+                                        <span class="text-slate-400 block text-[9px] uppercase font-bold tracking-wider">Assigned Program</span>
+                                        <input id="edit-batch-program-name" type="text" readonly class="w-full bg-slate-800 border border-transparent p-2.5 text-slate-400 font-black focus:outline-none">
+                                    </div>
+                                </div>
+                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 border-t border-indigo-950 pt-3">
+                                    <div class="space-y-1.5">
+                                        <span class="text-slate-400 block text-[9px] uppercase font-bold tracking-wider">Modify Start Date</span>
+                                        <input id="edit-batch-start-date" type="date" required disabled class="w-full bg-[#11164c] border border-indigo-950 rounded-xl p-2.5 text-white font-mono focus:outline-none">
+                                    </div>
+                                    <div class="space-y-1.5">
+                                        <span class="text-slate-400 block text-[9px] uppercase font-bold tracking-wider">Modify End Date</span>
+                                        <input id="edit-batch-end-date" type="date" required disabled class="w-full bg-[#11164c] border border-indigo-950 rounded-xl p-2.5 text-white font-mono focus:outline-none font-bold">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="pt-2">
+                                <button type="submit" class="w-full bg-gradient-to-r from-indigo-500 to-purple-500 hover:brightness-110 text-white font-black py-4 rounded-xl transition text-xs shadow-lg uppercase tracking-wider">
+                                    Update & Generate Tentative Tamkeen Ledger
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- ================= WORKSPACE SUB-PAGE 2: ACADEMIC CALENDARS ================= -->
+            <div id="panel-calendars" class="space-y-6 premium-transition hidden">
+                <div class="bg-[#121640] border border-indigo-500/20 p-5 rounded-2xl shadow-sm space-y-4">
+                    <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                        <div class="space-y-1 w-full md:w-auto">
+                            <h4 class="font-black text-sm text-white uppercase tracking-wider">Active Batches</h4>
+                            <p class="text-[11px] text-slate-400">Search for active batch programs and launch official calendar stencils for Tamkeen.</p>
+                        </div>
+                        <div class="relative w-full md:w-80">
+                            <input id="batch-search-input" onkeyup="filterBatches()" type="text" placeholder="Search batch code (e.g. CTC-CCNA-2601)..." class="w-full bg-[#0a0d2a] border border-indigo-950 text-white placeholder-slate-600 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-indigo-500 font-mono">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-[#121640] border border-indigo-500/20 rounded-3xl overflow-hidden shadow-lg">
+                    <div class="p-5 border-b border-indigo-950 flex justify-between items-center bg-[#0a0d2a]">
+                        <h4 class="font-extrabold text-xs uppercase tracking-wider text-indigo-300">Ongoing & Scheduled Tracks</h4>
+                        <span id="batch-counter" class="text-[10px] text-indigo-300 font-extrabold uppercase bg-indigo-950/60 border border-indigo-900 px-3.5 py-1.5 rounded-full">Total Tracks: 0</span>
+                    </div>
+                    <div id="batches-grid" class="p-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 bg-[#0a0d2a]/40">
+                        <!-- Loaded dynamically -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- ================= WORKSPACE SUB-PAGE 3: LEARNER DIRECTORY ================= -->
+            <div id="panel-directory" class="space-y-6 premium-transition hidden">
+                <div class="bg-[#121640] border border-indigo-500/20 p-5 rounded-2xl shadow-sm space-y-4">
+                    <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4">
+                        <div class="space-y-1">
+                            <h4 class="font-black text-sm text-white uppercase tracking-wider">Profile Registry Directory</h4>
+                            <p class="text-xs text-slate-400">Browse official trainees, trainers, and company profiles, configure filters, or view dossier scopes.</p>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-1 sm:grid-cols-4 gap-3 pt-3 border-t border-indigo-950">
+                        <div class="space-y-1.5">
+                            <span class="text-[9px] font-black uppercase text-indigo-400">Tapered Query Search</span>
+                            <input id="directory-search-name" onkeyup="filterDirectoryTable()" type="text" placeholder="Search Name, CPR or Type..." class="w-full bg-[#0a0d2a] border border-indigo-950 text-white rounded-xl px-3.5 py-2.5 text-xs focus:outline-none">
+                        </div>
+                        <div class="space-y-1.5">
+                            <span class="text-[9px] font-black uppercase text-indigo-400">Filter by Program</span>
+                            <select id="directory-filter-course" onchange="filterDirectoryTable()" class="w-full bg-[#0a0d2a] border border-indigo-950 text-white rounded-xl p-2.5 text-xs focus:outline-none"></select>
+                        </div>
+                        <div class="space-y-1.5">
+                            <span class="text-[9px] font-black uppercase text-indigo-400">Filter by Batch Code</span>
+                            <select id="directory-filter-batch" onchange="filterDirectoryTable()" class="w-full bg-[#0a0d2a] border border-indigo-950 text-white rounded-xl p-2.5 text-xs focus:outline-none"></select>
+                        </div>
+                        <div class="space-y-1.5">
+                            <span class="text-[9px] font-black uppercase text-indigo-400">Filter by Profile Type</span>
+                            <select id="directory-filter-type" onchange="filterDirectoryTable()" class="w-full bg-[#0a0d2a] border border-indigo-950 text-white rounded-xl p-2.5 text-xs focus:outline-none">
+                                <option value="all">All Types</option>
+                                <option value="learner">Learner</option>
+                                <option value="trainer">Trainer</option>
+                                <option value="company">Company Account</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-[#121640] border border-indigo-500/20 rounded-3xl overflow-hidden shadow-lg">
+                    <div class="p-5 border-b border-indigo-950 flex justify-between items-center bg-[#0a0d2a]">
+                        <h4 class="font-extrabold text-xs uppercase tracking-wider text-indigo-300">Registered Accounts</h4>
+                        <span id="profiles-counter" class="text-xs text-indigo-300 font-extrabold bg-indigo-950/60 border border-indigo-900 px-3.5 py-1 rounded-full">0 Accounts</span>
+                    </div>
+                    <div class="overflow-x-auto text-xs">
+                        <table class="w-full text-left border-collapse">
+                            <thead>
+                                <tr class="bg-[#0a0d2a] border-b border-indigo-950 text-indigo-400 font-black uppercase tracking-wider text-[10px]">
+                                    <th class="p-4">Avatar</th>
+                                    <th class="p-4">Profile Type</th>
+                                    <th class="p-4">Name</th>
+                                    <th class="p-4">Contact Email</th>
+                                    <th class="p-4">CPR / ID</th>
+                                    <th class="p-4">Mobile Code</th>
+                                    <th class="p-4 text-center">Action Link</th>
+                                </tr>
+                            </thead>
+                            <tbody id="users-table-body" class="divide-y divide-indigo-950 bg-[#121640]">
+                                <!-- Loaded dynamically -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <!-- ================= STAGE 5: HIGH-FIDELITY TAMKEEN DOCUMENT A4 ENGINE ================= -->
+    <div id="page-tamkeen-calendar" class="space-y-6 py-6 px-4 lg:px-8 max-w-5xl mx-auto hidden">
+        
+        <!-- Document Action Dashboard Controls -->
+        <div class="no-print bg-[#121640] border border-indigo-950 p-5 rounded-2xl flex flex-wrap gap-4 justify-between items-center shadow-lg">
+            <div class="space-y-1">
+                <h4 class="font-black text-sm text-white tracking-wide">Tamkeen Document Exporter Engine</h4>
+                <p class="text-slate-400 text-[10px]">💡 Pro-Tip: You can dynamically toggle exceptions/holidays by clicking on any operational day cell below!</p>
+            </div>
+            <div class="flex items-center gap-2">
+                <button onclick="window.print()" class="bg-gradient-to-r from-indigo-500 to-purple-500 hover:brightness-110 text-white font-black text-xs px-5 py-3 rounded-xl shadow-lg premium-transition">
+                    Print / Export PDF
+                </button>
+                <button onclick="switchDashboardTab('calendars')" class="bg-slate-800 hover:bg-slate-700 text-slate-200 font-black text-xs px-5 py-3 rounded-xl border border-slate-750 premium-transition">
+                    Back to Registry
+                </button>
+            </div>
+        </div>
+
+        <!-- Strict Double Bordered Tamkeen Official Document A4 Container -->
+        <div id="tamkeen-document" class="bg-white text-slate-950 border-[3px] border-double border-slate-900 shadow-2xl p-8 rounded-lg font-sans">
+            
+            <!-- Beautiful Header Banner with logo -->
+            <div class="border-2 border-slate-900 bg-amber-50/50 p-6 flex justify-between items-center gap-4 rounded-xl">
+                <div class="flex items-center gap-4">
+                    <div class="bg-slate-950 text-white px-4 py-2.5 font-black text-base tracking-widest rounded-lg">CTC</div>
+                    <div class="text-[10px] leading-tight text-slate-800 font-extrabold uppercase">
+                        <div class="text-slate-950 font-black text-xs">قرطبة للتدريب</div>
+                        <div class="text-blue-950 font-black tracking-wider text-xs font-mono">CORDOBA</div>
+                        <div class="text-[9px] text-slate-600 tracking-tighter">TRAINING CENTER</div>
+                    </div>
+                </div>
+                <div class="text-right">
+                    <h2 id="tamkeen-doc-title" class="text-base font-black text-slate-950 uppercase tracking-wide">Tentative Calendar Report</h2>
+                    <p id="tamkeen-doc-batch-code" class="text-[11px] font-mono font-black text-slate-800 bg-amber-500/10 px-3 py-1 rounded-md border border-amber-500/30 inline-block mt-2">Batch Code: CTC-CCNA-2601</p>
+                </div>
+            </div>
+
+            <!-- Certified Metadata block -->
+            <div class="border-2 border-slate-900 bg-sky-50/50 p-5 mt-5 rounded-xl grid grid-cols-2 gap-x-8 gap-y-3 text-[11px] font-bold text-slate-800">
+                <div class="flex justify-between border-b border-slate-300 pb-1.5">
+                    <span class="text-slate-500 font-semibold">Training Program:</span>
+                    <span id="tamkeen-meta-course" class="font-extrabold text-slate-950">Cisco CCNA Masterclass</span>
+                </div>
+                <div class="flex justify-between border-b border-slate-300 pb-1.5">
+                    <span class="text-slate-500 font-semibold">Lead Instructor:</span>
+                    <span id="tamkeen-meta-trainer" class="font-extrabold text-slate-950">Eng. Sayed Al-Alawi</span>
+                </div>
+                <div class="flex justify-between border-b border-slate-300 pb-1.5">
+                    <span class="text-slate-500 font-semibold">Proposed Start Date:</span>
+                    <span id="tamkeen-meta-start-date" class="font-extrabold text-slate-950 font-mono">01-Aug-2026</span>
+                </div>
+                <div class="flex justify-between border-b border-slate-300 pb-1.5">
+                    <span class="text-slate-500 font-semibold">Proposed End Date:</span>
+                    <span id="tamkeen-meta-end-date" class="font-extrabold text-slate-950 font-mono">30-Aug-2026</span>
+                </div>
+            </div>
+
+            <!-- Dynamically populated Month Matrix Calendars -->
+            <div id="tamkeen-months-container" class="mt-6 space-y-6"></div>
+        </div>
+    </div>
+
+    <!-- Academic Footer -->
+    <footer class="no-print bg-[#0a0d2a] border-t border-indigo-950 py-8 px-4 text-center text-xs text-slate-400 relative z-10">
+        <p>© 2026 Cordoba Training Center. Authorized Ministry of Labour Systems.</p>
+        <p class="text-[10px] text-slate-500 mt-2 font-medium">Ministry Approved Standard Compliant Interface.</p>
+    </footer>
+
+    <!-- ================= STAGE 6: SYSTEM STATE CONTROL & INTERACTIVITY ================= -->
+    <script>
+        // High quality professional student photos from Unsplash for visual excellence
+        let studentAvatars = {
+            101: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=150&q=80", // Ali
+            102: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=150&q=80", // Siddika
+            103: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=150&q=80", // Jasem
+            104: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=150&q=80", // Sayed (Trainer)
+            105: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=150&q=80", // Fatima (Trainer)
+            106: "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&w=150&q=80", // Anshuman (Trainer)
+            generic_company: "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=150&q=80", // Alba Corporate
+            generic_user: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&w=150&q=80"
+        };
+
+        // Certified Public Courses Mock Data - Greatly Expanded for Luxury Pages
+        let courses = [
+            { 
+                id: 1, 
+                title: "Cisco CCNA (200-301) Masterclass", 
+                category: "Networking", 
+                slug: "cisco-ccna", 
+                level: "Intermediate", 
+                duration: "45 Hours", 
+                price: "180 BHD", 
+                instructor: "Eng. Sayed Al-Alawi", 
+                instructorTitle: "Senior Networks Architect & CCIE #49281",
+                instructorBio: "Eng. Sayed has over 15 years designing telecom-grade topologies in Bahrain and UAE. He leads official network tracks.",
+                rating: 4.9, 
+                officialExam: "Cisco Certified Network Associate (200-301 CCNA)",
+                prerequisites: "Fundamental knowledge of computer network structures and IP addresses.",
+                targetAudience: "Aspiring network administrators, IT operations staff, system engineers, and students aiming to gain industry certified credentials.",
+                shortDesc: "Comprehensive blueprint training for cisco core networking paradigms, routing paths, switching setups, and secure interface nodes.", 
+                image: "https://images.unsplash.com/photo-1544197150-b99a580bb7a8?auto=format&fit=crop&w=600&q=80",
+                longDesc: "Elevate your credentials to enterprise status. This masterclass is designed strictly to transition candidates into professional routing, switching, subnetting, and network security operations. This curriculum follows the official Cisco certification guidelines, fully supported by hands-on labs and real-world network design scenarios.",
+                modules: [
+                    { num: "01", title: "Enterprise Network Foundations", desc: "OSI Models, TCP/IP architectures, cabling specs, IPv4/IPv6 address allocations, subnetting calculations, and hardware structures." },
+                    { num: "02", title: "Routing & Switching Mechanics", desc: "Deploying VLANs, Inter-VLAN routing, OSPFv2 dynamics, Trunk links, Spanning Tree Protocols (STP), and layer-2 interface hardening." },
+                    { num: "03", title: "IP Access Services & Hardening", desc: "Configuring NAT/PAT protocols, Access Control Lists (ACLs), DHCP servers, SNMP setups, and standard security guidelines." },
+                    { num: "04", title: "Automation & Programmability", desc: "Introduction to REST APIs, JSON data maps, controller-based networking (DNA Center), Puppet, Ansible, and Python scripts." }
+                ],
+                highlights: ["Access to 12 Live Hardware Sandbox Labs", "Mock Exams matching the 200-301 outline", "Interactive portfolio reviews"]
+            },
+            { 
+                id: 2, 
+                title: "CompTIA Security+ Certification Guide", 
+                category: "Cybersecurity", 
+                slug: "comptia-security", 
+                level: "Beginner-Intermediate", 
+                duration: "40 Hours", 
+                price: "195 BHD", 
+                instructor: "Dr. Fatima Al-Hashimi", 
+                instructorTitle: "Director of IT & QA Compliance",
+                instructorBio: "Dr. Fatima Al-Hashimi specializes in corporate information security systems and compliance methodologies. She audits IT curriculums for regional training councils.",
+                rating: 4.8, 
+                officialExam: "CompTIA Security+ SY0-701 Certification",
+                prerequisites: "Basic familiarity with computing operating systems and standard administrative concepts.",
+                targetAudience: "Security specialists, risk compliance managers, systems auditors, and developers looking to integrate defense-in-depth methodologies.",
+                shortDesc: "Fundamental systems cybersecurity protocols including defensive architectures, compliance guidelines, threat assessments, and infrastructure hardening.", 
+                image: "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&w=600&q=80",
+                longDesc: "Protect corporate assets using state-of-the-art security patterns. CompTIA Security+ establishes the foundational knowledge required of any cybersecurity professional, providing candidates with key training on network threats, risk mitigation, cryptographic schemes, and incident recovery operations.",
+                modules: [
+                    { num: "01", title: "Threat Vectors & Attack Surfaces", desc: "Analyzing malware blueprints, phishing variations, social engineering vulnerabilities, and enterprise intrusion methodologies." },
+                    { num: "02", title: "Architecture & Defensive Design", desc: "Integrating cryptographic algorithms, secure cloud paradigms, network firewalls, and multi-factor authentication systems." },
+                    { num: "03", title: "Security Operations & Incident response", desc: "Scanning system vulnerabilities, setting up threat honey-pots, parsing network logs, and disaster recovery execution plans." },
+                    { num: "04", title: "Compliance, Governance & Risk", desc: "Exploring official data regulations (GDPR, PDPL Bahrain), risk assessment strategies, and organizational security audits." }
+                ],
+                highlights: ["Simulated Cyber Range scenarios", "Official SY0-701 Test prep sessions", "PDPL Bahrain compliance guidelines compliance"]
+            },
+            { 
+                id: 3, 
+                title: "AWS Certified Solutions Architect", 
+                category: "Cloud Systems", 
+                slug: "aws-solutions", 
+                level: "Advanced", 
+                duration: "50 Hours", 
+                price: "250 BHD", 
+                instructor: "Dr. Fatima Al-Hashimi", 
+                instructorTitle: "Director of IT & QA Compliance",
+                instructorBio: "Dr. Fatima Al-Hashimi holds multiple cloud certification credentials and coordinates enterprise cloud migration pipelines.",
+                rating: 5.0, 
+                officialExam: "AWS Certified Solutions Architect - Associate (SAA-C03)",
+                prerequisites: "CCNA level networking concepts or standard cloud operating knowledge.",
+                targetAudience: "Cloud engineers, DevOps practitioners, solutions architects, and system administrators looking to scale infrastructure.",
+                shortDesc: "Scale secure enterprise infrastructures over Amazon Web Services cloud networks, detailing high availability topologies, load management, and VPC designs.", 
+                image: "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=600&q=80",
+                longDesc: "Master the art of high-availability cloud architecture. This curriculum targets the AWS Certified Solutions Architect Associate exam, guiding you through secure multi-tier virtual private networks, auto-scaling cloud instances, global content delivery setups, and optimal cost allocations.",
+                modules: [
+                    { num: "01", title: "AWS Core Infrastructure & Identity", desc: "Setting up Virtual Private Clouds (VPC), IAM accounts, security groups, routing tables, and region distribution guidelines." },
+                    { num: "02", title: "Compute & Auto-Scaling Services", desc: "Configuring Elastic Cloud Compute (EC2) instances, serverless AWS Lambda setups, and Elastic Load Balancing (ELB) mechanisms." },
+                    { num: "03", title: "Cloud Storage Solutions", desc: "Differentiating S3 storage buckets, Elastic Block Store (EBS), database configurations (RDS, DynamoDB), and data archiving schemas." },
+                    { num: "04", title: "Design for Failover & Scale", desc: "Integrating Route 53 DNS mappings, CloudFront content delivery caching, automated backup schedules, and cloud-watch logs monitoring." }
+                ],
+                highlights: ["AWS Sandbox Labs setup templates", "SAA-C03 mock evaluations", "Enterprise cost monitoring guides"]
+            },
+            { 
+                id: 4, 
+                title: "Certified Ethical Hacker BootCamp", 
+                category: "Cybersecurity", 
+                slug: "ceh-bootcamp", 
+                level: "Advanced", 
+                duration: "60 Hours", 
+                price: "350 BHD", 
+                instructor: "Anshuman", 
+                instructorTitle: "Senior Cybersecurity Consultant & Auditor",
+                instructorBio: "Anshuman has over 12 years auditing security perimeters for banks, logistics hubs, and ministries in Bahrain and Saudi Arabia.",
+                rating: 4.9, 
+                officialExam: "Certified Ethical Hacker (CEH v12) Exam",
+                prerequisites: "Solid understanding of security blueprints (Security+) and networking layouts (CCNA).",
+                targetAudience: "Penetration testers, security team leads, software auditors, and incident responders looking for offensive credentials.",
+                shortDesc: "Acquire offensive cybersecurity auditing credentials. Conduct penetration testing, assess vulnerability surfaces, and secure perimeter networks.", 
+                image: "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&w=600&q=80",
+                longDesc: "Learn how to think like an adversary to secure your assets. This immersive bootcamp introduces you to offensive audit practices, pen-testing procedures, wireless intercept tricks, and complex threat scans to prepare you for official security credentials.",
+                modules: [
+                    { num: "01", title: "Reconnaissance & Footprinting", desc: "Gathering threat intelligence, scanning active network ports, sweeping ping ranges, and identifying operating structures." },
+                    { num: "02", title: "Vulnerability Scanning & Hacking Systems", desc: "Deploying Metasploit, auditing password databases, bypassing access controls, and identifying local privilege opportunities." },
+                    { num: "03", title: "Web Application & Database Audits", desc: "Identifying SQL injection bugs, cross-site scripting (XSS), cross-site request forgery (CSRF), and web-server misconfigurations." },
+                    { num: "04", title: "Perimeter Bypass & Wireless Auditing", desc: "Bypassing firewalls, evading Intrusion Detection Systems (IDS), breaking WPA2/WPA3 encryptions, and securing mobile devices." }
+                ],
+                highlights: ["Access to 20 Live Pentesting Labs", "Malware analysis and signature writing", "Ethics and reporting guidelines"]
+            }
+        ];
+
+        let users = [
+            { id: 101, firstName: "Ali", lastName: "Al-Mansoori", email: "ali@batelco.com.bh", mobile: "39441122", cpr: "961234567", role: "learner" },
+            { id: 102, firstName: "Siddika", lastName: "Mahmood", email: "siddika@batelco.com.bh", mobile: "39665544", cpr: "981254321", role: "learner" },
+            { id: 103, firstName: "Jasem", lastName: "Al-Saffar", email: "jasem.saffar@outlook.com", mobile: "33112233", cpr: "951234987", role: "learner" },
+            { id: 104, firstName: "Eng. Sayed", lastName: "Al-Alawi", email: "sayed@cordoba.bh", mobile: "36551100", cpr: "850123456", role: "trainer" },
+            { id: 105, firstName: "Dr. Fatima", lastName: "Al-Hashimi", email: "fatima@cordoba.bh", mobile: "36778899", cpr: "820987654", role: "trainer" },
+            { id: 106, firstName: "Anshuman", lastName: "Prasad", email: "anshuman@cordoba.bh", mobile: "36112233", cpr: "810556677", role: "trainer" },
+            { id: 107, firstName: "Alba Corporate", lastName: "Department", email: "hr@alba.com.bh", mobile: "17831111", cpr: " Alba-CR99", role: "company" }
+        ];
+
+        let enrollments = [
+            { id: 501, studentId: 101, batchId: 1001, completionProgress: 65 },
+            { id: 502, studentId: 102, batchId: 1002, completionProgress: 100 },
+            { id: 503, studentId: 103, batchId: 1003, completionProgress: 45 }
+        ];
+
+        let batches = [
+            { id: 1001, courseId: 1, batchCode: 'CTC-CCNA-2601', instructor: 'Eng. Sayed Al-Alawi', startDate: '2026-08-01', endDate: '2026-08-30', startTime: '10:00 AM', endTime: '02:00 PM', totalHours: "45 Hours" },
+            { id: 1002, courseId: 2, batchCode: 'CTC-SEC-2602', instructor: 'Dr. Fatima Al-Hashimi', startDate: '2026-09-01', endDate: '2026-09-30', startTime: '09:00 AM', endTime: '01:00 PM', totalHours: "40 Hours" },
+            { id: 1003, courseId: 3, batchCode: 'CTC-AWS-2603', instructor: 'Dr. Fatima Al-Hashimi', startDate: '2026-10-15', endDate: '2026-11-15', startTime: '05:00 PM', endTime: '08:00 PM', totalHours: "50 Hours" }
+        ];
+
+        // Active State Data
+        let currentCatalogFilter = 'all';
+        let holidaysDatabase = { '2026-05-01': 'Labour Day', '2026-12-16': 'National Day' };
+        let activeTargetBatch = null;
+        let activeTargetDateStr = '';
+        let currentUserSession = null;
+
+        // Custom Helper: Timezone safe date parser
+        function parseLocalDate(dateStr) {
+            if (!dateStr) return new Date();
+            const parts = dateStr.split('-');
+            return new Date(Number(parts[0]), Number(parts[1]) - 1, Number(parts[2]));
+        }
+
+        // Format Date to ISO string (YYYY-MM-DD)
+        function formatDateISO(date) {
+            const y = date.getFullYear();
+            const m = String(date.getMonth() + 1).padStart(2, '0');
+            const d = String(date.getDate()).padStart(2, '0');
+            return `${y}-${m}-${d}`;
+        }
+
+        // Beautiful Date Display
+        function formatTamkeenDate(dateStr) {
+            const d = parseLocalDate(dateStr);
+            const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+            return `${String(d.getDate()).padStart(2, '0')}-${months[d.getMonth()]}-${d.getFullYear()}`;
+        }
+
+        // Toggles input labels & sections based on Profile Type
+        function adjustProfileFields() {
+            const type = document.getElementById('profile-type').value;
+            const labelFirst = document.getElementById('label-first-name');
+            const containerLast = document.getElementById('container-last-name');
+            const inputLast = document.getElementById('learner-last-name');
+            const labelCpr = document.getElementById('label-cpr');
+            const inputCpr = document.getElementById('learner-cpr');
+
+            if (type === 'company') {
+                labelFirst.innerText = "Company / Organization Name";
+                containerLast.classList.add('hidden');
+                inputLast.removeAttribute('required');
+                labelCpr.innerText = "Commercial Registration Number (CR)";
+                inputCpr.pattern = ".*"; // Allow generic character strings for CR codes
+                inputCpr.placeholder = "e.g. CR-99211";
+            } else {
+                labelFirst.innerText = "First Name";
+                containerLast.classList.remove('hidden');
+                inputLast.setAttribute('required', 'true');
+                if (type === 'trainer') {
+                    labelCpr.innerText = "Instructor National ID / CPR (9 Digits)";
+                } else {
+                    labelCpr.innerText = "Bahrain CPR Card Number (9 Digits)";
+                }
+                inputCpr.pattern = "[0-9]{9}";
+                inputCpr.placeholder = "e.g. 961234567";
+            }
+        }
+
+        // Auto-calculate end timing based on class length standard
+        function autoCalculateClassEndTime() {
+            const startTimeStr = document.getElementById('class-start-time').value;
+            const durationHrs = parseInt(document.getElementById('class-duration-hours').value, 10);
+
+            let hour = parseInt(startTimeStr.substring(0, 2), 10);
+            const isPM = startTimeStr.includes('PM');
+
+            if (isPM && hour !== 12) hour += 12;
+            if (!isPM && hour === 12) hour = 0;
+
+            let calculatedHour = hour + durationHrs;
+            let displayAMPM = "AM";
+            if (calculatedHour >= 12) {
+                displayAMPM = "PM";
+            }
+            if (calculatedHour > 12) {
+                calculatedHour -= 12;
+            } else if (calculatedHour === 0) {
+                calculatedHour = 12;
+            }
+
+            const calculatedHourStr = calculatedHour < 10 ? '0' + calculatedHour : calculatedHour;
+            const finalString = `${calculatedHourStr}:00 ${displayAMPM}`;
+
+            document.getElementById('calculated-end-time-preview').innerText = finalString;
+            return finalString;
+        }
+
+        // System notification trigger
+        function showToast(message, title = "System Verification") {
+            const toast = document.getElementById('toast');
+            document.getElementById('toast-title').innerText = title;
+            document.getElementById('toast-message').innerText = message;
+            
+            toast.classList.remove('hidden');
+            setTimeout(() => {
+                toast.classList.remove('translate-y-10', 'opacity-0');
+            }, 50);
+
+            setTimeout(() => {
+                toast.classList.add('translate-y-10', 'opacity-0');
+                setTimeout(() => {
+                    toast.classList.add('hidden');
+                }, 400);
+            }, 4500);
+        }
+
+        // Landing Newsletter confirmation
+        function registerLandingNewsletter() {
+            const val = document.getElementById('landing-email-input').value;
+            if (!val || !val.includes('@')) {
+                showToast("Please enter a valid academic contact email address.", "Validation Alert");
+                return;
+            }
+            showToast("Successfully registered for upcoming schedule and syllabus releases!", "Syllabus Pipeline Joined");
+            document.getElementById('landing-email-input').value = "";
+        }
+
+        // UI View Routers
+        function goToLandingPage() {
+            document.getElementById('welcome-landing-section').classList.remove('hidden');
+            document.getElementById('course-detail-section').classList.add('hidden');
+            document.getElementById('auth-section').classList.add('hidden');
+            document.getElementById('main-content-section').classList.add('hidden');
+            document.getElementById('page-tamkeen-calendar').classList.add('hidden');
+
+            document.getElementById('nav-public-home').className = "px-4 py-2 rounded-xl text-white bg-indigo-600 shadow-sm premium-transition";
+            document.getElementById('nav-secure-desk').className = "px-4 py-2 rounded-xl text-slate-400 hover:text-white premium-transition";
+        }
+
+        function goToCourseDetails(courseId) {
+            const course = courses.find(c => c.id === courseId);
+            if (!course) return;
+
+            // Generate full-page visual layout
+            buildFullCoursePage(course);
+
+            document.getElementById('welcome-landing-section').classList.add('hidden');
+            document.getElementById('course-detail-section').classList.remove('hidden');
+            document.getElementById('auth-section').classList.add('hidden');
+            document.getElementById('main-content-section').classList.add('hidden');
+            document.getElementById('page-tamkeen-calendar').classList.add('hidden');
+
+            // Scroll to details header smoothly
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function openSignInDesk() {
+            if (currentUserSession) {
+                revealMainWorkspace();
+                return;
+            }
+            document.getElementById('welcome-landing-section').classList.add('hidden');
+            document.getElementById('course-detail-section').classList.add('hidden');
+            document.getElementById('auth-section').classList.remove('hidden');
+            document.getElementById('main-content-section').classList.add('hidden');
+            document.getElementById('page-tamkeen-calendar').classList.add('hidden');
+
+            document.getElementById('nav-public-home').className = "px-4 py-2 rounded-xl text-slate-400 hover:text-white premium-transition";
+            document.getElementById('nav-secure-desk').className = "px-4 py-2 rounded-xl text-white bg-indigo-600 shadow-sm premium-transition";
+        }
+
+        function revealMainWorkspace() {
+            document.getElementById('welcome-landing-section').classList.add('hidden');
+            document.getElementById('course-detail-section').classList.add('hidden');
+            document.getElementById('auth-section').classList.add('hidden');
+            document.getElementById('main-content-section').classList.remove('hidden');
+            document.getElementById('page-tamkeen-calendar').classList.add('hidden');
+
+            document.getElementById('header-status-btn').classList.add('hidden');
+            document.getElementById('header-signout-btn').classList.remove('hidden');
+        }
+
+        function handleSignOut() {
+            currentUserSession = null;
+            document.getElementById('header-status-btn').classList.remove('hidden');
+            document.getElementById('header-signout-btn').classList.add('hidden');
+            showToast("Successfully logged out from authenticated session.", "Desk Session Cleared");
+            goToLandingPage();
+        }
+
+        function scrollToCatalog() {
+            document.getElementById('catalog-section').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Dynamic Full Course Detail Builder
+        function buildFullCoursePage(course) {
+            const container = document.getElementById('course-detail-content');
+            
+            // Build visual Modules timeline
+            let modulesTimeline = '';
+            course.modules.forEach((mod, idx) => {
+                modulesTimeline += `
+                    <div class="relative pl-8 sm:pl-12 border-l border-indigo-500/30 pb-10 last:pb-2">
+                        <!-- Left timeline bullet tag -->
+                        <div class="absolute -left-[17px] top-0 bg-[#0a0d2a] border-2 border-indigo-500 text-indigo-300 font-black text-[10px] w-8 h-8 rounded-full flex items-center justify-center shadow-md">
+                            ${mod.num}
+                        </div>
+                        <div class="space-y-2 bg-[#121640] p-5 rounded-2xl border border-indigo-500/20 hover:border-indigo-400/40 transition-all shadow-sm">
+                            <span class="text-[9px] text-brand-gold uppercase tracking-widest font-extrabold">Module Layer ${idx + 1}</span>
+                            <h4 class="text-white font-black text-sm sm:text-base">${mod.title}</h4>
+                            <p class="text-indigo-200/80 text-xs leading-relaxed font-light">${mod.desc}</p>
+                        </div>
+                    </div>
+                `;
+            });
+
+            // Highlights
+            let highlightsHtml = '';
+            course.highlights.forEach(high => {
+                highlightsHtml += `
+                    <li class="flex items-start gap-3 text-xs text-indigo-200/80 font-medium">
+                        <svg class="w-4 h-4 text-emerald-400 mt-0.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7" />
+                        </svg>
+                        <span>${high}</span>
+                    </li>
+                `;
+            });
+
+            container.innerHTML = `
+                <!-- Main Header / Hero Section with modern light layout -->
+                <div class="relative rounded-3xl overflow-hidden glass-card p-6 sm:p-10 border border-indigo-500/20 shadow-xl flex flex-col lg:flex-row justify-between items-center gap-10">
+                    <div class="absolute inset-0 bg-gradient-to-t from-slate-950/45 via-transparent to-transparent pointer-events-none"></div>
+                    
+                    <div class="space-y-6 max-w-2xl relative z-10">
+                        <div class="flex flex-wrap items-center gap-2.5">
+                            <span class="bg-[#0a0d2a] text-indigo-300 border border-indigo-500/20 px-3 py-1 rounded-xl text-[10px] font-black uppercase tracking-wider">
+                                ${course.category}
+                            </span>
+                            <span class="bg-[#0a0d2a] text-indigo-300 border border-indigo-500/20 px-3 py-1 rounded-xl text-[10px] font-black uppercase tracking-wider flex items-center gap-1">
+                                <span class="w-1.5 h-1.5 rounded-full bg-blue-400 animate-pulse"></span>
+                                Ministry Registered Curriculum
+                            </span>
+                        </div>
+                        
+                        <h2 class="text-2xl sm:text-4xl lg:text-5xl font-black text-white leading-tight">${course.title}</h2>
+                        
+                        <p class="text-indigo-200/85 text-sm sm:text-base leading-relaxed font-light">${course.longDesc}</p>
+                        
+                        <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 pt-4 border-t border-indigo-950">
+                            <div>
+                                <span class="text-[9px] text-indigo-300/60 block uppercase font-bold tracking-wider">Course Span</span>
+                                <span class="text-white font-black text-sm">${course.duration}</span>
+                            </div>
+                            <div>
+                                <span class="text-[9px] text-indigo-300/60 block uppercase font-bold tracking-wider">Target Level</span>
+                                <span class="text-white font-black text-sm">${course.level}</span>
+                            </div>
+                            <div>
+                                <span class="text-[9px] text-indigo-300/60 block uppercase font-bold tracking-wider">Certification</span>
+                                <span class="text-indigo-300 font-extrabold text-xs block leading-tight truncate mt-1 max-w-[150px]" title="${course.officialExam}">
+                                    ${course.officialExam}
+                                </span>
+                            </div>
+                            <div>
+                                <span class="text-[9px] text-indigo-300/60 block uppercase font-bold tracking-wider">Standard Value</span>
+                                <span class="text-emerald-400 font-mono font-black text-sm">${course.price}</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Visual Side Banner Graphics -->
+                    <div class="w-full lg:w-96 relative shrink-0 z-10">
+                        <div class="relative h-64 sm:h-80 rounded-2xl overflow-hidden shadow-2xl border-2 border-indigo-950">
+                            <img src="${course.image}" alt="${course.title}" class="w-full h-full object-cover">
+                            <div class="absolute inset-0 bg-gradient-to-t from-slate-950/20 via-transparent to-transparent pointer-events-none"></div>
+                        </div>
+                        <!-- Ambient backdrop glow card -->
+                        <div class="absolute -inset-2 bg-gradient-to-tr from-indigo-500/20 to-purple-500/10 rounded-3xl blur-xl opacity-70 pointer-events-none -z-10"></div>
+                    </div>
+                </div>
+
+                <!-- Splitted Body Grid detailing syllabus parameters -->
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start animate-fadeIn">
+                    
+                    <!-- Left: Module Track Timeline & Prerequisites (8 Columns) -->
+                    <div class="lg:col-span-8 space-y-10">
+                        <div class="space-y-6">
+                            <div>
+                                <h3 class="text-xl sm:text-2xl font-black text-white tracking-wide">Course Syllabus Blueprint</h3>
+                                <p class="text-xs text-slate-400 mt-1">Official comprehensive chronological breakdown of theoretical and sandbox training layers.</p>
+                            </div>
+                            
+                            <!-- Immersive timeline loop container -->
+                            <div class="relative pt-4">
+                                ${modulesTimeline}
+                            </div>
+                        </div>
+
+                        <!-- Requirements / Prerequisites section -->
+                        <div class="bg-[#121640] border border-indigo-500/20 p-6 rounded-3xl space-y-4 shadow-sm">
+                            <h4 class="text-white font-extrabold text-sm flex items-center gap-2">
+                                <svg class="w-5 h-5 text-indigo-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+                                </svg>
+                                Course Prerequisites
+                            </h4>
+                            <p class="text-indigo-200/80 text-xs leading-relaxed font-light">${course.prerequisites}</p>
+                        </div>
+                    </div>
+
+                    <!-- Right: Instructor Bio & Immediate Enrol Block (4 Columns) -->
+                    <div class="lg:col-span-4 space-y-8 lg:sticky lg:top-24">
+                        
+                        <!-- Immediate Course Highlights -->
+                        <div class="bg-[#121640] border border-indigo-500/20 p-6 rounded-3xl space-y-4 shadow-xl relative">
+                            <div class="absolute w-24 h-24 bg-emerald-500/10 rounded-full blur-2xl top-0 right-0 pointer-events-none"></div>
+                            <h4 class="text-white font-black text-sm tracking-wide">Included with Course</h4>
+                            <ul class="space-y-3.5">
+                                ${highlightsHtml}
+                            </ul>
+                            
+                            <div class="pt-4 border-t border-indigo-950 flex flex-col gap-2.5">
+                                <button onclick="triggerImmediateEnroll(${course.id})" class="w-full bg-gradient-to-r from-indigo-500 to-purple-500 text-white hover:brightness-110 font-black py-3.5 rounded-xl text-xs uppercase tracking-wider premium-transition text-center shadow-lg transform hover:-translate-y-0.5">
+                                    Register This Course
+                                </button>
+                                <button onclick="openSignInDesk()" class="w-full bg-[#0a0d2a] border border-indigo-950 text-indigo-300 hover:text-white font-bold py-3 rounded-xl text-xs transition-all">
+                                    Member Login
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Detailed Instructor Bio card with standard metrics -->
+                        <div class="bg-[#121640] border border-indigo-500/20 p-6 rounded-3xl space-y-4 shadow-sm">
+                            <span class="text-indigo-400 font-extrabold tracking-widest text-[9px] uppercase block">Assigned Faculty Advisor</span>
+                            <div class="flex items-center gap-3">
+                                <div class="w-12 h-12 rounded-xl bg-gradient-to-tr from-indigo-500 to-purple-500 flex items-center justify-center font-black text-sm text-white shadow-md">
+                                    ${course.instructor[0]}
+                                </div>
+                                <div>
+                                    <h5 class="text-white font-black text-sm">${course.instructor}</h5>
+                                    <p class="text-[10px] text-brand-gold font-bold uppercase mt-0.5 leading-tight">${course.instructorTitle}</p>
+                                </div>
+                            </div>
+                            <p class="text-indigo-200/80 text-xs font-light leading-relaxed border-t border-indigo-950 pt-3">${course.instructorBio}</p>
+                            <div class="flex items-center gap-1.5 text-xs text-brand-gold font-bold">
+                                <span>★</span>
+                                <span>${course.rating} / 5.0 Rating</span>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            `;
+        }
+
+        // Action when client taps immediate enrollment trigger
+        function triggerImmediateEnroll(courseId) {
+            openSignInDesk();
+            showToast("Authorize or use a quick-bypass credential below to access the administrative dashboard.", "Authentication Protocol Required");
+        }
+
+        // Role Authentication Switchboard
+        const roleProfiles = {
+            admin: {
+                subtitle: "Manage dynamic student rosters, create certified class schedules, and publish Tamkeen calendars.",
+                usernameLabel: "Registrar Admin ID / Email",
+                placeholder: "admin@cordoba.bh",
+                btnText: "Access Registrar Dashboard"
+            },
+            trainer: {
+                subtitle: "Access active student feedback trackers, upload training progress, and download class rosters.",
+                usernameLabel: "Trainer / Instructor ID / Email",
+                placeholder: "trainer@cordoba.bh",
+                btnText: "Access Trainer Workspace"
+            },
+            learner: {
+                subtitle: "Track your personal training calendar, complete your evaluation checklist, and view achievements.",
+                usernameLabel: "Learner / CPR Registration Email",
+                placeholder: "learner@cordoba.bh",
+                btnText: "Access Student Portal"
+            },
+            quality: {
+                subtitle: "Inspect historical Tamkeen calendars, verify syllabus guidelines, and inspect student folders.",
+                usernameLabel: "Quality Officer Compliance ID",
+                placeholder: "auditor@bqa.gov.bh",
+                btnText: "Authenticate Inspector Suite"
+            }
+        };
+
+        function switchRoleTab(role) {
+            document.getElementById('selected-role-id').value = role;
+            const roles = ['admin', 'trainer', 'learner', 'quality'];
+            roles.forEach(r => {
+                const btn = document.getElementById(`role-btn-${r}`);
+                if (r === role) {
+                    btn.className = "py-2.5 rounded-xl font-extrabold text-[9px] uppercase tracking-wider bg-indigo-600 border border-indigo-500 text-white shadow-sm";
+                } else {
+                    btn.className = "py-2.5 rounded-xl font-extrabold text-[9px] uppercase tracking-wider text-slate-400 hover:text-white";
+                }
+            });
+
+            const conf = roleProfiles[role];
+            document.getElementById('role-workspace-subtitle').innerText = conf.subtitle;
+            document.getElementById('auth-username-label').innerText = conf.usernameLabel;
+            document.getElementById('auth-username').placeholder = conf.placeholder;
+            document.getElementById('auth-submit-btn').innerText = conf.btnText;
+        }
+
+        function toggleAuthPassword() {
+            const pwd = document.getElementById('auth-password');
+            const btn = document.getElementById('auth-pwd-toggle');
+            if (pwd.type === 'password') {
+                pwd.type = 'text';
+                btn.innerText = 'Hide Key';
+            } else {
+                pwd.type = 'password';
+                btn.innerText = 'Show Key';
+            }
+        }
+
+        function autofillCredential(role) {
+            switchRoleTab(role);
+            if (role === 'admin') {
+                document.getElementById('auth-username').value = "admin@cordoba.bh";
+                document.getElementById('auth-password').value = "adminPass2026";
+            } else {
+                document.getElementById('auth-username').value = "sayed@cordoba.bh";
+                document.getElementById('auth-password').value = "trainerPass";
+            }
+            showToast("Test bypass credentials applied.", "Autofill Success");
+        }
+
+        function handleUnifiedAuth(e) {
+            e.preventDefault();
+            const role = document.getElementById('selected-role-id').value;
+            const user = document.getElementById('auth-username').value;
+            
+            currentUserSession = { role, email: user };
+            showToast(`Authorization successful. Welcome to Cordoba's Secure Network.`, "Portal Opened");
+            revealMainWorkspace();
+            refreshStateViews();
+        }
+
+        // Public Catalog Render
+        function setCatalogFilter(cat) {
+            currentCatalogFilter = cat;
+            const categories = ['all', 'Networking', 'Cybersecurity', 'Cloud Systems'];
+            categories.forEach(c => {
+                const cleanId = c.replace(/\s+/g, '');
+                const btn = document.getElementById(`catalog-filter-${cleanId}`);
+                if (btn) {
+                    if (c === cat) {
+                        btn.className = "px-4 py-2 rounded-xl text-xs font-bold bg-gradient-to-r from-indigo-500 to-[#818cf8] text-white shadow-md premium-transition";
+                    } else {
+                        btn.className = "px-4 py-2 rounded-xl text-xs font-bold text-slate-400 hover:text-white premium-transition";
+                    }
+                }
+            });
+            renderPublicCatalogGrid();
+        }
+
+        function renderPublicCatalogGrid() {
+            const grid = document.getElementById('public-courses-grid');
+            grid.innerHTML = '';
+
+            let list = courses;
+            if (currentCatalogFilter !== 'all') {
+                list = courses.filter(c => c.category === currentCatalogFilter);
+            }
+
+            list.forEach(c => {
+                grid.innerHTML += `
+                    <div class="bg-[#121640] rounded-3xl overflow-hidden premium-transition flex flex-col justify-between group shadow-md border border-indigo-950 hover:border-indigo-500/30">
+                        <div class="relative h-48 overflow-hidden">
+                            <img src="${c.image}" alt="${c.title}" class="w-full h-full object-cover transition duration-500 group-hover:scale-105">
+                            <span class="absolute top-4 left-4 bg-slate-950/90 text-indigo-300 border border-indigo-500/30 px-3 py-1 rounded-xl text-[9px] font-black uppercase tracking-wider">
+                                ${c.category}
+                            </span>
+                        </div>
+                        <div class="p-6 flex-1 flex flex-col justify-between space-y-4">
+                            <div class="space-y-2">
+                                <div class="flex items-center gap-2 text-indigo-300/60 text-[10px] font-extrabold tracking-wide uppercase">
+                                    <span>${c.duration}</span>
+                                    <span>•</span>
+                                    <span>${c.level}</span>
+                                </div>
+                                <h3 class="font-black text-white group-hover:text-indigo-400 transition text-sm leading-tight">${c.title}</h3>
+                                <p class="text-indigo-200/80 text-xs line-clamp-3 leading-relaxed">${c.shortDesc}</p>
+                            </div>
+
+                            <div class="pt-4 border-t border-indigo-950 flex items-center justify-between">
+                                <div>
+                                    <span class="text-[9px] text-indigo-300/50 block uppercase font-bold tracking-wider">Registration Price</span>
+                                    <span class="font-black text-white text-sm">${c.price}</span>
+                                </div>
+                                <button onclick="goToCourseDetails(${c.id})" class="bg-indigo-950 hover:bg-indigo-600 text-indigo-300 hover:text-white border border-indigo-500/30 px-4 py-2 rounded-xl text-xs font-black premium-transition">
+                                    Details & Syllabus
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        // Authenticated Workspace Page Navigation
+        function switchDashboardTab(tab) {
+            const pages = ['operations', 'calendars', 'directory'];
+            pages.forEach(p => {
+                document.getElementById(`panel-${p}`).classList.add('hidden');
+                document.getElementById(`dash-nav-${p}`).className = "py-3 px-4 border-b-2 border-transparent hover:text-indigo-400 flex items-center gap-2.5 focus:outline-none premium-transition";
+            });
+            document.getElementById('page-tamkeen-calendar').classList.add('hidden');
+            document.getElementById('course-detail-section').classList.add('hidden');
+
+            if (tab === 'tamkeen-calendar') {
+                document.getElementById('page-tamkeen-calendar').classList.remove('hidden');
+            } else {
+                document.getElementById(`panel-${tab}`).classList.remove('hidden');
+                document.getElementById(`dash-nav-${tab}`).className = "py-3 px-4 text-indigo-400 border-b-2 border-indigo-500 flex items-center gap-2.5 focus:outline-none font-extrabold premium-transition";
+            }
+        }
+
+        // Sub-Operations Tab Navigator
+        function switchOpSubTab(sub) {
+            const subs = ['learner', 'class', 'enroll', 'publish'];
+            subs.forEach(s => {
+                document.getElementById(`form-sec-${s}`).classList.add('hidden');
+                document.getElementById(`op-tab-${s}`).className = "py-3.5 px-3 rounded-xl font-extrabold text-xs flex items-center justify-center gap-2 border transition-all duration-300 bg-[#0a0d2a] border-indigo-950 text-slate-200 hover:bg-[#11164c]";
+            });
+
+            document.getElementById(`form-sec-${sub}`).classList.remove('hidden');
+            document.getElementById(`op-tab-${sub}`).className = "py-3.5 px-3 rounded-xl font-extrabold text-xs flex items-center justify-center gap-2 border transition-all duration-300 bg-gradient-to-r from-indigo-500 to-purple-500 text-white border-transparent shadow-md scale-[1.01]";
+
+            if (sub === 'class') {
+                updateBatchCodeGenerated();
+                autoCalculateClassEndTime();
+            } else if (sub === 'publish') {
+                autoPopulateCalendarBatchPreview();
+            }
+        }
+
+        // Action Handlers for Creating Dynamic Registry Profiles
+        function handleCreateProfile(e) {
+            e.preventDefault();
+            const profileType = document.getElementById('profile-type').value;
+            const first = document.getElementById('learner-first-name').value.trim();
+            const last = profileType === 'company' ? 'Organization' : document.getElementById('learner-last-name').value.trim();
+            const cpr = document.getElementById('learner-cpr').value.trim();
+            const mobile = document.getElementById('learner-mobile').value.trim();
+            const email = document.getElementById('learner-email').value.trim();
+
+            if (profileType !== 'company' && (cpr.length !== 9 || isNaN(cpr))) {
+                showToast("CPR Card identity code must be exactly 9 numeric digits.", "Validation Error");
+                return;
+            }
+
+            const newId = users.length + 101;
+            users.push({ 
+                id: newId, 
+                firstName: first, 
+                lastName: last, 
+                email, 
+                mobile, 
+                cpr, 
+                role: profileType // 'learner', 'trainer', or 'company'
+            });
+
+            // Clear form fields
+            document.getElementById('learner-first-name').value = '';
+            document.getElementById('learner-last-name').value = '';
+            document.getElementById('learner-cpr').value = '';
+            document.getElementById('learner-mobile').value = '';
+            document.getElementById('learner-email').value = '';
+
+            showToast(`Profile created successfully for "${first} ${last}" as [${profileType.toUpperCase()}].`, "Registry Card Formed");
+            refreshStateViews();
+        }
+
+        function handleCreateClass(e) {
+            e.preventDefault();
+            const selectValue = document.getElementById('class-title').value;
+            const bCode = document.getElementById('class-batch-code-preview').value;
+            const inst = document.getElementById('class-instructor').value;
+            const startDStr = document.getElementById('class-start-date').value;
+            const endDStr = document.getElementById('class-end-date').value;
+            const startTimeStr = document.getElementById('class-start-time').value;
+            const endTimeStr = document.getElementById('calculated-end-time-preview').innerText;
+
+            if (!startDStr || !endDStr) {
+                showToast("Please provide start and end calendar dates for schedule registration.", "Scheduling Block");
+                return;
+            }
+
+            // Find matching catalog course
+            let course = courses.find(c => c.title.toLowerCase().includes(selectValue.toLowerCase()));
+            if (!course) {
+                course = courses[0];
+            }
+
+            const duplicate = batches.find(b => b.batchCode === bCode);
+            if (duplicate) {
+                showToast("A scheduled training batch with this sequence already exists.", "Conflict Warning");
+                return;
+            }
+
+            const newBatchId = batches.length + 1001;
+            batches.push({
+                id: newBatchId,
+                courseId: course.id,
+                batchCode: bCode,
+                instructor: inst,
+                startDate: startDStr,
+                endDate: endDStr,
+                startTime: startTimeStr,
+                endTime: endTimeStr,
+                totalHours: course.duration
+            });
+
+            showToast(`Batch ${bCode} deployed into operations.`, "Class Batch Registered");
+            refreshStateViews();
+        }
+
+        function handleEnrollLearner(e) {
+            e.preventDefault();
+            const sId = Number(document.getElementById('enroll-student-id').value);
+            const bId = Number(document.getElementById('enroll-course-id').value);
+
+            // Double enrollment validation
+            const exists = enrollments.find(en => en.studentId === sId && en.batchId === bId);
+            if (exists) {
+                showToast("Candidate is already enrolled in this dynamic batch code.", "Registration Exists");
+                return;
+            }
+
+            const newEnrollId = enrollments.length + 501;
+            enrollments.push({
+                id: newEnrollId,
+                studentId: sId,
+                batchId: bId,
+                completionProgress: 0
+            });
+
+            showToast("Candidate mapped to target batch schedule.", "Enrollment Complete");
+            refreshStateViews();
+        }
+
+        function handleSaveCalendarModifications(e) {
+            e.preventDefault();
+            const bId = Number(document.getElementById('calendar-batch-select').value);
+            const bIdx = batches.findIndex(x => x.id === bId);
+            if (bIdx === -1) return;
+
+            batches[bIdx].instructor = document.getElementById('edit-batch-trainer').value;
+            batches[bIdx].startDate = document.getElementById('edit-batch-start-date').value;
+            batches[bIdx].endDate = document.getElementById('edit-batch-end-date').value;
+
+            showToast("Calendar parameters updated. Exporting Tamkeen tentative ledger...", "Operational Adjustments Saved");
+            refreshStateViews();
+            buildTamkeenCalendar(batches[bIdx]);
+        }
+
+        function enableCalendarEditing() {
+            document.getElementById('edit-batch-trainer').removeAttribute('disabled');
+            document.getElementById('edit-batch-start-date').removeAttribute('disabled');
+            document.getElementById('edit-batch-end-date').removeAttribute('disabled');
+        }
+
+        function autoPopulateCalendarBatchPreview() {
+            const bId = Number(document.getElementById('calendar-batch-select').value);
+            const b = batches.find(x => x.id === bId);
+            if (!b) return;
+            const c = courses.find(x => x.id === b.courseId);
+
+            document.getElementById('edit-batch-program-name').value = c ? c.title : "N/A";
+            document.getElementById('edit-batch-trainer').value = b.instructor;
+            document.getElementById('edit-batch-start-date').value = b.startDate;
+            document.getElementById('edit-batch-end-date').value = b.endDate;
+        }
+
+        function updateBatchCodeGenerated() {
+            const titleCode = document.getElementById('class-title').value.replace(/[^a-zA-Z]/g, '').slice(0, 4).toUpperCase();
+            const yearStr = document.getElementById('class-year').value.slice(2);
+            const seqStr = document.getElementById('class-sequence').value;
+            document.getElementById('class-batch-code-preview').value = `CTC-${titleCode}-${yearStr}${seqStr}`;
+        }
+
+        // Dyn Status Parser
+        function calculateDynamicStatus(startDateStr, endDateStr) {
+            const today = new Date('2026-07-14'); // System constant time
+            const start = parseLocalDate(startDateStr);
+            const end = parseLocalDate(endDateStr);
+
+            if (today < start) {
+                return {
+                    label: "Upcoming",
+                    badgeClass: "bg-amber-500/15 text-amber-400 border border-amber-500/30 font-bold"
+                };
+            } else if (today >= start && today <= end) {
+                return {
+                    label: "Active",
+                    badgeClass: "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 animate-pulse font-bold"
+                };
+            } else {
+                return {
+                    label: "Completed",
+                    badgeClass: "bg-slate-500/20 text-slate-400 border border-slate-500/30 font-bold"
+                };
+            }
+        }
+
+        function filterBatches() {
+            const q = document.getElementById('batch-search-input').value.toLowerCase().trim();
+            const grid = document.getElementById('batches-grid');
+            grid.innerHTML = '';
+
+            let list = batches.filter(b => {
+                const c = courses.find(x => x.id === b.courseId);
+                const matchTitle = c ? c.title.toLowerCase().includes(q) : false;
+                const matchCode = b.batchCode.toLowerCase().includes(q);
+                return matchTitle || matchCode;
+            });
+
+            document.getElementById('batch-counter').innerText = `Total Tracks: ${list.length}`;
+            
+            list.forEach(b => {
+                const c = courses.find(x => x.id === b.courseId);
+                const statusMeta = calculateDynamicStatus(b.startDate, b.endDate);
+                const labelText = statusMeta.label === "Active" ? "Ongoing" : statusMeta.label;
+
+                grid.innerHTML += `
+                    <div class="bg-[#121640] border border-indigo-500/20 p-5 rounded-3xl flex flex-col justify-between space-y-4 shadow-sm hover:border-indigo-500/40 transition duration-300">
+                        <div>
+                            <div class="flex justify-between items-center mb-2">
+                                <span class="px-2.5 py-1 rounded-xl bg-[#0a0d2a] text-indigo-300 border border-indigo-950 text-[9px] font-black tracking-widest uppercase">${b.batchCode}</span>
+                                <span class="px-2.5 py-1 rounded-xl text-[9px] font-black tracking-widest uppercase ${statusMeta.badgeClass}">${labelText}</span>
+                            </div>
+                            <h5 class="font-extrabold text-white text-xs leading-normal">${c ? c.title : 'Program Track'}</h5>
+                            <p class="text-[10px] text-slate-400 mt-1">Instructor: <span class="text-slate-200 font-bold">${b.instructor}</span></p>
+                        </div>
+                        <div class="bg-[#0a0d2a] p-3.5 rounded-2xl border border-indigo-950 space-y-2 text-[10px] text-slate-300">
+                            <div class="flex justify-between">
+                                <span class="text-indigo-300/50">Class Interval:</span>
+                                <span class="font-bold">${b.startDate} to ${b.endDate}</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-indigo-300/50">Daily Timing:</span>
+                                <span>${b.startTime} - ${b.endTime}</span>
+                            </div>
+                            <div class="flex justify-between border-t border-indigo-950 pt-1.5">
+                                <span class="text-indigo-300/50">Total Program Hours:</span>
+                                <span class="font-black text-indigo-400">${b.totalHours}</span>
+                            </div>
+                        </div>
+                        <button onclick="buildTamkeenCalendar(${JSON.stringify(b).replace(/"/g, '&quot;')})" class="w-full bg-gradient-to-r from-indigo-500 to-purple-500 hover:brightness-110 text-white font-black py-2.5 rounded-xl text-xs premium-transition shadow-lg">
+                            Extract Tamkeen Calendar Document
+                        </button>
+                    </div>
+                `;
+            });
+        }
+
+        function filterDirectoryTable() {
+            const q = document.getElementById('directory-search-name').value.toLowerCase().trim();
+            const courseF = document.getElementById('directory-filter-course').value;
+            const batchF = document.getElementById('directory-filter-batch').value;
+            const typeF = document.getElementById('directory-filter-type').value;
+
+            const body = document.getElementById('users-table-body');
+            body.innerHTML = '';
+
+            let list = users.filter(user => {
+                const fullName = `${user.firstName} ${user.lastName}`.toLowerCase();
+                const typeName = (user.role || 'learner').toLowerCase();
+                const matchSearch = fullName.includes(q) || user.cpr.includes(q) || typeName.includes(q);
+
+                const placements = enrollments.filter(en => en.studentId === user.id);
+                let matchCourse = courseF === 'all';
+                let matchBatch = batchF === 'all';
+                let matchType = typeF === 'all' || user.role === typeF;
+
+                if (courseF !== 'all') {
+                    matchCourse = placements.some(pl => {
+                        const b = batches.find(x => x.id === pl.batchId);
+                        return b && String(b.courseId) === courseF;
+                    });
+                }
+                if (batchF !== 'all') {
+                    matchBatch = placements.some(pl => String(pl.batchId) === batchF);
+                }
+
+                return matchSearch && matchCourse && matchBatch && matchType;
+            });
+
+            document.getElementById('profiles-counter').innerText = `${list.length} Accounts Registered`;
+
+            list.forEach(user => {
+                const profileRole = user.role || 'learner';
+                let typeBadge = '';
+                if (profileRole === 'trainer') {
+                    typeBadge = `<span class="px-2.5 py-1 text-[9px] font-bold bg-amber-500/10 text-amber-400 rounded-full uppercase border border-amber-500/20">Trainer</span>`;
+                } else if (profileRole === 'company') {
+                    typeBadge = `<span class="px-2.5 py-1 text-[9px] font-bold bg-purple-500/10 text-purple-400 rounded-full uppercase border border-purple-500/20">Company</span>`;
+                } else {
+                    typeBadge = `<span class="px-2.5 py-1 text-[9px] font-bold bg-emerald-500/10 text-emerald-400 rounded-full uppercase border border-emerald-500/20">Learner</span>`;
+                }
+
+                // Resolve premium Unsplash avatar
+                let avatarUrl = studentAvatars[user.id] || (user.role === 'company' ? studentAvatars.generic_company : studentAvatars.generic_user);
+
+                body.innerHTML += `
+                    <tr class="hover:bg-[#151b54] text-slate-300 transition-all border-b border-indigo-950 last:border-0">
+                        <td class="p-4">
+                            <img src="${avatarUrl}" alt="${user.firstName}" class="w-10 h-10 rounded-xl object-cover border border-indigo-500/30 shadow-md">
+                        </td>
+                        <td class="p-4">${typeBadge}</td>
+                        <td class="p-4 font-black text-white">${user.firstName} ${user.lastName}</td>
+                        <td class="p-4 font-medium text-indigo-200/80">${user.email}</td>
+                        <td class="p-4 font-mono font-bold tracking-wider">${user.cpr}</td>
+                        <td class="p-4 font-mono">+973 ${user.mobile}</td>
+                        <td class="p-4 text-center">
+                            <button onclick="openLearnerDossier(${user.id})" class="bg-[#0a0d2a] hover:bg-indigo-600 text-indigo-300 hover:text-white border border-indigo-950 px-3.5 py-1.5 rounded-xl text-[10px] font-black uppercase premium-transition">
+                                View Dossier
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            });
+        }
+
+        // Open Individual Dossier
+        function openLearnerDossier(studentId) {
+            const student = users.find(u => u.id === studentId);
+            if (!student) return;
+
+            document.getElementById('profile-full-name').innerText = `${student.firstName} ${student.lastName}`;
+            document.getElementById('profile-cpr-text').innerText = student.cpr;
+            document.getElementById('profile-mobile-text').innerText = `+973 ${student.mobile}`;
+            document.getElementById('profile-email-text').innerText = student.email;
+
+            // Resolve dynamic avatar image
+            let avatarUrl = studentAvatars[student.id] || (student.role === 'company' ? studentAvatars.generic_company : studentAvatars.generic_user);
+            document.getElementById('profile-avatar-img').src = avatarUrl;
+
+            const profileEnrollmentContainer = document.getElementById('profile-enrollments-list');
+            profileEnrollmentContainer.innerHTML = '';
+
+            const studentPlacements = enrollments.filter(en => en.studentId === studentId);
+            if (studentPlacements.length === 0) {
+                profileEnrollmentContainer.innerHTML = `<div class="p-4 rounded-2xl border border-dashed border-indigo-950 text-center text-xs text-slate-500">No active operational enrollments assigned.</div>`;
+            } else {
+                studentPlacements.forEach(pl => {
+                    const b = batches.find(x => x.id === pl.batchId);
+                    const c = b ? courses.find(x => x.id === b.courseId) : null;
+                    if (c && b) {
+                        profileEnrollmentContainer.innerHTML += `
+                            <div class="bg-[#0a0d2a] border border-indigo-950 p-3.5 rounded-2xl space-y-2">
+                                <div class="flex justify-between items-center text-[10px]">
+                                    <span class="font-black text-white text-[11px]">${c.title}</span>
+                                    <span class="px-2 py-0.5 rounded-md bg-indigo-950/60 text-indigo-300 font-extrabold uppercase text-[8px] tracking-wider">${b.batchCode}</span>
+                                </div>
+                                <div class="w-full bg-slate-900 h-2 rounded-full overflow-hidden">
+                                    <div class="bg-gradient-to-r from-indigo-500 to-purple-500 h-full" style="width: ${pl.completionProgress}%"></div>
+                                </div>
+                                <div class="flex justify-between items-center text-[9px] text-slate-400">
+                                    <span>Instructor: ${b.instructor}</span>
+                                    <span class="font-bold text-white">${pl.completionProgress}% Academic Progress</span>
+                                </div>
+                            </div>
+                        `;
+                    }
+                });
+            }
+
+            document.getElementById('profile-modal').classList.remove('hidden');
+        }
+
+        function closeProfileModal() {
+            document.getElementById('profile-modal').classList.add('hidden');
+        }
+
+        function printIndividualProfile() {
+            const name = document.getElementById('profile-full-name').innerText;
+            const cpr = document.getElementById('profile-cpr-text').innerText;
+            const mob = document.getElementById('profile-mobile-text').innerText;
+            const email = document.getElementById('profile-email-text').innerText;
+
+            document.getElementById('print-prof-name').innerText = name;
+            document.getElementById('print-prof-cpr').innerText = cpr;
+            document.getElementById('print-prof-mobile').innerText = mob;
+            document.getElementById('print-prof-email').innerText = email;
+
+            const printRows = document.getElementById('print-prof-enrollment-rows');
+            printRows.innerHTML = document.getElementById('profile-enrollments-list').innerHTML;
+
+            window.print();
+        }
+
+        // Setup drop-down select values dynamically
+        function refreshStateViews() {
+            // Populate learners for enrollment dropdown
+            const studentSel = document.getElementById('enroll-student-id');
+            studentSel.innerHTML = '';
+            users.filter(u => u.role === 'learner' || !u.role).forEach(u => {
+                const opt = document.createElement('option');
+                opt.value = u.id;
+                opt.innerText = `${u.firstName} ${u.lastName} (CPR: ${u.cpr})`;
+                studentSel.appendChild(opt);
+            });
+
+            // Populate instructors / trainers for batch creation dropdown
+            const instructorSel = document.getElementById('class-instructor');
+            instructorSel.innerHTML = '';
+            users.filter(u => u.role === 'trainer').forEach(u => {
+                const opt = document.createElement('option');
+                opt.value = `${u.firstName} ${u.lastName}`;
+                opt.innerText = `${u.firstName} ${u.lastName} (${u.email})`;
+                instructorSel.appendChild(opt);
+            });
+
+            const calendarBatchSel = document.getElementById('calendar-batch-select');
+            calendarBatchSel.innerHTML = '';
+            batches.forEach(b => {
+                const c = courses.find(x => x.id === b.courseId);
+                const opt = document.createElement('option');
+                opt.value = b.id;
+                opt.innerText = `${b.batchCode} (${c ? c.title : "Program"})`;
+                calendarBatchSel.appendChild(opt);
+            });
+
+            // Populate trainer updates edit dropdown
+            const editTrainerSel = document.getElementById('edit-batch-trainer');
+            editTrainerSel.innerHTML = '';
+            users.filter(u => u.role === 'trainer').forEach(u => {
+                const opt = document.createElement('option');
+                opt.value = `${u.firstName} ${u.lastName}`;
+                opt.innerText = `${u.firstName} ${u.lastName}`;
+                editTrainerSel.appendChild(opt);
+            });
+
+            const batchSel = document.getElementById('enroll-course-id');
+            batchSel.innerHTML = '';
+            batches.forEach(b => {
+                const c = courses.find(x => x.id === b.courseId);
+                const opt = document.createElement('option');
+                opt.value = b.id;
+                opt.innerText = `Batch [${b.batchCode}] (${b.startTime} - ${b.endTime})`;
+                batchSel.appendChild(opt);
+            });
+
+            const dirFilterCourse = document.getElementById('directory-filter-course');
+            dirFilterCourse.innerHTML = `<option value="all">All Programs</option>`;
+            courses.forEach(c => {
+                dirFilterCourse.innerHTML += `<option value="${c.id}">${c.title}</option>`;
+            });
+
+            const dirFilterBatch = document.getElementById('directory-filter-batch');
+            dirFilterBatch.innerHTML = `<option value="all">All Batches</option>`;
+            batches.forEach(b => {
+                dirFilterBatch.innerHTML += `<option value="${b.id}">${b.batchCode}</option>`;
+            });
+
+            filterBatches();
+            filterDirectoryTable();
+        }
+
+        // HIGH-FIDELITY TAMKEEN CALENDAR MATRIX COMPILER
+        function buildTamkeenCalendar(batch) {
+            activeTargetBatch = batch;
+            const c = courses.find(x => x.id === batch.courseId);
+            const courseTitle = c ? c.title : "Program Track";
+
+            const startD = parseLocalDate(batch.startDate);
+            const endD = parseLocalDate(batch.endDate);
+            const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+
+            let label = `${monthNames[startD.getMonth()]}`;
+            if (startD.getMonth() !== endD.getMonth()) {
+                label += ` - ${monthNames[endD.getMonth()]}`;
+            }
+            label += ` ${startD.getFullYear()}`;
+
+            document.getElementById('tamkeen-doc-title').innerText = `Tentative Calendar ${label}`;
+            document.getElementById('tamkeen-doc-batch-code').innerText = `Batch Code: ${batch.batchCode}`;
+            document.getElementById('tamkeen-meta-course').innerText = courseTitle;
+            document.getElementById('tamkeen-meta-trainer').innerText = batch.instructor;
+            document.getElementById('tamkeen-meta-start-date').innerText = formatTamkeenDate(batch.startDate);
+            document.getElementById('tamkeen-meta-end-date').innerText = formatTamkeenDate(batch.endDate);
+
+            let monthsCovered = [];
+            let tempDate = new Date(startD.getFullYear(), startD.getMonth(), 1);
+            while (tempDate <= endD) {
+                monthsCovered.push({
+                    month: tempDate.getMonth(),
+                    year: tempDate.getFullYear()
+                });
+                tempDate.setMonth(tempDate.getMonth() + 1);
+            }
+
+            let sessionCounter = 0;
+            let dateToSessionMap = {};
+            let iterator = new Date(startD);
+            while (iterator <= endD) {
+                const dayOfWeek = iterator.getDay();
+                const currentStr = formatDateISO(iterator);
+                
+                // Sunday to Thursday operational bounds
+                if (dayOfWeek >= 0 && dayOfWeek <= 4) {
+                    if (holidaysDatabase[currentStr]) {
+                        // Skip holiday
+                    } else {
+                        sessionCounter++;
+                        dateToSessionMap[currentStr] = sessionCounter;
+                    }
+                }
+                iterator.setDate(iterator.getDate() + 1);
+            }
+
+            const monthsContainer = document.getElementById('tamkeen-months-container');
+            monthsContainer.innerHTML = '';
+
+            monthsCovered.forEach(item => {
+                const monthYearHeader = `${monthNames[item.month]} ${item.year}`;
+                
+                let tableHtml = `
+                    <div class="border-2 border-slate-900 overflow-hidden rounded-xl bg-white mt-5 font-sans">
+                        <div class="bg-slate-900 text-white text-center border-b-2 border-slate-900 py-3 font-extrabold text-xs uppercase tracking-widest">
+                            ${monthYearHeader}
+                        </div>
+                        
+                        <div class="grid grid-cols-5 text-center text-[10px] font-black uppercase tracking-widest bg-slate-100 border-b border-slate-900 divide-x divide-slate-900 text-slate-800">
+                            <div class="py-2.5">Sunday</div>
+                            <div class="py-2.5">Monday</div>
+                            <div class="py-2.5">Tuesday</div>
+                            <div class="py-2.5">Wednesday</div>
+                            <div class="py-2.5">Thursday</div>
+                        </div>
+
+                        <div class="divide-y divide-slate-900">
+                `;
+
+                let firstOfMonth = new Date(item.year, item.month, 1);
+                let startGrid = new Date(firstOfMonth);
+                startGrid.setDate(startGrid.getDate() - startGrid.getDay());
+
+                let gridPointer = new Date(startGrid);
+                while (gridPointer.getMonth() === item.month || gridPointer < firstOfMonth) {
+                    
+                    let rowHtml = `<div class="grid grid-cols-5 divide-x divide-slate-900 min-h-[80px]">`;
+                    
+                    for (let col = 0; col < 5; col++) {
+                        let activeCellDate = new Date(gridPointer);
+                        activeCellDate.setDate(activeCellDate.getDate() + col);
+
+                        const isCurrentMonth = activeCellDate.getMonth() === item.month;
+                        const dateStr = formatDateISO(activeCellDate);
+                        
+                        let bgClass = "bg-white";
+                        let innerText = "";
+                        
+                        const isInsideRange = activeCellDate >= startD && activeCellDate <= endD;
+
+                        if (isCurrentMonth) {
+                            if (holidaysDatabase[dateStr]) {
+                                bgClass = "bg-amber-100 border-2 border-amber-300";
+                                innerText = `<div class="text-[9px] font-black text-amber-900 mt-2 bg-white/60 py-0.5 px-2 rounded-lg inline-block uppercase leading-tight border border-amber-200">${holidaysDatabase[dateStr]}</div>`;
+                            } else if (isInsideRange && dateToSessionMap[dateStr]) {
+                                bgClass = "bg-indigo-50/50";
+                                innerText = `<div class="text-[9.5px] font-black text-blue-950 mt-2 bg-blue-100/50 py-1 px-3 rounded-lg inline-block border border-blue-200 shadow-sm">Session ${dateToSessionMap[dateStr]}</div>`;
+                            }
+                        }
+
+                        rowHtml += `
+                            <div onclick="${isCurrentMonth && isInsideRange ? `openHolidayModal('${dateStr}')` : ''}" class="${bgClass} p-2 flex flex-col justify-between items-start cursor-pointer hover:bg-slate-50 transition-all text-[10px] relative">
+                                <span class="font-black text-slate-800 text-[11px]">${isCurrentMonth ? activeCellDate.getDate() : ''}</span>
+                                <div class="w-full text-center">${isCurrentMonth ? innerText : ''}</div>
+                            </div>
+                        `;
+                    }
+
+                    rowHtml += `</div>`;
+                    tableHtml += rowHtml;
+
+                    gridPointer.setDate(gridPointer.getDate() + 7);
+                }
+
+                tableHtml += `
+                        </div>
+                    </div>
+                `;
+                monthsContainer.innerHTML += tableHtml;
+            });
+
+            switchDashboardTab('tamkeen-calendar');
+        }
+
+        // Modal triggers for A4 Calendar Day Cell toggles
+        function openHolidayModal(dateStr) {
+            activeTargetDateStr = dateStr;
+            const existingVal = holidaysDatabase[dateStr] || '';
+            document.getElementById('modal-holiday-name').value = existingVal;
+            document.getElementById('holiday-modal').classList.remove('hidden');
+        }
+
+        function closeHolidayModal() {
+            document.getElementById('holiday-modal').classList.add('hidden');
+        }
+
+        function saveHolidayToggle() {
+            const label = document.getElementById('modal-holiday-name').value.trim();
+            if (label) {
+                holidaysDatabase[activeTargetDateStr] = label;
+                showToast(`Dynamic Exception exception registered on: ${activeTargetDateStr}`, "Exception Saved");
+            } else {
+                delete holidaysDatabase[activeTargetDateStr];
+                showToast(`Exception cleared on date: ${activeTargetDateStr}`, "Operation Restored");
+            }
+            closeHolidayModal();
+            if (activeTargetBatch) {
+                buildTamkeenCalendar(activeTargetBatch);
+            }
+        }
+
+        // Initial system load
+        window.onload = function() {
+            renderPublicCatalogGrid();
+            refreshStateViews();
+            updateBatchCodeGenerated();
+            autoCalculateClassEndTime();
+            adjustProfileFields();
+        }
+    </script>
+</body>
+</html>
