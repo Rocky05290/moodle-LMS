@@ -3,7 +3,7 @@ import {
   batches, getCourse, learnersInBatch, attendancePct, averageGrade,
   batchAttendancePct, fullName, initials,
 } from '../data/mock'
-import { Avatar, Badge, Button, Card, SectionTitle, Stat, Td, Th } from '../components/ui'
+import { Avatar, Badge, Button, Card, IconTile, SectionTitle, Stat, Td, Th } from '../components/ui'
 
 const AUDIT_LOG = [
   { t: '2026-08-06 14:22', who: 'Eng. Sayed Al-Alawi', what: 'Changed grade for Jasem Al-Saffar', detail: 'Mid: 55 → 61', reason: 'Re-mark after redo submission' },
@@ -21,9 +21,7 @@ export default function AuditorDashboard() {
     <div className="space-y-6">
       {/* read-only banner */}
       <Card className="flex flex-wrap items-center gap-3 border-gold-500/25 bg-gold-100 p-4">
-        <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gold-100 text-gold-600">
-          <Lock size={17} />
-        </div>
+        <IconTile icon={<Lock size={17} />} tone="amber" size={40} />
         <div className="min-w-0">
           <div className="text-[13.5px] font-bold">Read-only compliance access</div>
           <div className="text-[12px] text-ink-500">
@@ -48,9 +46,9 @@ export default function AuditorDashboard() {
       </Card>
 
       <div className="grid gap-4 sm:grid-cols-3">
-        <Stat icon={<ShieldCheck size={18} />} value={roster.length} label="Records in Batch" />
-        <Stat icon={<FileCheck2 size={18} />} value={`${batchAttendancePct(batch.id)}%`} label="Batch Attendance" />
-        <Stat icon={<FileDown size={18} />} value={batch.totalHours} label="Contracted Hours" />
+        <Stat icon={<ShieldCheck size={18} />} value={roster.length} label="Records in Batch" tone="navy" />
+        <Stat icon={<FileCheck2 size={18} />} value={`${batchAttendancePct(batch.id)}%`} label="Batch Attendance" tone="emerald" />
+        <Stat icon={<FileDown size={18} />} value={batch.totalHours} label="Contracted Hours" tone="amber" />
       </div>
 
       {/* verification table */}

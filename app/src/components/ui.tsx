@@ -1,5 +1,43 @@
 import type { ReactNode } from 'react'
 
+/* --------------------------- IconTile --------------------------- */
+export type IconTone =
+  | 'blue' | 'violet' | 'emerald' | 'amber' | 'rose' | 'sky' | 'navy' | 'cyan' | 'indigo'
+
+const iconTones: Record<IconTone, string> = {
+  blue: 'from-brand-500 to-brand-700 shadow-brand-600/25',
+  violet: 'from-violet-500 to-violet-700 shadow-violet-600/25',
+  indigo: 'from-indigo-500 to-indigo-700 shadow-indigo-600/25',
+  emerald: 'from-emerald-500 to-emerald-700 shadow-emerald-600/25',
+  amber: 'from-amber-400 to-amber-600 shadow-amber-500/25',
+  rose: 'from-rose-500 to-rose-700 shadow-rose-600/25',
+  sky: 'from-sky-500 to-sky-700 shadow-sky-600/25',
+  cyan: 'from-cyan-500 to-cyan-700 shadow-cyan-600/25',
+  navy: 'from-navy-700 to-navy-900 shadow-navy-900/25',
+}
+
+/** A premium gradient icon tile (white glyph on a soft coloured gradient). */
+export function IconTile({
+  icon,
+  tone = 'blue',
+  size = 44,
+  className = '',
+}: {
+  icon: ReactNode
+  tone?: IconTone
+  size?: number
+  className?: string
+}) {
+  return (
+    <div
+      className={`flex flex-none items-center justify-center rounded-xl bg-gradient-to-br text-white shadow-md ${iconTones[tone]} ${className}`}
+      style={{ width: size, height: size }}
+    >
+      {icon}
+    </div>
+  )
+}
+
 /* ----------------------------- Card ----------------------------- */
 export function Card({
   children,
@@ -31,20 +69,23 @@ export function Stat({
   value,
   label,
   delta,
+  tone = 'blue',
 }: {
   icon: ReactNode
   value: string | number
   label: string
   delta?: string
-  delay?: 1 | 2 | 3 | 4 | 5 | 6
+  tone?: IconTone
 }) {
   return (
     <Card hover className="p-5">
       <div className="flex items-start justify-between">
-        <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-brand-50 text-brand-500">
-          {icon}
-        </div>
-        {delta && <span className="text-[11.5px] font-bold text-ok-600">{delta}</span>}
+        <IconTile icon={icon} tone={tone} size={42} />
+        {delta && (
+          <span className="rounded-full bg-ok-50 px-2 py-0.5 text-[11px] font-bold text-ok-600">
+            {delta}
+          </span>
+        )}
       </div>
       <div className="mt-4 text-[26px] leading-none font-extrabold tracking-tight text-navy-900">
         {value}

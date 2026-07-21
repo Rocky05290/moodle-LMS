@@ -5,21 +5,22 @@ import {
 } from 'lucide-react'
 import PublicHeader from '../components/PublicHeader'
 import Reveal from '../components/Reveal'
+import { IconTile, type IconTone } from '../components/ui'
 
-const FEATURES = [
-  { icon: Layers, title: 'Batch management', desc: 'Create batches with auto codes (CTC-CCNA-2601), schedules and contracted hours.' },
-  { icon: CalendarCheck, title: 'Smart attendance', desc: 'Daily register with P / L1 / L2 / L3 / A plus rotating QR self check-in.' },
-  { icon: ClipboardCheck, title: 'Rubric grading', desc: 'Criteria-based scoring, return-for-redo and instant learner notifications.' },
-  { icon: BarChart3, title: 'Batch Health', desc: 'Live attendance %, grades and progress for every learner in one view.' },
-  { icon: ShieldCheck, title: 'Auditor access', desc: 'Read-only compliance role with a full timestamped audit trail.' },
-  { icon: FileCheck2, title: 'Tamkeen reports', desc: 'Signed attendance registers and one-click compliance report bundles.' },
+const FEATURES: { icon: typeof Layers; title: string; desc: string; tone: IconTone }[] = [
+  { icon: Layers, title: 'Batch management', desc: 'Create batches with auto codes (CTC-CCNA-2601), schedules and contracted hours.', tone: 'blue' },
+  { icon: CalendarCheck, title: 'Smart attendance', desc: 'Daily register with P / L1 / L2 / L3 / A plus rotating QR self check-in.', tone: 'emerald' },
+  { icon: ClipboardCheck, title: 'Rubric grading', desc: 'Criteria-based scoring, return-for-redo and instant learner notifications.', tone: 'violet' },
+  { icon: BarChart3, title: 'Batch Health', desc: 'Live attendance %, grades and progress for every learner in one view.', tone: 'sky' },
+  { icon: ShieldCheck, title: 'Auditor access', desc: 'Read-only compliance role with a full timestamped audit trail.', tone: 'navy' },
+  { icon: FileCheck2, title: 'Tamkeen reports', desc: 'Signed attendance registers and one-click compliance report bundles.', tone: 'amber' },
 ]
 
-const ROLES = [
-  { icon: Users, k: 'Admin', v: 'Courses, batches, bulk import, dashboards' },
-  { icon: GraduationCap, k: 'Trainer', v: 'Attendance, grading, learner progress' },
-  { icon: Play, k: 'Learner', v: 'Today view, modules, submissions' },
-  { icon: ShieldCheck, k: 'Auditor', v: 'Read-only verification & exports' },
+const ROLES: { icon: typeof Users; k: string; v: string; tone: IconTone }[] = [
+  { icon: Users, k: 'Admin', v: 'Courses, batches, bulk import, dashboards', tone: 'blue' },
+  { icon: GraduationCap, k: 'Trainer', v: 'Attendance, grading, learner progress', tone: 'emerald' },
+  { icon: Play, k: 'Learner', v: 'Today view, modules, submissions', tone: 'sky' },
+  { icon: ShieldCheck, k: 'Auditor', v: 'Read-only verification & exports', tone: 'amber' },
 ]
 
 export default function Landing() {
@@ -150,9 +151,7 @@ export default function Landing() {
               return (
                 <Reveal key={r.k} delay={i * 80}>
                   <div className="panel panel-hover h-full rounded-2xl p-5">
-                    <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-brand-50 text-brand-500">
-                      <Icon size={20} />
-                    </div>
+                    <IconTile icon={<Icon size={20} />} tone={r.tone} size={46} />
                     <div className="mt-4 text-[15px] font-extrabold text-navy-900">{r.k}</div>
                     <div className="mt-1 text-[12.5px] leading-relaxed text-ink-500">{r.v}</div>
                   </div>
@@ -191,9 +190,7 @@ export default function Landing() {
               return (
                 <Reveal key={f.title} delay={(i % 3) * 90}>
                   <div className="group panel h-full rounded-2xl p-6 transition-all hover:-translate-y-1 hover:border-brand-500/25 hover:shadow-[0_18px_40px_-20px_rgba(15,27,53,0.3)]">
-                    <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-brand-500 to-brand-700 text-white shadow-md shadow-brand-600/25">
-                      <Icon size={21} />
-                    </div>
+                    <IconTile icon={<Icon size={22} />} tone={f.tone} size={48} />
                     <h3 className="mt-5 text-[16px] font-extrabold text-navy-900">{f.title}</h3>
                     <p className="mt-2 text-[13.5px] leading-relaxed text-ink-500">{f.desc}</p>
                   </div>

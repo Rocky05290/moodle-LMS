@@ -53,10 +53,10 @@ export default function AdminDashboard() {
 
       {/* ---------------- KPIs ---------------- */}
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-        <Stat icon={<Layers size={18} />} value={batches.length} label="Active Batches" delta="▲ 1" />
-        <Stat icon={<Users size={18} />} value={learners.length} label="Enrolled Learners" delta="▲ 3" />
-        <Stat icon={<CalendarCheck size={18} />} value={`${batchAttendancePct(activeBatch.id)}%`} label="Avg Attendance" delta="▲ 4%" />
-        <Stat icon={<Trophy size={18} />} value={`${passRate}%`} label="Pass Rate" />
+        <Stat icon={<Layers size={18} />} value={batches.length} label="Active Batches" tone="blue" delta="▲ 1" />
+        <Stat icon={<Users size={18} />} value={learners.length} label="Enrolled Learners" tone="violet" delta="▲ 3" />
+        <Stat icon={<CalendarCheck size={18} />} value={`${batchAttendancePct(activeBatch.id)}%`} label="Avg Attendance" tone="emerald" delta="▲ 4%" />
+        <Stat icon={<Trophy size={18} />} value={`${passRate}%`} label="Pass Rate" tone="amber" />
       </div>
 
       <div className="grid gap-4 xl:grid-cols-[1.5fr_1fr]">
