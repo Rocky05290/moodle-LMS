@@ -106,7 +106,7 @@ export default function Landing({ onSignIn }: { onSignIn: (u: User) => void }) {
           </div>
 
           {/* right — login card (the red-box area) */}
-          <div className="rise w-full max-w-md justify-self-stretch lg:justify-self-end" style={{ animationDelay: '.2s' }}>
+          <div className="rise mx-auto w-full max-w-[340px] justify-self-stretch lg:mx-0 lg:justify-self-end" style={{ animationDelay: '.2s' }}>
             <LoginCard onSignIn={onSignIn} />
           </div>
         </div>
