@@ -30,7 +30,7 @@ export default function Landing({ onSignIn }: { onSignIn: (u: User) => void }) {
 
   return (
     <div id="top" className="min-h-full bg-white">
-      <PublicHeader onSignIn={scrollTop} />
+      <PublicHeader />
 
       {/* ============================ HERO ============================ */}
       <section className="relative flex min-h-[92vh] items-center overflow-hidden">

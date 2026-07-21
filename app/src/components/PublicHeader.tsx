@@ -1,10 +1,10 @@
 import { useState } from 'react'
-import { Menu, X, ArrowRight } from 'lucide-react'
+import { Menu, X } from 'lucide-react'
 import { useScrolled } from '../hooks'
 
 const LINKS = ['Solutions', 'Product', 'Compliance', 'Pricing', 'About']
 
-export default function PublicHeader({ onSignIn }: { onSignIn: () => void }) {
+export default function PublicHeader() {
   const scrolled = useScrolled(40)
   const [open, setOpen] = useState(false)
 
@@ -24,8 +24,8 @@ export default function PublicHeader({ onSignIn }: { onSignIn: () => void }) {
           </span>
         </a>
 
-        {/* desktop nav */}
-        <nav className="ml-2 hidden items-center gap-1 lg:flex">
+        {/* desktop nav — right aligned */}
+        <nav className="ml-auto hidden items-center gap-1 lg:flex">
           {LINKS.map((l) => (
             <a
               key={l}
@@ -39,29 +39,15 @@ export default function PublicHeader({ onSignIn }: { onSignIn: () => void }) {
           ))}
         </nav>
 
-        {/* actions */}
-        <div className="ml-auto flex items-center gap-2.5">
-          <button
-            onClick={onSignIn}
-            className={`flex items-center gap-1.5 rounded-md px-5 py-2 text-[13.5px] font-bold shadow-sm transition-all hover:-translate-y-0.5 ${
-              scrolled
-                ? 'bg-brand-500 text-white hover:bg-brand-600'
-                : 'bg-white text-navy-900 hover:bg-brand-50'
-            }`}
-          >
-            Sign in <ArrowRight size={14} />
-          </button>
-
-          {/* mobile toggle */}
-          <button
-            onClick={() => setOpen((v) => !v)}
-            className={`flex h-9 w-9 items-center justify-center rounded-md lg:hidden ${
-              scrolled ? 'text-ink-700' : 'text-white'
-            }`}
-          >
-            {open ? <X size={20} /> : <Menu size={20} />}
-          </button>
-        </div>
+        {/* mobile toggle — right aligned */}
+        <button
+          onClick={() => setOpen((v) => !v)}
+          className={`ml-auto flex h-9 w-9 items-center justify-center rounded-md lg:hidden ${
+            scrolled ? 'text-ink-700' : 'text-white'
+          }`}
+        >
+          {open ? <X size={20} /> : <Menu size={20} />}
+        </button>
       </div>
 
       {/* mobile menu */}
