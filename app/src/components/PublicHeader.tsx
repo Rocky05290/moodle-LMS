@@ -12,7 +12,7 @@ export default function PublicHeader({ onSignIn }: { onSignIn: () => void }) {
     <header
       className={`fixed inset-x-0 top-0 z-50 transition-all duration-300 ${
         scrolled
-          ? 'border-b border-line bg-white/[0.87] py-2.5 shadow-[0_4px_20px_-8px_rgba(15,27,53,0.25)] backdrop-blur-xl'
+          ? 'border-b border-line bg-white/80 py-2.5 shadow-[0_4px_20px_-8px_rgba(15,27,53,0.25)] backdrop-blur-xl'
           : 'border-b border-transparent bg-transparent py-4'
       }`}
     >
