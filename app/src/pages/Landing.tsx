@@ -185,30 +185,30 @@ export default function Landing({ onSignIn }: { onSignIn: (u: User) => void }) {
       </section>
 
       {/* ========================= CTA BAND ========================== */}
-      <section className="relative overflow-hidden bg-navy-900 py-20">
-        <div className="floaty pointer-events-none absolute -top-20 right-10 h-80 w-80 rounded-full bg-brand-500/25 blur-[110px]" />
-        <div className="floaty pointer-events-none absolute -bottom-24 left-10 h-72 w-72 rounded-full bg-gold-500/12 blur-[110px]" style={{ animationDelay: '-3s' }} />
+      <section className="relative overflow-hidden border-y border-line bg-gradient-to-br from-brand-50 via-white to-brand-50 py-20">
+        <div className="floaty pointer-events-none absolute -top-20 right-10 h-80 w-80 rounded-full bg-brand-400/15 blur-[110px]" />
+        <div className="floaty pointer-events-none absolute -bottom-24 left-10 h-72 w-72 rounded-full bg-gold-400/10 blur-[110px]" style={{ animationDelay: '-3s' }} />
         <div className="relative z-10 mx-auto max-w-4xl px-5 text-center lg:px-8">
           <Reveal>
-            <QrCode size={30} className="mx-auto text-brand-300" />
-            <h2 className="mt-5 text-[32px] leading-tight font-extrabold tracking-tight text-white sm:text-[40px]">
+            <QrCode size={30} className="mx-auto text-brand-500" />
+            <h2 className="mt-5 text-[32px] leading-tight font-extrabold tracking-tight text-navy-900 sm:text-[40px]">
               Ready to run every batch from one place?
             </h2>
-            <p className="mx-auto mt-4 max-w-xl text-[15px] text-white/65">
+            <p className="mx-auto mt-4 max-w-xl text-[15px] text-ink-500">
               Sign in to explore the admin, trainer, learner and auditor portals.
             </p>
             <div className="mt-8 flex justify-center">
               <button
                 onClick={scrollTop}
-                className="flex items-center gap-2 rounded-md bg-white px-6 py-3.5 text-[14.5px] font-bold text-navy-900 transition-all hover:-translate-y-0.5 hover:bg-brand-50"
+                className="flex items-center gap-2 rounded-md bg-brand-500 px-6 py-3.5 text-[14.5px] font-bold text-white shadow-lg shadow-brand-600/25 transition-all hover:-translate-y-0.5 hover:bg-brand-600"
               >
                 Sign in <ArrowRight size={16} />
               </button>
             </div>
-            <div className="mt-8 flex flex-wrap justify-center gap-x-7 gap-y-2 text-[12.5px] text-white/55">
+            <div className="mt-8 flex flex-wrap justify-center gap-x-7 gap-y-2 text-[12.5px] text-ink-500">
               {['No spreadsheets', 'Audit-ready', 'Bahrain CPR support'].map((t) => (
                 <span key={t} className="flex items-center gap-1.5">
-                  <Check size={13} className="text-brand-300" /> {t}
+                  <Check size={13} className="text-brand-500" /> {t}
                 </span>
               ))}
             </div>

@@ -1,17 +1,30 @@
-import { Globe, MessageCircle, Video, Mail, LifeBuoy, FileText, Code2 } from 'lucide-react'
+import {
+  Globe, MessageCircle, Video, CalendarCheck, ClipboardCheck, BarChart3, FileCheck2, ShieldCheck,
+} from 'lucide-react'
 
-const COMPANY = ['Home', 'Product', 'Solutions', 'Compliance', 'Pricing', 'Contact']
-const RESOURCES = [
-  { icon: LifeBuoy, label: 'Support' },
-  { icon: FileText, label: 'Documentation' },
-  { icon: Code2, label: 'Developer API' },
-  { icon: Mail, label: 'Contact us' },
+const PLATFORM = [
+  'Admin Dashboard',
+  'Trainer Portal',
+  'Learner Portal',
+  'Auditor Access',
+  'Batch Management',
+  'Course Inventory',
 ]
+
+const FEATURES = [
+  { icon: CalendarCheck, label: 'Attendance & QR check-in' },
+  { icon: ClipboardCheck, label: 'Rubric grading' },
+  { icon: BarChart3, label: 'Batch Health reports' },
+  { icon: FileCheck2, label: 'Tamkeen compliance' },
+  { icon: ShieldCheck, label: 'Audit trail' },
+]
+
 const SOCIAL = [
   { icon: Globe, label: 'Website' },
   { icon: MessageCircle, label: 'X / Twitter' },
   { icon: Video, label: 'YouTube' },
 ]
+
 const TAGS = ['Attendance', 'Compliance', 'Batches', 'Grading', 'Reporting', 'Tamkeen']
 
 export default function SiteFooter() {
@@ -28,7 +41,7 @@ export default function SiteFooter() {
       </div>
 
       {/* main */}
-      <div className="mx-auto grid max-w-6xl gap-10 px-5 py-14 lg:grid-cols-[1.4fr_1fr_1fr_1.3fr] lg:px-8">
+      <div className="mx-auto grid max-w-6xl gap-10 px-5 py-14 lg:grid-cols-[1.4fr_1fr_1.2fr_1.3fr] lg:px-8">
         {/* brand */}
         <div>
           <span className="inline-flex items-center rounded-md bg-white px-3 py-2 shadow-sm">
@@ -55,13 +68,13 @@ export default function SiteFooter() {
           </div>
         </div>
 
-        {/* company */}
+        {/* platform */}
         <div>
           <h4 className="text-[11px] font-bold tracking-[0.12em] text-[#c2c0c7]/55 uppercase">
-            Company
+            Platform
           </h4>
           <ul className="mt-4 space-y-2.5">
-            {COMPANY.map((c) => (
+            {PLATFORM.map((c) => (
               <li key={c}>
                 <a href="#" className="text-[13px] text-[#c2c0c7]/85 transition-colors hover:text-white">
                   {c}
@@ -71,13 +84,13 @@ export default function SiteFooter() {
           </ul>
         </div>
 
-        {/* resources */}
+        {/* features */}
         <div>
           <h4 className="text-[11px] font-bold tracking-[0.12em] text-[#c2c0c7]/55 uppercase">
-            Resources
+            Features
           </h4>
           <ul className="mt-4 space-y-2.5">
-            {RESOURCES.map((r) => {
+            {FEATURES.map((r) => {
               const Icon = r.icon
               return (
                 <li key={r.label}>
