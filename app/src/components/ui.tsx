@@ -70,8 +70,8 @@ export function Card({
       ref={ref}
       onMouseMove={hover ? onMove : undefined}
       onMouseLeave={hover ? onLeave : undefined}
-      className={`panel rounded-xl ${
-        hover ? 'transition-transform duration-200 ease-out will-change-transform hover:shadow-[0_16px_36px_-18px_rgba(15,27,53,0.28)]' : ''
+      className={`panel rounded-2xl ${
+        hover ? 'transition-transform duration-200 ease-out will-change-transform hover:shadow-[0_20px_44px_-18px_rgba(15,27,53,0.28)]' : ''
       } ${className}`}
     >
       {children}
