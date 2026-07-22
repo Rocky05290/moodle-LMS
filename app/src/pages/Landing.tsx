@@ -26,6 +26,14 @@ const ROLES: { icon: typeof Users; k: string; v: string; tone: IconTone }[] = [
   { icon: ShieldCheck, k: 'Auditor', v: 'Read-only verification & exports', tone: 'amber' },
 ]
 
+// iSAMS-style coloured outline per role
+const ROLE_OUTLINE: Record<string, { border: string; text: string; hover: string }> = {
+  blue: { border: 'border-brand-500', text: 'text-brand-600', hover: 'hover:bg-brand-50' },
+  emerald: { border: 'border-emerald-500', text: 'text-emerald-600', hover: 'hover:bg-emerald-50' },
+  sky: { border: 'border-sky-500', text: 'text-sky-600', hover: 'hover:bg-sky-50' },
+  amber: { border: 'border-amber-500', text: 'text-amber-600', hover: 'hover:bg-amber-50' },
+}
+
 export default function Landing({ onSignIn }: { onSignIn: (u: User) => void }) {
   const scrollTop = () => document.getElementById('top')?.scrollIntoView({ behavior: 'smooth' })
 
@@ -132,12 +140,15 @@ export default function Landing({ onSignIn }: { onSignIn: (u: User) => void }) {
           <div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             {ROLES.map((r, i) => {
               const Icon = r.icon
+              const c = ROLE_OUTLINE[r.tone]
               return (
                 <Reveal key={r.k} delay={i * 80}>
                   <Tilt className="h-full">
-                    <div className="h-full rounded-2xl border border-line bg-surface p-5 shadow-[0_12px_30px_-14px_rgba(15,27,53,0.16),0_2px_6px_-3px_rgba(15,27,53,0.08)] transition-all hover:border-line2 hover:shadow-[0_24px_48px_-18px_rgba(15,27,53,0.28)]">
-                      <IconTile icon={<Icon size={25} />} tone={r.tone} size={54} />
-                      <div className="mt-4 text-[15px] font-extrabold text-navy-900">{r.k}</div>
+                    <div
+                      className={`h-full rounded-2xl border-2 bg-surface p-5 shadow-[0_10px_28px_-14px_rgba(15,27,53,0.14)] transition-all ${c.border} ${c.hover} hover:shadow-[0_22px_46px_-18px_rgba(15,27,53,0.24)]`}
+                    >
+                      <Icon size={28} className={c.text} strokeWidth={2.2} />
+                      <div className={`mt-3 text-[16px] font-extrabold ${c.text}`}>{r.k}</div>
                       <div className="mt-1 text-[12.5px] leading-relaxed text-ink-500">{r.v}</div>
                     </div>
                   </Tilt>

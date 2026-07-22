@@ -47,7 +47,7 @@ export default function LoginCard({ onSignIn }: { onSignIn: (u: User) => void })
     <div className="w-full overflow-hidden rounded-xl border-2 border-brand-500 bg-white p-5 shadow-2xl shadow-black/25">
       {/* welcome heading */}
       <h2 className="bg-gradient-to-r from-brand-600 via-indigo-500 to-violet-500 bg-clip-text text-center text-[21px] leading-tight font-extrabold tracking-tight text-transparent">
-        Welcome to the CORDOBA!
+        Welcome to CORDOBA!
       </h2>
       <p className="mt-1 text-center text-[11.5px] font-medium text-ink-400">
         Sign in to your training portal
