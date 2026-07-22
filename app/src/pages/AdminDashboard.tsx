@@ -41,7 +41,7 @@ export default function AdminDashboard() {
             <Button variant="gold" className="flex items-center gap-1.5">
               <Plus size={14} /> Create batch
             </Button>
-            <button className="flex cursor-pointer items-center gap-1.5 rounded-lg border border-white/18 bg-white/8 px-4 py-2.5 text-[13px] font-bold text-white hover:bg-white/14">
+            <button className="flex cursor-pointer items-center gap-1.5 rounded-lg border border-white/25 bg-white/12 px-4 py-2.5 text-[13px] font-bold text-white backdrop-blur-sm transition-colors hover:bg-white/20">
               <Upload size={14} /> Import learners
             </button>
           </div>

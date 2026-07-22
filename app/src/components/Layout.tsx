@@ -59,11 +59,13 @@ export default function Layout({
     <div className="flex min-h-full">
       {/* ------------------------- Sidebar ------------------------- */}
       <aside className="sticky top-0 hidden h-screen w-[244px] flex-none flex-col bg-gradient-to-b from-navy-800 to-navy-900 p-4 lg:flex">
-        {/* real logo on a white plate */}
-        <div className="mb-7 px-1 pt-1">
-          <div className="inline-flex items-center rounded-xl bg-white px-3 py-2.5 shadow-md shadow-black/20">
-            <img src="/logo.png" alt="Cordoba Training Center" className="h-7 w-auto" />
-          </div>
+        {/* logo */}
+        <div className="mb-7 px-2 pt-1">
+          <img
+            src="/logo.png"
+            alt="Cordoba Training Center"
+            className="h-9 w-auto brightness-0 invert"
+          />
         </div>
 
         <div className="mb-2 flex items-center gap-2 px-3">
