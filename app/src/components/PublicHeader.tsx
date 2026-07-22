@@ -19,9 +19,13 @@ export default function PublicHeader() {
       <div className="mx-auto flex max-w-6xl items-center gap-6 px-5 lg:px-8">
         {/* logo — always on a white chip so it reads on any background */}
         <a href="#top" className="flex items-center">
-          <span className="inline-flex items-center rounded-md bg-white px-4 py-2.5 shadow-sm ring-1 ring-black/5">
-            <img src="/logo.png" alt="Cordoba Training Center" className="h-12 w-auto" />
-          </span>
+          <img
+            src="/logo.png"
+            alt="Cordoba Training Center"
+            className={`h-12 w-auto transition-all duration-300 ${
+              scrolled ? '' : 'brightness-0 invert'
+            }`}
+          />
         </a>
 
         {/* desktop nav — right aligned */}
