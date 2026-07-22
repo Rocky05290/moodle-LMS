@@ -31,10 +31,12 @@ export function IconTile({
 }) {
   return (
     <div
-      className={`flex flex-none items-center justify-center rounded-lg bg-gradient-to-br text-white shadow-md ${iconTones[tone]} ${className}`}
+      className={`relative flex flex-none items-center justify-center overflow-hidden rounded-2xl bg-gradient-to-br text-white shadow-lg ring-1 ring-white/15 ${iconTones[tone]} ${className}`}
       style={{ width: size, height: size }}
     >
-      {icon}
+      {/* glossy top highlight */}
+      <span className="pointer-events-none absolute inset-x-0 top-0 h-1/2 bg-gradient-to-b from-white/25 to-transparent" />
+      <span className="relative flex items-center justify-center">{icon}</span>
     </div>
   )
 }

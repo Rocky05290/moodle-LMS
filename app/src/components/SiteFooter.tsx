@@ -44,9 +44,11 @@ export default function SiteFooter() {
       <div className="mx-auto grid max-w-6xl gap-10 px-5 py-14 lg:grid-cols-[1.4fr_1fr_1.2fr_1.3fr] lg:px-8">
         {/* brand */}
         <div>
-          <span className="inline-flex items-center rounded-md bg-white px-3 py-2 shadow-sm">
-            <img src="/logo.png" alt="Cordoba Training Center" className="h-7 w-auto" />
-          </span>
+          <img
+            src="/logo.png"
+            alt="Cordoba Training Center"
+            className="h-9 w-auto brightness-0 invert"
+          />
           <p className="mt-4 max-w-xs text-[13px] leading-relaxed text-[#c2c0c7]/75">
             The Tamkeen-ready platform for training providers — batches, attendance, grading and
             audit-proof compliance reporting in one place.
