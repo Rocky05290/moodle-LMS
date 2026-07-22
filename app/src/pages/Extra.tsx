@@ -112,9 +112,12 @@ export function People() {
             <Button variant="ghost" className="flex items-center gap-1.5 !px-3 !py-2 !text-[12px]">
               <Upload size={13} /> Bulk CSV import
             </Button>
-            <Button className="flex items-center gap-1.5 !px-3 !py-2 !text-[12px]">
-              <Plus size={13} /> Add person
-            </Button>
+            <button className="group relative cursor-pointer overflow-hidden rounded-md border-2 border-brand-500 px-4 py-2 text-[12px] font-bold text-brand-600 transition-all hover:-translate-y-0.5 hover:text-white hover:shadow-lg hover:shadow-indigo-500/25">
+              <span className="absolute inset-0 translate-y-full bg-gradient-to-r from-brand-500 via-indigo-500 to-violet-500 transition-transform duration-300 group-hover:translate-y-0" />
+              <span className="relative flex items-center gap-1.5">
+                <Plus size={13} /> Add person
+              </span>
+            </button>
           </div>
         }
       >
@@ -128,7 +131,7 @@ export function People() {
               <Th>CPR</Th>
               <Th>Contact</Th>
               <Th>Company</Th>
-              <Th className="text-center">Role</Th>
+              <Th>Role</Th>
             </tr>
           </thead>
           <tbody>
@@ -150,7 +153,7 @@ export function People() {
                   </div>
                 </Td>
                 <Td className="text-ink-500">{u.company ?? '—'}</Td>
-                <Td className="text-center">
+                <Td>
                   <Badge
                     tone={
                       u.role === 'admin' ? 'brand'
