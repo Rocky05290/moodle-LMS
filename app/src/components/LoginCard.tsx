@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Eye, EyeOff, Zap, Mail, Lock, ArrowRight } from 'lucide-react'
+import { Eye, EyeOff, Mail, Lock, ArrowRight } from 'lucide-react'
 import type { Role, User } from '../data/mock'
 import { users } from '../data/mock'
 
@@ -45,12 +45,12 @@ export default function LoginCard({ onSignIn }: { onSignIn: (u: User) => void })
 
   return (
     <div className="w-full overflow-hidden rounded-xl border-2 border-brand-500 bg-white p-5 shadow-2xl shadow-black/25">
-      {/* icon */}
-      <div className="mx-auto flex h-11 w-11 items-center justify-center rounded-xl bg-gradient-to-br from-brand-400 to-brand-600 shadow-lg shadow-brand-500/35 ring-1 ring-white/25">
-        <Zap size={20} className="text-white" fill="currentColor" />
-      </div>
-      <p className="mt-2.5 text-center text-[13px] font-bold tracking-tight text-navy-900">
-        Access your account
+      {/* welcome heading */}
+      <h2 className="bg-gradient-to-r from-brand-600 via-indigo-500 to-violet-500 bg-clip-text text-center text-[21px] leading-tight font-extrabold tracking-tight text-transparent">
+        Welcome to the CORDOBA!
+      </h2>
+      <p className="mt-1 text-center text-[11.5px] font-medium text-ink-400">
+        Sign in to your training portal
       </p>
 
       {/* role segmented control */}
