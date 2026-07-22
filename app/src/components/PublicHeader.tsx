@@ -35,7 +35,7 @@ export default function PublicHeader() {
               key={l}
               href="#top"
               className={`rounded-md px-4 py-2 text-[22.5px] font-semibold transition-colors ${
-                scrolled ? 'text-ink-700 hover:bg-soft2' : 'text-white/85 hover:bg-white/10'
+                scrolled ? 'text-ink-500 hover:bg-soft2' : 'text-white/85 hover:bg-white/10'
               }`}
             >
               {l}

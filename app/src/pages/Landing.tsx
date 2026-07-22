@@ -135,7 +135,7 @@ export default function Landing({ onSignIn }: { onSignIn: (u: User) => void }) {
               return (
                 <Reveal key={r.k} delay={i * 80}>
                   <Tilt className="h-full">
-                    <div className="panel h-full rounded-2xl p-5 transition-shadow hover:border-line2 hover:shadow-[0_18px_40px_-20px_rgba(15,27,53,0.28)]">
+                    <div className="h-full rounded-2xl border border-line bg-surface p-5 shadow-[0_12px_30px_-14px_rgba(15,27,53,0.16),0_2px_6px_-3px_rgba(15,27,53,0.08)] transition-all hover:border-line2 hover:shadow-[0_24px_48px_-18px_rgba(15,27,53,0.28)]">
                       <IconTile icon={<Icon size={20} />} tone={r.tone} size={46} />
                       <div className="mt-4 text-[15px] font-extrabold text-navy-900">{r.k}</div>
                       <div className="mt-1 text-[12.5px] leading-relaxed text-ink-500">{r.v}</div>
@@ -176,7 +176,7 @@ export default function Landing({ onSignIn }: { onSignIn: (u: User) => void }) {
               return (
                 <Reveal key={f.title} delay={(i % 3) * 90}>
                   <Tilt className="h-full">
-                    <div className="group panel h-full rounded-2xl p-6 transition-all hover:border-brand-500/25 hover:shadow-[0_18px_40px_-20px_rgba(15,27,53,0.3)]">
+                    <div className="group h-full rounded-2xl border border-line bg-surface p-6 shadow-[0_12px_30px_-14px_rgba(15,27,53,0.16),0_2px_6px_-3px_rgba(15,27,53,0.08)] transition-all hover:border-brand-500/25 hover:shadow-[0_24px_48px_-18px_rgba(15,27,53,0.3)]">
                       <IconTile icon={<Icon size={22} />} tone={f.tone} size={48} />
                       <h3 className="mt-5 text-[16px] font-extrabold text-navy-900">{f.title}</h3>
                       <p className="mt-2 text-[13.5px] leading-relaxed text-ink-500">{f.desc}</p>
