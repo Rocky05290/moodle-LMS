@@ -43,16 +43,16 @@ export default function LoginCard({ onSignIn }: { onSignIn: (u: User) => void })
   }
 
   return (
-    <div className="w-full overflow-hidden rounded-xl border border-white/10 bg-[#181c2b] p-5 shadow-2xl shadow-black/50">
+    <div className="w-full overflow-hidden rounded-xl border-2 border-brand-500 bg-white/50 p-5 shadow-2xl shadow-black/25 backdrop-blur-xl">
       {/* icon */}
-      <div className="mx-auto flex h-10 w-10 items-center justify-center rounded-lg bg-gradient-to-br from-teal-400 to-cyan-500 shadow-lg shadow-cyan-500/30">
+      <div className="mx-auto flex h-10 w-10 items-center justify-center rounded-lg bg-gradient-to-br from-brand-400 to-brand-600 shadow-lg shadow-brand-500/30">
         <Zap size={18} className="text-white" fill="currentColor" />
       </div>
-      <h2 className="mt-3 text-center text-[18px] font-extrabold text-white">Sign In</h2>
-      <p className="mt-0.5 text-center text-[11.5px] text-white/45">Access your account</p>
+      <h2 className="mt-3 text-center text-[18px] font-extrabold text-navy-900">Sign In</h2>
+      <p className="mt-0.5 text-center text-[11.5px] text-ink-500">Access your account</p>
 
       {/* role segmented control */}
-      <div className="mt-4 grid grid-cols-4 gap-1 rounded-md border border-white/10 bg-white/5 p-1">
+      <div className="mt-4 grid grid-cols-4 gap-1 rounded-md border border-brand-500/25 bg-white/50 p-1">
         {ROLES.map((r) => {
           const on = r.role === role
           return (
@@ -60,9 +60,7 @@ export default function LoginCard({ onSignIn }: { onSignIn: (u: User) => void })
               key={r.role}
               onClick={() => setRole(r.role)}
               className={`cursor-pointer rounded py-1 text-[10.5px] font-bold transition-all ${
-                on
-                  ? 'bg-gradient-to-r from-teal-400 to-cyan-500 text-white shadow'
-                  : 'text-white/50 hover:text-white'
+                on ? 'bg-brand-500 text-white shadow' : 'text-ink-500 hover:text-navy-900'
               }`}
             >
               {r.label}
@@ -73,27 +71,27 @@ export default function LoginCard({ onSignIn }: { onSignIn: (u: User) => void })
 
       {/* email */}
       <div className="mt-4">
-        <label className="mb-1 block text-[10.5px] font-semibold text-white/45">Email</label>
+        <label className="mb-1 block text-[10.5px] font-semibold text-ink-500">Email</label>
         <input
           readOnly
           value={demoUser.email}
-          className="w-full rounded-lg border border-white/12 bg-white/[0.04] px-3 py-2 text-[12.5px] text-white outline-none transition-colors focus:border-teal-400"
+          className="w-full rounded-lg border border-brand-500/30 bg-white/70 px-3 py-2 text-[12.5px] text-navy-900 outline-none transition-colors focus:border-brand-500"
         />
       </div>
 
       {/* password */}
       <div className="mt-2.5">
-        <label className="mb-1 block text-[10.5px] font-semibold text-white/45">Password</label>
-        <div className="flex items-center gap-2 rounded-lg border border-white/12 bg-white/[0.04] px-3 py-2 transition-colors focus-within:border-teal-400">
+        <label className="mb-1 block text-[10.5px] font-semibold text-ink-500">Password</label>
+        <div className="flex items-center gap-2 rounded-lg border border-brand-500/30 bg-white/70 px-3 py-2 transition-colors focus-within:border-brand-500">
           <input
             type={showPw ? 'text' : 'password'}
             defaultValue="demo1234"
-            className="w-full bg-transparent text-[12.5px] text-white outline-none"
+            className="w-full bg-transparent text-[12.5px] text-navy-900 outline-none"
           />
           <button
             type="button"
             onClick={() => setShowPw((v) => !v)}
-            className="cursor-pointer text-white/40 transition-colors hover:text-white/80"
+            className="cursor-pointer text-ink-400 transition-colors hover:text-navy-900"
           >
             {showPw ? <EyeOff size={14} /> : <Eye size={14} />}
           </button>
@@ -102,11 +100,11 @@ export default function LoginCard({ onSignIn }: { onSignIn: (u: User) => void })
 
       {/* keep signed / forgot */}
       <div className="mt-3 flex items-center justify-between text-[11px]">
-        <label className="flex cursor-pointer items-center gap-1.5 text-white/50">
-          <input type="checkbox" className="h-3 w-3 accent-teal-400" />
+        <label className="flex cursor-pointer items-center gap-1.5 text-ink-600">
+          <input type="checkbox" className="h-3 w-3 accent-brand-500" />
           Keep me signed in
         </label>
-        <a href="#" className="text-white/50 transition-colors hover:text-white">
+        <a href="#" className="font-semibold text-brand-600 transition-colors hover:text-brand-700">
           Forgot password?
         </a>
       </div>
@@ -114,36 +112,36 @@ export default function LoginCard({ onSignIn }: { onSignIn: (u: User) => void })
       {/* sign in */}
       <button
         onClick={submit}
-        className="mt-4 w-full cursor-pointer rounded-lg bg-gradient-to-r from-teal-400 to-blue-500 py-2.5 text-[12.5px] font-extrabold tracking-wide text-white shadow-lg shadow-cyan-500/25 transition-all hover:brightness-110"
+        className="mt-4 w-full cursor-pointer rounded-lg bg-gradient-to-r from-brand-500 to-brand-600 py-2.5 text-[12.5px] font-extrabold tracking-wide text-white shadow-lg shadow-brand-600/25 transition-all hover:brightness-110"
       >
         SIGN IN
       </button>
 
       {/* OR */}
-      <div className="my-3.5 flex items-center gap-3 text-[10.5px] font-semibold text-white/35">
-        <span className="h-px flex-1 bg-white/10" />
+      <div className="my-3.5 flex items-center gap-3 text-[10.5px] font-semibold text-ink-400">
+        <span className="h-px flex-1 bg-navy-900/12" />
         OR
-        <span className="h-px flex-1 bg-white/10" />
+        <span className="h-px flex-1 bg-navy-900/12" />
       </div>
 
       {/* social */}
       <button
         onClick={submit}
-        className="flex w-full cursor-pointer items-center justify-center gap-2.5 rounded-lg border border-white/10 bg-white px-4 py-2 text-[12.5px] font-bold text-[#1b2440] transition-all hover:bg-white/90"
+        className="flex w-full cursor-pointer items-center justify-center gap-2.5 rounded-lg border border-brand-500/25 bg-white/80 px-4 py-2 text-[12.5px] font-bold text-navy-900 transition-all hover:bg-white"
       >
         <GoogleIcon /> Continue with Google
       </button>
       <button
         onClick={submit}
-        className="mt-2 flex w-full cursor-pointer items-center justify-center gap-2.5 rounded-lg border border-white/10 bg-white px-4 py-2 text-[12.5px] font-bold text-[#1b2440] transition-all hover:bg-white/90"
+        className="mt-2 flex w-full cursor-pointer items-center justify-center gap-2.5 rounded-lg border border-brand-500/25 bg-white/80 px-4 py-2 text-[12.5px] font-bold text-navy-900 transition-all hover:bg-white"
       >
         <AppleIcon /> Continue with Apple
       </button>
 
       {/* create account */}
-      <p className="mt-4 text-center text-[11.5px] text-white/45">
+      <p className="mt-4 text-center text-[11.5px] text-ink-600">
         New here?{' '}
-        <a href="#" className="font-bold text-teal-400 transition-colors hover:text-teal-300">
+        <a href="#" className="font-bold text-brand-600 transition-colors hover:text-brand-700">
           Create an account
         </a>
       </p>
