@@ -173,7 +173,7 @@ export default function Landing({ onSignIn }: { onSignIn: (u: User) => void }) {
               <div className="mt-6 flex justify-center">
                 <button
                   onClick={scrollTop}
-                  className="flex items-center gap-2 rounded-md border-2 border-[#cbd5e3] bg-white px-5 py-3 text-[13.5px] font-bold text-ink-600 transition-all hover:-translate-y-0.5 hover:border-ink-500 hover:text-navy-900"
+                  className="flex items-center gap-2 rounded-md border-2 border-[#cbd5e3] bg-white px-5 py-3 text-[13.5px] font-bold text-brand-600 transition-all hover:-translate-y-0.5 hover:border-brand-500 hover:text-brand-700"
                 >
                   Sign in to explore <ArrowRight size={15} />
                 </button>
@@ -206,7 +206,7 @@ export default function Landing({ onSignIn }: { onSignIn: (u: User) => void }) {
         <div className="floaty pointer-events-none absolute -bottom-24 left-10 h-72 w-72 rounded-full bg-gold-400/10 blur-[110px]" style={{ animationDelay: '-3s' }} />
         <div className="relative z-10 mx-auto max-w-4xl px-5 text-center lg:px-8">
           <Reveal>
-            <QrCode size={30} className="mx-auto text-brand-500" />
+            <QrCode size={54} className="mx-auto text-brand-500" />
             <h2 className="mt-5 text-[32px] leading-tight font-extrabold tracking-tight text-navy-900 sm:text-[40px]">
               Ready to run every batch from one place?
             </h2>
@@ -216,7 +216,7 @@ export default function Landing({ onSignIn }: { onSignIn: (u: User) => void }) {
             <div className="mt-8 flex justify-center">
               <button
                 onClick={scrollTop}
-                className="flex items-center gap-2 rounded-md bg-brand-500 px-6 py-3.5 text-[14.5px] font-bold text-white shadow-lg shadow-brand-600/25 transition-all hover:-translate-y-0.5 hover:bg-brand-600"
+                className="flex w-full max-w-[340px] items-center justify-center gap-2 rounded-md bg-brand-500 px-6 py-3.5 text-[14.5px] font-bold text-white shadow-lg shadow-brand-600/25 transition-all hover:-translate-y-0.5 hover:bg-brand-600"
               >
                 Sign in <ArrowRight size={16} />
               </button>
