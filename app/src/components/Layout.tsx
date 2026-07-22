@@ -7,6 +7,7 @@ import {
 import type { Role, User } from '../data/mock'
 import { fullName, initials } from '../data/mock'
 import { Badge } from './ui'
+import SiteFooter from './SiteFooter'
 
 const NAV: Record<Role, { to: string; label: string; icon: ReactNode }[]> = {
   admin: [
@@ -166,13 +167,7 @@ export default function Layout({
 
         <main className="px-5 py-6 lg:px-7">{children}</main>
 
-        <footer className="mt-8 border-t border-line px-5 py-5 lg:px-7">
-          <div className="flex flex-wrap items-center gap-2 text-[11.5px] text-ink-400">
-            <span className="font-bold text-ink-600">Cordoba Training Center</span>
-            <span>· Tamkeen-ready academic &amp; compliance platform</span>
-            <span className="ml-auto">© 2026</span>
-          </div>
-        </footer>
+        <SiteFooter />
       </div>
     </div>
   )
