@@ -168,7 +168,7 @@ export default function AdminDashboard() {
           {courses.map((c) => (
             <div
               key={c.id}
-              className="group cursor-pointer rounded-xl border border-line bg-soft p-4 hover:border-brand-500/30 hover:bg-surface hover:shadow-lg"
+              className="group cursor-pointer rounded-xl border border-line bg-surface p-4 shadow-sm transition-all hover:-translate-y-0.5 hover:border-brand-500/30 hover:shadow-[0_16px_34px_-16px_rgba(15,27,53,0.24)]"
             >
               <div className="flex items-start justify-between gap-2">
                 <Badge tone="brand">{c.code}</Badge>

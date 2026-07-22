@@ -142,11 +142,11 @@ export default function Layout({
             </div>
 
             <div className="ml-auto flex items-center gap-2.5">
-              <div className="hidden items-center gap-2 rounded-lg border border-line bg-soft px-3 py-2 focus-within:border-brand-500 focus-within:bg-surface focus-within:shadow-sm md:flex">
-                <Search size={14} className="text-ink-400" />
+              <div className="hidden items-center gap-2.5 rounded-full border border-line bg-soft px-4 py-2.5 transition-all focus-within:border-brand-500 focus-within:bg-surface focus-within:shadow-sm md:flex">
+                <Search size={15} className="text-ink-400" />
                 <input
                   placeholder="Search batch or learner…"
-                  className="w-48 bg-transparent text-[12.5px] text-ink-700 outline-none placeholder:text-ink-400"
+                  className="w-56 bg-transparent text-[12.5px] text-ink-700 outline-none placeholder:text-ink-400"
                 />
               </div>
               {user.role === 'auditor' && <Badge tone="gold">READ-ONLY</Badge>}
@@ -166,9 +166,12 @@ export default function Layout({
 
         <main className="px-5 py-6 lg:px-7">{children}</main>
 
-        <footer className="flex items-center gap-2 px-5 pb-8 text-[11.5px] text-ink-400 lg:px-7">
-          <img src="/logo.png" alt="" className="h-4 w-auto opacity-40" />
-          <span>· Tamkeen-ready academic &amp; compliance platform</span>
+        <footer className="mt-8 border-t border-line px-5 py-5 lg:px-7">
+          <div className="flex flex-wrap items-center gap-2 text-[11.5px] text-ink-400">
+            <span className="font-bold text-ink-600">Cordoba Training Center</span>
+            <span>· Tamkeen-ready academic &amp; compliance platform</span>
+            <span className="ml-auto">© 2026</span>
+          </div>
         </footer>
       </div>
     </div>
