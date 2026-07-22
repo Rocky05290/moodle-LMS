@@ -163,21 +163,21 @@ export default function Landing({ onSignIn }: { onSignIn: (u: User) => void }) {
       <section className="bg-canvas py-20">
         <div className="mx-auto max-w-6xl px-5 lg:px-8">
           <Reveal>
-            <div className="mb-12 flex flex-wrap items-end justify-between gap-4">
-              <div>
-                <p className="text-[12px] font-bold tracking-[0.14em] text-brand-600 uppercase">
-                  Capabilities
-                </p>
-                <h2 className="mt-2 max-w-xl text-[30px] leading-tight font-extrabold tracking-tight text-navy-900 sm:text-[36px]">
-                  Everything from enrolment to certificate
-                </h2>
+            <div className="mb-12 text-center">
+              <p className="text-[12px] font-bold tracking-[0.14em] text-brand-600 uppercase">
+                Capabilities
+              </p>
+              <h2 className="mx-auto mt-2 max-w-2xl text-[30px] leading-tight font-extrabold tracking-tight text-navy-900 sm:text-[36px]">
+                Everything from enrolment to certificate
+              </h2>
+              <div className="mt-6 flex justify-center">
+                <button
+                  onClick={scrollTop}
+                  className="flex items-center gap-2 rounded-md border-2 border-[#cbd5e3] bg-white px-5 py-3 text-[13.5px] font-bold text-ink-600 transition-all hover:-translate-y-0.5 hover:border-ink-500 hover:text-navy-900"
+                >
+                  Sign in to explore <ArrowRight size={15} />
+                </button>
               </div>
-              <button
-                onClick={scrollTop}
-                className="flex items-center gap-2 rounded-md bg-navy-900 px-5 py-3 text-[13.5px] font-bold text-white transition-all hover:-translate-y-0.5 hover:bg-navy-800"
-              >
-                Sign in to explore <ArrowRight size={15} />
-              </button>
             </div>
           </Reveal>
 
