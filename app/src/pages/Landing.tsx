@@ -39,7 +39,7 @@ export default function Landing({ onSignIn }: { onSignIn: (u: User) => void }) {
           className="kenburns absolute inset-0 bg-navy-900 bg-cover bg-center"
           style={{ backgroundImage: 'url(/hero.jpg)' }}
         />
-        <div className="absolute inset-0 bg-gradient-to-br from-navy-950/94 via-navy-900/90 to-brand-700/70" />
+        <div className="absolute inset-0 bg-gradient-to-r from-navy-950/92 via-navy-900/72 to-navy-900/45" />
         <div className="floaty pointer-events-none absolute -top-24 -left-16 h-96 w-96 rounded-full bg-brand-500/25 blur-[120px]" />
         <div
           className="floaty pointer-events-none absolute right-0 bottom-0 h-96 w-96 rounded-full bg-brand-400/18 blur-[120px]"
