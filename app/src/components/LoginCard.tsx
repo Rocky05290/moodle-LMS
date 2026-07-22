@@ -118,7 +118,7 @@ export default function LoginCard({ onSignIn }: { onSignIn: (u: User) => void })
       <div className="mt-3 flex items-center justify-between text-[11px]">
         <label className="flex cursor-pointer items-center gap-1.5 text-ink-600">
           <input type="checkbox" className="h-3 w-3 accent-brand-500" />
-          Keep me signed in
+          Remember me
         </label>
         <a href="#" className="font-semibold text-brand-600 transition-colors hover:text-brand-700">
           Forgot password?

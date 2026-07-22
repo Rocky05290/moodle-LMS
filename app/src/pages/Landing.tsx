@@ -120,7 +120,7 @@ export default function Landing({ onSignIn }: { onSignIn: (u: User) => void }) {
             <p className="text-center text-[12px] font-bold tracking-[0.14em] text-brand-600 uppercase">
               One core database · five portals
             </p>
-            <h2 className="mx-auto mt-3 max-w-3xl text-center text-[30px] leading-tight font-extrabold tracking-tight text-navy-900 sm:text-[38px]">
+            <h2 className="mx-auto mt-3 max-w-3xl text-center text-[32px] leading-tight font-semibold text-[#4a90d9] sm:text-[40px]">
               A cloud platform built for Tamkeen-funded training providers
             </h2>
             <p className="mx-auto mt-4 max-w-2xl text-center text-[15px] leading-relaxed text-ink-500">
