@@ -5,6 +5,7 @@ import {
 import type { User } from '../data/mock'
 import PublicHeader from '../components/PublicHeader'
 import Reveal from '../components/Reveal'
+import Tilt from '../components/Tilt'
 import SiteFooter from '../components/SiteFooter'
 import LoginCard from '../components/LoginCard'
 import { IconTile, type IconTone } from '../components/ui'
@@ -133,11 +134,13 @@ export default function Landing({ onSignIn }: { onSignIn: (u: User) => void }) {
               const Icon = r.icon
               return (
                 <Reveal key={r.k} delay={i * 80}>
-                  <div className="panel panel-hover h-full rounded-2xl p-5">
-                    <IconTile icon={<Icon size={20} />} tone={r.tone} size={46} />
-                    <div className="mt-4 text-[15px] font-extrabold text-navy-900">{r.k}</div>
-                    <div className="mt-1 text-[12.5px] leading-relaxed text-ink-500">{r.v}</div>
-                  </div>
+                  <Tilt className="h-full">
+                    <div className="panel h-full rounded-2xl p-5 transition-shadow hover:border-line2 hover:shadow-[0_18px_40px_-20px_rgba(15,27,53,0.28)]">
+                      <IconTile icon={<Icon size={20} />} tone={r.tone} size={46} />
+                      <div className="mt-4 text-[15px] font-extrabold text-navy-900">{r.k}</div>
+                      <div className="mt-1 text-[12.5px] leading-relaxed text-ink-500">{r.v}</div>
+                    </div>
+                  </Tilt>
                 </Reveal>
               )
             })}
@@ -172,11 +175,13 @@ export default function Landing({ onSignIn }: { onSignIn: (u: User) => void }) {
               const Icon = f.icon
               return (
                 <Reveal key={f.title} delay={(i % 3) * 90}>
-                  <div className="group panel h-full rounded-2xl p-6 transition-all hover:-translate-y-1 hover:border-brand-500/25 hover:shadow-[0_18px_40px_-20px_rgba(15,27,53,0.3)]">
-                    <IconTile icon={<Icon size={22} />} tone={f.tone} size={48} />
-                    <h3 className="mt-5 text-[16px] font-extrabold text-navy-900">{f.title}</h3>
-                    <p className="mt-2 text-[13.5px] leading-relaxed text-ink-500">{f.desc}</p>
-                  </div>
+                  <Tilt className="h-full">
+                    <div className="group panel h-full rounded-2xl p-6 transition-all hover:border-brand-500/25 hover:shadow-[0_18px_40px_-20px_rgba(15,27,53,0.3)]">
+                      <IconTile icon={<Icon size={22} />} tone={f.tone} size={48} />
+                      <h3 className="mt-5 text-[16px] font-extrabold text-navy-900">{f.title}</h3>
+                      <p className="mt-2 text-[13.5px] leading-relaxed text-ink-500">{f.desc}</p>
+                    </div>
+                  </Tilt>
                 </Reveal>
               )
             })}

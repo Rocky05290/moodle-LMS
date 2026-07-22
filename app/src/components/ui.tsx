@@ -1,4 +1,5 @@
-import type { ReactNode } from 'react'
+import { useRef } from 'react'
+import type { MouseEvent, ReactNode } from 'react'
 
 /* --------------------------- IconTile --------------------------- */
 export type IconTone =
@@ -48,8 +49,31 @@ export function Card({
   className?: string
   hover?: boolean
 }) {
+  const ref = useRef<HTMLDivElement>(null)
+
+  const onMove = (e: MouseEvent<HTMLDivElement>) => {
+    const el = ref.current
+    if (!el) return
+    const r = el.getBoundingClientRect()
+    const px = (e.clientX - r.left) / r.width - 0.5
+    const py = (e.clientY - r.top) / r.height - 0.5
+    el.style.transform = `perspective(1100px) rotateX(${(-py * 5).toFixed(2)}deg) rotateY(${(px * 5).toFixed(2)}deg) translateY(-3px)`
+  }
+  const onLeave = () => {
+    if (ref.current) ref.current.style.transform = ''
+  }
+
   return (
-    <div className={`panel rounded-xl ${hover ? 'panel-hover' : ''} ${className}`}>{children}</div>
+    <div
+      ref={ref}
+      onMouseMove={hover ? onMove : undefined}
+      onMouseLeave={hover ? onLeave : undefined}
+      className={`panel rounded-xl ${
+        hover ? 'transition-transform duration-200 ease-out will-change-transform hover:shadow-[0_16px_36px_-18px_rgba(15,27,53,0.28)]' : ''
+      } ${className}`}
+    >
+      {children}
+    </div>
   )
 }
 
