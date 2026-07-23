@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { Eye, EyeOff, Mail, Lock, ArrowRight } from 'lucide-react'
 import type { Role, User } from '../data/mock'
 import { users } from '../data/mock'
+import { supabase, hasSupabase } from '../lib/supabase'
 
 const ROLES: { role: Role; label: string; demoId: number; home: string }[] = [
   { role: 'admin', label: 'Admin', demoId: 1, home: '/admin' },
@@ -38,7 +39,32 @@ export default function LoginCard({ onSignIn }: { onSignIn: (u: User) => void })
     setEmail(emailFor(r.demoId))
   }
 
-  const submit = () => {
+  const submit = async () => {
+    // Try a REAL Supabase login first (when the backend is connected)
+    if (hasSupabase && supabase) {
+      const { data, error } = await supabase.auth.signInWithPassword({ email, password })
+      if (!error && data.user) {
+        const { data: prof } = await supabase
+          .from('profiles')
+          .select('*')
+          .eq('id', data.user.id)
+          .maybeSingle()
+        const role = (prof?.role ?? active.role) as Role
+        onSignIn({
+          id: 0,
+          firstName: (prof?.first_name as string) ?? demoUser.firstName,
+          lastName: (prof?.last_name as string) ?? demoUser.lastName,
+          email: data.user.email ?? email,
+          mobile: (prof?.mobile as string) ?? '',
+          cpr: (prof?.cpr as string) ?? '',
+          role,
+          company: (prof?.company as string) ?? undefined,
+        })
+        navigate('/' + role)
+        return
+      }
+    }
+    // Demo fallback — keeps the preview working without real accounts
     onSignIn(demoUser)
     navigate(active.home)
   }

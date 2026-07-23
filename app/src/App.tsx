@@ -1,7 +1,8 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import type { ReactNode } from 'react'
 import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom'
-import type { User } from './data/mock'
+import type { Role, User } from './data/mock'
+import { supabase } from './lib/supabase'
 import Layout from './components/Layout'
 import Landing from './pages/Landing'
 import AdminDashboard from './pages/AdminDashboard'
@@ -46,9 +47,39 @@ function Shell({
 export default function App() {
   const [user, setUser] = useState<User | null>(null)
 
+  // Restore a real Supabase session on page load (so refresh keeps you signed in)
+  useEffect(() => {
+    if (!supabase) return
+    supabase.auth.getSession().then(async ({ data }) => {
+      const s = data.session
+      if (!s) return
+      const { data: prof } = await supabase!
+        .from('profiles')
+        .select('*')
+        .eq('id', s.user.id)
+        .maybeSingle()
+      if (!prof) return
+      setUser({
+        id: 0,
+        firstName: prof.first_name,
+        lastName: prof.last_name,
+        email: s.user.email ?? prof.email,
+        mobile: prof.mobile ?? '',
+        cpr: prof.cpr ?? '',
+        role: prof.role as Role,
+        company: prof.company ?? undefined,
+      })
+    })
+  }, [])
+
+  const signOut = async () => {
+    if (supabase) await supabase.auth.signOut()
+    setUser(null)
+  }
+
   const guard = (el: ReactNode) =>
     user ? (
-      <Shell user={user} onSignOut={() => setUser(null)}>
+      <Shell user={user} onSignOut={signOut}>
         {el}
       </Shell>
     ) : (
