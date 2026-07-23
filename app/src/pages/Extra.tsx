@@ -1,8 +1,11 @@
+import { useEffect, useState } from 'react'
 import { Plus, Upload, Mail, Phone } from 'lucide-react'
 import {
-  batches, courses, users, enrollments, getCourse, getUser,
+  batches, courses as mockCourses, users, enrollments, getCourse, getUser,
   batchAttendancePct, fullName, initials,
 } from '../data/mock'
+import type { Course } from '../data/mock'
+import { supabase, hasSupabase } from '../lib/supabase'
 import { Avatar, Badge, Button, Card, ProgressBar, SectionTitle, Td, Th } from '../components/ui'
 
 /* ----------------------------- Batches ---------------------------- */
@@ -72,10 +75,43 @@ export function Batches() {
 
 /* ----------------------------- Courses ---------------------------- */
 export function Courses() {
+  const [list, setList] = useState<Course[]>(mockCourses)
+  const [live, setLive] = useState(false)
+
+  useEffect(() => {
+    if (!supabase) return
+    supabase
+      .from('courses')
+      .select('*')
+      .order('id')
+      .then(({ data, error }) => {
+        if (error || !data || !data.length) return
+        setList(
+          data.map((r) => ({
+            id: r.id as number,
+            code: r.code as string,
+            title: r.title as string,
+            category: r.category as string,
+            totalHours: r.total_hours as number,
+            modules: (r.modules ?? []) as Course['modules'],
+          })),
+        )
+        setLive(true)
+      })
+  }, [])
+
   return (
     <div className="space-y-4">
+      {hasSupabase && (
+        <div className="flex items-center gap-2 text-[12px] font-semibold">
+          <span className={`h-2 w-2 rounded-full ${live ? 'bg-ok-600' : 'bg-warn-600'}`} />
+          <span className={live ? 'text-ok-600' : 'text-warn-600'}>
+            {live ? 'Live — loaded from your Supabase database' : 'Connecting to database…'}
+          </span>
+        </div>
+      )}
       <div className="grid gap-4 md:grid-cols-3">
-        {courses.map((c) => (
+        {list.map((c) => (
           <Card key={c.id} hover className="p-5">
             <div className="flex items-start justify-between gap-2">
               <Badge tone="brand">{c.code}</Badge>
