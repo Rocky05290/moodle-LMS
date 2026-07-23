@@ -103,14 +103,15 @@ export function Stat({
   delta?: string
   tone?: IconTone
 }) {
+  void tone
   return (
     <Card hover className="p-5">
       <div className="flex items-start justify-between">
-        <IconTile icon={icon} tone={tone} size={42} />
+        <div className="flex h-11 w-11 items-center justify-center rounded-lg border border-brand-500/12 bg-brand-50 text-brand-600">
+          {icon}
+        </div>
         {delta && (
-          <span className="rounded-full bg-ok-50 px-2 py-0.5 text-[11px] font-bold text-ok-600">
-            {delta}
-          </span>
+          <span className="text-[11px] font-bold text-ok-600">{delta}</span>
         )}
       </div>
       <div className="mt-4 text-[26px] leading-none font-extrabold tracking-tight text-navy-900">
