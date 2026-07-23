@@ -125,9 +125,12 @@ export default function Landing({ onSignIn }: { onSignIn: (u: User) => void }) {
       <section className="border-b border-line bg-white py-16">
         <div className="mx-auto max-w-6xl px-5 lg:px-8">
           <Reveal>
-            <p className="text-center text-[12px] font-bold tracking-[0.14em] text-brand-600 uppercase">
-              One core database · five portals
-            </p>
+            <div className="flex justify-center">
+              <span className="inline-flex items-center gap-2 rounded-full border border-brand-500/20 bg-gradient-to-r from-brand-50 to-indigo-50 px-4 py-1.5 text-[11px] font-bold tracking-[0.16em] text-brand-600 uppercase shadow-sm">
+                <span className="h-1.5 w-1.5 rounded-full bg-gradient-to-r from-brand-500 to-indigo-500" />
+                One core database · five portals
+              </span>
+            </div>
             <h2 className="mx-auto mt-3 max-w-3xl text-center text-[32px] leading-tight font-semibold text-[#4a90d9] sm:text-[40px]">
               A cloud platform built for Tamkeen-funded training providers
             </h2>
@@ -164,18 +167,24 @@ export default function Landing({ onSignIn }: { onSignIn: (u: User) => void }) {
         <div className="mx-auto max-w-6xl px-5 lg:px-8">
           <Reveal>
             <div className="mb-12 text-center">
-              <p className="text-[12px] font-bold tracking-[0.14em] text-brand-600 uppercase">
-                Capabilities
-              </p>
+              <div className="flex justify-center">
+                <span className="inline-flex items-center gap-2 rounded-full border border-brand-500/20 bg-gradient-to-r from-brand-50 to-indigo-50 px-4 py-1.5 text-[11px] font-bold tracking-[0.16em] text-brand-600 uppercase shadow-sm">
+                  <span className="h-1.5 w-1.5 rounded-full bg-gradient-to-r from-brand-500 to-indigo-500" />
+                  Capabilities
+                </span>
+              </div>
               <h2 className="mx-auto mt-2 max-w-2xl text-[30px] leading-tight font-extrabold tracking-tight text-navy-900 sm:text-[36px]">
                 Everything from enrolment to certificate
               </h2>
               <div className="mt-6 flex justify-center">
                 <button
                   onClick={scrollTop}
-                  className="flex items-center gap-2 rounded-md border-2 border-[#cbd5e3] bg-white px-5 py-3 text-[13.5px] font-bold text-brand-600 transition-all hover:-translate-y-0.5 hover:border-brand-500 hover:text-brand-700"
+                  className="group relative cursor-pointer overflow-hidden rounded-md border-2 border-brand-500 px-6 py-3 text-[13.5px] font-bold text-brand-600 transition-all hover:-translate-y-0.5 hover:text-white hover:shadow-lg hover:shadow-indigo-500/25"
                 >
-                  Sign in to explore <ArrowRight size={15} />
+                  <span className="absolute inset-0 translate-y-full bg-gradient-to-r from-brand-500 via-indigo-500 to-violet-500 transition-transform duration-300 group-hover:translate-y-0" />
+                  <span className="relative flex items-center gap-2">
+                    Sign in to explore <ArrowRight size={15} />
+                  </span>
                 </button>
               </div>
             </div>
