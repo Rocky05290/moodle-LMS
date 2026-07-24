@@ -117,6 +117,7 @@ export default function LoginCard({ onSignIn }: { onSignIn: (u: User) => void })
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
+            onKeyDown={(e) => e.key === 'Enter' && submit()}
             placeholder="you@company.bh"
             className="w-full bg-transparent text-[12.5px] font-medium text-navy-900 outline-none placeholder:text-ink-400"
           />
@@ -134,6 +135,7 @@ export default function LoginCard({ onSignIn }: { onSignIn: (u: User) => void })
             type={showPw ? 'text' : 'password'}
             value={password}
             onChange={(e) => setPassword(e.target.value)}
+            onKeyDown={(e) => e.key === 'Enter' && submit()}
             placeholder="••••••••"
             className="w-full bg-transparent text-[12.5px] font-medium text-navy-900 outline-none placeholder:text-ink-400"
           />
