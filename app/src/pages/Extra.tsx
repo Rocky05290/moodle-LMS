@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import type { ReactNode } from 'react'
-import { Plus, Upload, Mail, Phone, X } from 'lucide-react'
+import { Plus, Upload, Mail, Phone, X, Trash2 } from 'lucide-react'
 import {
   batches, courses as mockCourses, users, enrollments, getCourse, getUser,
   batchAttendancePct, fullName, initials,
@@ -104,6 +104,17 @@ export function Batches() {
   }
   useEffect(load, [])
 
+  const removeBatch = async (id: number, code: string) => {
+    if (!supabase) return
+    if (!window.confirm(`Delete batch ${code}?\n\nThis also removes its enrolments, attendance and grades.`)) return
+    const { error } = await supabase.from('batches').delete().eq('id', id)
+    if (error) {
+      window.alert('Could not delete: ' + error.message)
+      return
+    }
+    load()
+  }
+
   const display: BatchRow[] =
     rows ??
     batches.map((b) => {
@@ -149,6 +160,7 @@ export function Batches() {
                 <Th className="text-center">Learners</Th>
                 <Th className="text-center">Attendance</Th>
                 <Th className="text-center">Status</Th>
+                <Th className="text-center"></Th>
               </tr>
             </thead>
             <tbody>
@@ -177,6 +189,17 @@ export function Batches() {
                     <Badge tone={b.status === 'active' ? 'ok' : b.status === 'completed' ? 'muted' : 'brand'}>
                       {b.status.toUpperCase()}
                     </Badge>
+                  </Td>
+                  <Td className="text-center">
+                    {live && (
+                      <button
+                        onClick={() => removeBatch(b.id, b.batch_code)}
+                        title="Delete batch"
+                        className="cursor-pointer rounded-md p-1.5 text-ink-400 transition-colors hover:bg-bad-50 hover:text-bad-600"
+                      >
+                        <Trash2 size={15} />
+                      </button>
+                    )}
                   </Td>
                 </tr>
               ))}
@@ -420,6 +443,17 @@ export function People() {
   }
   useEffect(load, [])
 
+  const removePerson = async (id: string, name: string) => {
+    if (!supabase) return
+    if (!window.confirm(`Remove ${name} from the directory?`)) return
+    const { error } = await supabase.from('profiles').delete().eq('id', id)
+    if (error) {
+      window.alert('Could not delete: ' + error.message)
+      return
+    }
+    load()
+  }
+
   const rows: Person[] =
     people ??
     users.map((u) => ({
@@ -466,6 +500,7 @@ export function People() {
                 <Th>Contact</Th>
                 <Th>Company</Th>
                 <Th>Role</Th>
+                <Th className="text-center"></Th>
               </tr>
             </thead>
             <tbody>
@@ -498,6 +533,17 @@ export function People() {
                     >
                       {u.role.toUpperCase()}
                     </Badge>
+                  </Td>
+                  <Td className="text-center">
+                    {live && (
+                      <button
+                        onClick={() => removePerson(u.id, pName(u))}
+                        title="Remove person"
+                        className="cursor-pointer rounded-md p-1.5 text-ink-400 transition-colors hover:bg-bad-50 hover:text-bad-600"
+                      >
+                        <Trash2 size={15} />
+                      </button>
+                    )}
                   </Td>
                 </tr>
               ))}
