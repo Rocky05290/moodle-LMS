@@ -30,6 +30,8 @@ export default function LoginCard({ onSignIn }: { onSignIn: (u: User) => void })
   const [email, setEmail] = useState(emailFor(1))
   const [password, setPassword] = useState('demo1234')
   const [showPw, setShowPw] = useState(false)
+  const [err, setErr] = useState('')
+  const [busy, setBusy] = useState(false)
   const navigate = useNavigate()
   const active = ROLES.find((r) => r.role === role)!
   const demoUser = users.find((u) => u.id === active.demoId)!
@@ -40,31 +42,38 @@ export default function LoginCard({ onSignIn }: { onSignIn: (u: User) => void })
   }
 
   const submit = async () => {
-    // Try a REAL Supabase login first (when the backend is connected)
+    setErr('')
+    // When the backend is connected, a REAL login is required — wrong
+    // credentials are rejected (no bypass).
     if (hasSupabase && supabase) {
+      setBusy(true)
       const { data, error } = await supabase.auth.signInWithPassword({ email, password })
-      if (!error && data.user) {
-        const { data: prof } = await supabase
-          .from('profiles')
-          .select('*')
-          .eq('id', data.user.id)
-          .maybeSingle()
-        const role = (prof?.role ?? active.role) as Role
-        onSignIn({
-          id: 0,
-          firstName: (prof?.first_name as string) ?? demoUser.firstName,
-          lastName: (prof?.last_name as string) ?? demoUser.lastName,
-          email: data.user.email ?? email,
-          mobile: (prof?.mobile as string) ?? '',
-          cpr: (prof?.cpr as string) ?? '',
-          role,
-          company: (prof?.company as string) ?? undefined,
-        })
-        navigate('/' + role)
+      if (error || !data.user) {
+        setBusy(false)
+        setErr('Invalid email or password.')
         return
       }
+      const { data: prof } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('id', data.user.id)
+        .maybeSingle()
+      setBusy(false)
+      const role = (prof?.role ?? 'learner') as Role
+      onSignIn({
+        id: 0,
+        firstName: (prof?.first_name as string) ?? '',
+        lastName: (prof?.last_name as string) ?? '',
+        email: data.user.email ?? email,
+        mobile: (prof?.mobile as string) ?? '',
+        cpr: (prof?.cpr as string) ?? '',
+        role,
+        company: (prof?.company as string) ?? undefined,
+      })
+      navigate('/' + role)
+      return
     }
-    // Demo fallback — keeps the preview working without real accounts
+    // No backend connected → local demo preview only
     onSignIn(demoUser)
     navigate(active.home)
   }
@@ -149,15 +158,22 @@ export default function LoginCard({ onSignIn }: { onSignIn: (u: User) => void })
         </a>
       </div>
 
+      {err && (
+        <p className="mt-4 rounded-md border border-bad-600/20 bg-bad-50 px-3 py-2 text-center text-[12px] font-semibold text-bad-600">
+          {err}
+        </p>
+      )}
+
       {/* sign in — vibrant gradient */}
       <button
         onClick={submit}
-        className="group relative mt-4 w-full cursor-pointer overflow-hidden rounded-lg bg-gradient-to-r from-brand-500 via-indigo-500 to-violet-500 py-3 text-[13px] font-extrabold tracking-[0.12em] text-white shadow-lg shadow-indigo-500/30 transition-all hover:-translate-y-0.5 hover:shadow-xl hover:shadow-indigo-500/40 active:translate-y-0"
+        disabled={busy}
+        className="group relative mt-4 w-full cursor-pointer overflow-hidden rounded-lg bg-gradient-to-r from-brand-500 via-indigo-500 to-violet-500 py-3 text-[13px] font-extrabold tracking-[0.12em] text-white shadow-lg shadow-indigo-500/30 transition-all hover:-translate-y-0.5 hover:shadow-xl hover:shadow-indigo-500/40 active:translate-y-0 disabled:opacity-70"
       >
         {/* sheen */}
         <span className="pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/30 to-transparent transition-transform duration-700 group-hover:translate-x-full" />
         <span className="relative flex items-center justify-center gap-2">
-          SIGN IN <ArrowRight size={15} />
+          {busy ? 'SIGNING IN…' : 'SIGN IN'} <ArrowRight size={15} />
         </span>
       </button>
 
