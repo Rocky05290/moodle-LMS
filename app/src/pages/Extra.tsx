@@ -160,7 +160,7 @@ export function Batches() {
                 <Th className="text-center">Learners</Th>
                 <Th className="text-center">Attendance</Th>
                 <Th className="text-center">Status</Th>
-                <Th className="text-center"></Th>
+                <Th className="text-center">{''}</Th>
               </tr>
             </thead>
             <tbody>
@@ -500,7 +500,7 @@ export function People() {
                 <Th>Contact</Th>
                 <Th>Company</Th>
                 <Th>Role</Th>
-                <Th className="text-center"></Th>
+                <Th className="text-center">{''}</Th>
               </tr>
             </thead>
             <tbody>
