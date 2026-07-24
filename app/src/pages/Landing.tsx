@@ -122,19 +122,19 @@ export default function Landing({ onSignIn }: { onSignIn: (u: User) => void }) {
       </section>
 
       {/* ========================= INTRO STRIP ======================== */}
-      <section className="border-b border-line bg-white py-16">
+      <section className="bg-[#4a90d9] py-16">
         <div className="mx-auto max-w-6xl px-5 lg:px-8">
           <Reveal>
             <div className="flex justify-center">
-              <span className="inline-flex items-center gap-2 rounded-full border border-brand-500/20 bg-gradient-to-r from-brand-50 to-indigo-50 px-4 py-1.5 text-[11px] font-bold tracking-[0.16em] text-brand-600 uppercase shadow-sm">
-                <span className="h-1.5 w-1.5 rounded-full bg-gradient-to-r from-brand-500 to-indigo-500" />
+              <span className="inline-flex items-center gap-2 rounded-full border border-white/35 bg-white/15 px-4 py-1.5 text-[11px] font-bold tracking-[0.16em] text-white uppercase shadow-sm backdrop-blur-sm">
+                <span className="h-1.5 w-1.5 rounded-full bg-white" />
                 One core database · five portals
               </span>
             </div>
-            <h2 className="mx-auto mt-3 max-w-3xl text-center text-[32px] leading-tight font-semibold text-[#4a90d9] sm:text-[40px]">
+            <h2 className="mx-auto mt-3 max-w-3xl text-center text-[32px] leading-tight font-semibold text-white sm:text-[40px]">
               A cloud platform built for Tamkeen-funded training providers
             </h2>
-            <p className="mx-auto mt-4 max-w-2xl text-center text-[15px] leading-relaxed text-ink-500">
+            <p className="mx-auto mt-4 max-w-2xl text-center text-[15px] leading-relaxed text-white/85">
               Everything a modern training centre needs — replacing spreadsheets, paper registers
               and generic LMS tools with one connected, compliant system.
             </p>
@@ -173,7 +173,10 @@ export default function Landing({ onSignIn }: { onSignIn: (u: User) => void }) {
                   Capabilities
                 </span>
               </div>
-              <h2 className="mx-auto mt-2 max-w-2xl text-[30px] leading-tight font-extrabold tracking-tight text-navy-900 sm:text-[36px]">
+              <h2
+                className="mx-auto mt-2 max-w-2xl bg-gradient-to-r from-brand-600 via-violet-500 to-fuchsia-500 bg-clip-text text-[30px] leading-tight font-extrabold tracking-tight text-transparent sm:text-[38px]"
+                style={{ backgroundSize: '220% auto', animation: 'gradientPan 5s linear infinite alternate' }}
+              >
                 Everything from enrolment to certificate
               </h2>
               <div className="mt-6 flex justify-center">
