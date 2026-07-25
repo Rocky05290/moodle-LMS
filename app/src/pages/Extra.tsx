@@ -154,13 +154,13 @@ export function Batches() {
             <thead>
               <tr>
                 <Th>Batch code</Th>
-                <Th>Course</Th>
+                <Th className="w-full">Course</Th>
                 <Th>Trainer</Th>
                 <Th>Schedule</Th>
                 <Th className="text-center">Learners</Th>
                 <Th className="text-center">Attendance</Th>
                 <Th className="text-center">Status</Th>
-                <Th className="text-center">{''}</Th>
+                <Th className="text-right">{''}</Th>
               </tr>
             </thead>
             <tbody>
@@ -190,7 +190,7 @@ export function Batches() {
                       {b.status.toUpperCase()}
                     </Badge>
                   </Td>
-                  <Td className="text-center">
+                  <Td className="text-right pr-2">
                     {live && (
                       <button
                         onClick={() => removeBatch(b.id, b.batch_code)}
@@ -495,12 +495,12 @@ export function People() {
           <table className="w-full min-w-[680px]">
             <thead>
               <tr>
-                <Th>Name</Th>
+                <Th className="w-full">Name</Th>
                 <Th>CPR</Th>
                 <Th>Contact</Th>
                 <Th>Company</Th>
                 <Th>Role</Th>
-                <Th className="text-center">{''}</Th>
+                <Th className="text-right">{''}</Th>
               </tr>
             </thead>
             <tbody>
@@ -534,7 +534,7 @@ export function People() {
                       {u.role.toUpperCase()}
                     </Badge>
                   </Td>
-                  <Td className="text-center">
+                  <Td className="text-right pr-2">
                     {live && (
                       <button
                         onClick={() => removePerson(u.id, pName(u))}
