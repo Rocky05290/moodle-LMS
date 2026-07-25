@@ -166,12 +166,12 @@ export function Batches() {
             <tbody>
               {display.map((b) => (
                 <tr key={b.id} className="hover:bg-soft">
-                  <Td className="font-bold">{b.batch_code}</Td>
+                  <Td className="font-bold whitespace-nowrap">{b.batch_code}</Td>
                   <Td className="text-ink-700">{b.course?.title ?? '—'}</Td>
                   <Td className="text-ink-500">
                     {b.trainer ? `${b.trainer.first_name} ${b.trainer.last_name}` : '—'}
                   </Td>
-                  <Td className="text-[12px] text-ink-500">
+                  <Td className="whitespace-nowrap text-[12px] text-ink-500">
                     {b.start_date} → {b.end_date}
                     <div className="text-ink-400">
                       {b.start_time?.slice(0, 5)}–{b.end_time?.slice(0, 5)} · {b.total_hours}h
