@@ -1,9 +1,11 @@
-import { Layers, Users, CalendarCheck, Trophy, Plus, Upload, Sparkles } from 'lucide-react'
+import { Layers, Users, CalendarCheck, Trophy, Plus, Upload, Sparkles, ArrowRight } from 'lucide-react'
 import {
   batches, courses, users, enrollments, getCourse, getUser, learnersInBatch,
   attendancePct, batchAttendancePct, averageGrade, fullName, initials,
 } from '../data/mock'
-import { Avatar, Badge, Button, Card, ProgressBar, Ring, SectionTitle, Stat, Td, Th } from '../components/ui'
+import { Avatar, Badge, Button, Card, IconTile, type IconTone, ProgressBar, Ring, SectionTitle, Stat, Td, Th } from '../components/ui'
+
+const CARD_TONES: IconTone[] = ['blue', 'violet', 'amber', 'sky', 'emerald', 'navy']
 
 export default function AdminDashboard() {
   const learners = users.filter((u) => u.role === 'learner')
@@ -164,21 +166,36 @@ export default function AdminDashboard() {
         <SectionTitle right={<Badge tone="muted">{courses.length} courses</Badge>}>
           Master Course Inventory
         </SectionTitle>
-        <div className="grid gap-3 md:grid-cols-3">
-          {courses.map((c) => (
+        <div className="grid gap-4 md:grid-cols-3">
+          {courses.map((c, i) => (
             <div
               key={c.id}
-              className="group cursor-pointer rounded-xl border border-line bg-surface p-4 shadow-sm transition-all hover:-translate-y-0.5 hover:border-brand-500/30 hover:shadow-[0_16px_34px_-16px_rgba(15,27,53,0.24)]"
+              className="group relative cursor-pointer overflow-hidden rounded-2xl border border-line bg-surface p-5 shadow-[0_10px_28px_-16px_rgba(15,27,53,0.18)] transition-all hover:-translate-y-1 hover:border-brand-500/30 hover:shadow-[0_24px_50px_-20px_rgba(15,27,53,0.32)]"
             >
-              <div className="flex items-start justify-between gap-2">
+              {/* decorative gradient glow on hover */}
+              <div className="pointer-events-none absolute -top-12 -right-12 h-32 w-32 rounded-full bg-gradient-to-br from-brand-400/25 via-violet-400/15 to-transparent opacity-0 blur-2xl transition-opacity duration-300 group-hover:opacity-100" />
+
+              <div className="relative flex items-start justify-between">
+                <IconTile icon={<Layers size={22} />} tone={CARD_TONES[i % CARD_TONES.length]} size={46} />
+                <span className="rounded-full bg-soft px-2.5 py-1 text-[11px] font-extrabold text-ink-500 ring-1 ring-line">
+                  {c.totalHours}h
+                </span>
+              </div>
+
+              <div className="relative mt-4 flex items-center gap-2">
                 <Badge tone="brand">{c.code}</Badge>
-                <span className="text-[11px] font-bold text-ink-400">{c.totalHours}h</span>
+                <span className="text-[11px] font-semibold text-ink-400">{c.category}</span>
               </div>
-              <div className="mt-2.5 text-[13.5px] leading-snug font-bold text-navy-900 group-hover:text-brand-600">
+
+              <h3 className="relative mt-2 text-[15px] leading-snug font-extrabold text-navy-900 transition-colors group-hover:text-brand-600">
                 {c.title}
-              </div>
-              <div className="mt-1 text-[11.5px] text-ink-400">
-                {c.category} · {c.modules.length} modules
+              </h3>
+
+              <div className="relative mt-4 flex items-center justify-between border-t border-line pt-3">
+                <span className="text-[11.5px] font-semibold text-ink-400">{c.modules.length} modules</span>
+                <span className="flex translate-x-1 items-center gap-1 text-[11.5px] font-bold text-brand-600 opacity-0 transition-all duration-300 group-hover:translate-x-0 group-hover:opacity-100">
+                  View <ArrowRight size={12} />
+                </span>
               </div>
             </div>
           ))}
