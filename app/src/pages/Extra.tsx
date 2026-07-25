@@ -3,7 +3,7 @@ import type { ReactNode } from 'react'
 import { Plus, Upload, Mail, Phone, X, Trash2 } from 'lucide-react'
 import {
   batches, courses as mockCourses, users, enrollments, getCourse, getUser,
-  batchAttendancePct, fullName, initials,
+  batchAttendancePct,
 } from '../data/mock'
 import type { Course, Role } from '../data/mock'
 import { supabase, hasSupabase, createAccount } from '../lib/supabase'
@@ -676,54 +676,228 @@ function AddPerson({ onClose, onDone }: { onClose: () => void; onDone: () => voi
 }
 
 /* ---------------------------- Grading ----------------------------- */
+const ASSESSMENTS: { key: string; label: string }[] = [
+  { key: 'pre', label: 'Pre-test' },
+  { key: 'act', label: 'Activity' },
+  { key: 'mid', label: 'Mid-term' },
+  { key: 'post', label: 'Post-test' },
+]
+const gInit = (name: string) =>
+  name.split(' ').filter(Boolean).map((s) => s[0]).slice(0, 2).join('').toUpperCase()
+
 export function Grading() {
-  const batch = batches.find((b) => b.status === 'active')!
-  const roster = enrollments.filter((e) => e.batchId === batch.id)
-  const criteria = ['Threats identified', 'Mitigations described', 'Clarity & detail']
+  const [batchList, setBatchList] = useState<{ id: number; batch_code: string; title: string }[]>([])
+  const [batchId, setBatchId] = useState<number | null>(null)
+  const [roster, setRoster] = useState<{ enrollmentId: number; learnerId: string; name: string }[]>([])
+  const [scores, setScores] = useState<Record<string, Record<string, string>>>({})
+  const [busy, setBusy] = useState(false)
+  const [saved, setSaved] = useState('')
+
+  useEffect(() => {
+    if (!supabase) return
+    supabase
+      .from('batches')
+      .select('id,batch_code,course:courses(title)')
+      .order('start_date')
+      .then(({ data, error }) => {
+        if (error || !data || !data.length) return
+        const list = data.map((b: Record<string, unknown>) => ({
+          id: b.id as number,
+          batch_code: b.batch_code as string,
+          title: ((b.course as { title?: string } | null)?.title as string) ?? '',
+        }))
+        setBatchList(list)
+        setBatchId(list[0].id)
+      })
+  }, [])
+
+  useEffect(() => {
+    if (!supabase || !batchId) return
+    supabase
+      .from('enrollments')
+      .select('id, learner:profiles!learner_id(id,first_name,last_name)')
+      .eq('batch_id', batchId)
+      .then(({ data }) => {
+        setRoster(
+          (data ?? [])
+            .map((e: Record<string, unknown>) => {
+              const l = e.learner as Record<string, unknown> | null
+              return {
+                enrollmentId: e.id as number,
+                learnerId: (l?.id as string) ?? '',
+                name: `${(l?.first_name as string) ?? ''} ${(l?.last_name as string) ?? ''}`.trim(),
+              }
+            })
+            .filter((x) => x.learnerId),
+        )
+      })
+    supabase
+      .from('grades')
+      .select('learner_id,assessment,score')
+      .eq('batch_id', batchId)
+      .then(({ data }) => {
+        const s: Record<string, Record<string, string>> = {}
+        ;(data ?? []).forEach((g: Record<string, unknown>) => {
+          const lid = g.learner_id as string
+          s[lid] = s[lid] ?? {}
+          s[lid][g.assessment as string] = String(g.score)
+        })
+        setScores(s)
+      })
+  }, [batchId])
+
+  const setScore = (learnerId: string, key: string, val: string) => {
+    setSaved('')
+    setScores((s) => ({ ...s, [learnerId]: { ...(s[learnerId] ?? {}), [key]: val } }))
+  }
+
+  const avg = (learnerId: string): number | null => {
+    const vals = ASSESSMENTS.map((a) => scores[learnerId]?.[a.key])
+      .filter((v) => v !== undefined && v !== '')
+      .map(Number)
+      .filter((n) => !Number.isNaN(n))
+    if (!vals.length) return null
+    return Math.round(vals.reduce((s, n) => s + n, 0) / vals.length)
+  }
+
+  const save = async () => {
+    if (!supabase || !batchId) return
+    const rows: { learner_id: string; batch_id: number; assessment: string; score: number }[] = []
+    roster.forEach((r) => {
+      ASSESSMENTS.forEach((a) => {
+        const v = scores[r.learnerId]?.[a.key]
+        if (v !== undefined && v !== '') {
+          const n = Number(v)
+          if (!Number.isNaN(n) && n >= 0 && n <= 100) {
+            rows.push({ learner_id: r.learnerId, batch_id: batchId, assessment: a.key, score: n })
+          }
+        }
+      })
+    })
+    if (!rows.length) {
+      setSaved('Enter at least one score first.')
+      return
+    }
+    setBusy(true)
+    const { data: auth } = await supabase.auth.getUser()
+    const withGrader = rows.map((r) => ({ ...r, graded_by: auth.user?.id ?? null }))
+    const { error } = await supabase.from('grades').upsert(withGrader, { onConflict: 'learner_id,batch_id,assessment' })
+    setBusy(false)
+    setSaved(error ? 'Save failed: ' + error.message : `✓ Saved ${rows.length} scores.`)
+  }
 
   return (
-    <Card className="p-5">
-      <SectionTitle right={<Badge tone="brand">{batch.batchCode}</Badge>}>
-        Rubric grading — Practical Task
-      </SectionTitle>
-      <div className="space-y-3">
-        {roster.map((e) => {
-          const u = getUser(e.learnerId)
-          return (
-            <div key={e.id} className="rounded-xl border border-line bg-soft p-4">
-              <div className="flex items-center gap-2.5">
-                <Avatar text={initials(u)} size={30} />
-                <span className="text-[13.5px] font-bold">{fullName(u)}</span>
-                <Badge tone="warn">Awaiting grade</Badge>
-              </div>
-              <div className="mt-3 grid gap-2.5 sm:grid-cols-3">
-                {criteria.map((c) => (
-                  <div key={c} className="rounded-lg border border-line bg-soft p-3">
-                    <div className="mb-2 text-[11.5px] font-bold text-ink-700">{c}</div>
-                    <div className="flex gap-1.5">
-                      {[0, 1, 2].map((p) => (
-                        <button
-                          key={p}
-                          className="h-7 flex-1 cursor-pointer rounded-md border border-line2 bg-soft text-[11px] font-bold text-ink-500 hover:border-brand-500 hover:bg-brand-50 hover:text-white"
-                        >
-                          {p}
-                        </button>
+    <div className="space-y-4">
+      <Card className="flex flex-wrap items-center gap-3 p-4">
+        <div className="leading-tight">
+          <select
+            value={batchId ?? ''}
+            onChange={(e) => {
+              setBatchId(Number(e.target.value))
+              setSaved('')
+            }}
+            className="cursor-pointer rounded-md border border-line bg-surface px-2 py-1 text-[13.5px] font-bold outline-none"
+          >
+            {batchList.map((b) => (
+              <option key={b.id} value={b.id}>
+                {b.batch_code}
+              </option>
+            ))}
+          </select>
+          <div className="mt-0.5 text-[11.5px] text-ink-500">{batchList.find((b) => b.id === batchId)?.title}</div>
+        </div>
+        <div className="ml-auto flex items-center gap-2.5">
+          {hasSupabase && (
+            <span className="flex items-center gap-1.5 text-[11.5px] font-semibold text-ok-600">
+              <span className="h-2 w-2 rounded-full bg-ok-600" /> Live
+            </span>
+          )}
+          <Button onClick={save} className="flex items-center gap-2">
+            {busy ? 'Saving…' : 'Save grades'}
+          </Button>
+        </div>
+      </Card>
+
+      {saved && (
+        <div
+          className={`rounded-lg border px-4 py-2.5 text-[12.5px] font-semibold ${
+            saved.startsWith('✓')
+              ? 'border-ok-600/20 bg-ok-50 text-ok-600'
+              : 'border-warn-600/20 bg-warn-50 text-warn-600'
+          }`}
+        >
+          {saved}
+        </div>
+      )}
+
+      <Card className="p-5">
+        <SectionTitle right={<Badge tone="muted">{roster.length} learners</Badge>}>
+          Assessment scores (0–100)
+        </SectionTitle>
+        {roster.length === 0 ? (
+          <div className="rounded-xl border border-dashed border-line2 bg-soft p-8 text-center">
+            <p className="text-[13px] font-semibold text-ink-600">No learners enrolled in this batch.</p>
+            <p className="mt-1 text-[12px] text-ink-400">
+              Enrol them on the <b>Attendance</b> page first.
+            </p>
+          </div>
+        ) : (
+          <div className="overflow-x-auto">
+            <table className="w-full min-w-[640px]">
+              <thead>
+                <tr>
+                  <Th className="w-full">Learner</Th>
+                  {ASSESSMENTS.map((a) => (
+                    <Th key={a.key} className="text-center">
+                      {a.label}
+                    </Th>
+                  ))}
+                  <Th className="text-center">Average</Th>
+                </tr>
+              </thead>
+              <tbody>
+                {roster.map((r) => {
+                  const a = avg(r.learnerId)
+                  return (
+                    <tr key={r.enrollmentId} className="hover:bg-soft">
+                      <Td>
+                        <div className="flex items-center gap-2.5">
+                          <Avatar text={gInit(r.name)} size={30} />
+                          <span className="font-semibold text-navy-900">{r.name}</span>
+                        </div>
+                      </Td>
+                      {ASSESSMENTS.map((asmt) => (
+                        <Td key={asmt.key} className="text-center">
+                          <input
+                            type="number"
+                            min={0}
+                            max={100}
+                            value={scores[r.learnerId]?.[asmt.key] ?? ''}
+                            onChange={(e) => setScore(r.learnerId, asmt.key, e.target.value)}
+                            placeholder="—"
+                            className="h-9 w-16 rounded-md border border-line bg-soft text-center text-[12.5px] font-semibold text-navy-900 outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/15"
+                          />
+                        </Td>
                       ))}
-                    </div>
-                  </div>
-                ))}
-              </div>
-              <div className="mt-3 flex gap-2">
-                <Button className="!px-3 !py-2 !text-[12px]">Save grade</Button>
-                <Button variant="ghost" className="!px-3 !py-2 !text-[12px]">
-                  Return for redo
-                </Button>
-              </div>
-            </div>
-          )
-        })}
-      </div>
-    </Card>
+                      <Td className="text-center">
+                        {a == null ? (
+                          <span className="text-ink-400">—</span>
+                        ) : (
+                          <Badge tone={a >= 60 ? 'ok' : a >= 40 ? 'warn' : 'bad'}>{a}%</Badge>
+                        )}
+                      </Td>
+                    </tr>
+                  )
+                })}
+              </tbody>
+            </table>
+          </div>
+        )}
+        <p className="mt-4 text-[11.5px] text-ink-400">
+          Pre-test · Activity · Mid-term · Post-test — scores feed the Tamkeen completion report. Pass ≥ 60%.
+        </p>
+      </Card>
+    </div>
   )
 }
 
