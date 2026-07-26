@@ -3,6 +3,7 @@ import {
   batches, getCourse, getUser, enrollments, attendancePct, averageGrade, fullName,
 } from '../data/mock'
 import { useLiveData, attPct, avgGradeLive } from '../lib/live'
+import { downloadCertificate } from '../lib/certificate'
 import { Badge, Button, Card, ProgressBar, Ring, SectionTitle, Stat } from '../components/ui'
 
 const LEARNER_ID = 101
@@ -10,6 +11,7 @@ const LEARNER_ID = 101
 type Module = { num: string; title: string; desc: string }
 type LearnerVM = {
   firstName: string
+  learnerName: string
   courseTitle: string
   batchCode: string
   startTime: string
@@ -19,6 +21,10 @@ type LearnerVM = {
   modules: Module[]
   completedCount: number
   trainerName: string
+  hours: number
+  endDate: string
+  cpr: string
+  eligible: boolean
 }
 
 export default function LearnerToday() {
@@ -36,17 +42,24 @@ export default function LearnerToday() {
       const course = batch ? d.courses.find((c) => c.id === batch.course_id) : undefined
       const trainer = batch ? d.profiles.find((p) => p.id === batch.trainer_id) : undefined
       const modules = course?.modules ?? []
+      const att0 = batch ? attPct(d.attendance, d.me.id, batch.id) : 0
+      const avg0 = batch ? avgGradeLive(d.grades, d.me.id, batch.id) : null
       vm = {
         firstName: d.me.first_name,
+        learnerName: `${d.me.first_name} ${d.me.last_name}`,
         courseTitle: course?.title ?? '—',
         batchCode: batch?.batch_code ?? '—',
         startTime: (batch?.start_time ?? '').slice(0, 5) || 'TBD',
-        att: batch ? attPct(d.attendance, d.me.id, batch.id) : 0,
-        avg: batch ? avgGradeLive(d.grades, d.me.id, batch.id) : null,
+        att: att0,
+        avg: avg0,
         progress: enr.progress,
         modules,
         completedCount: Math.floor((enr.progress / 100) * modules.length),
         trainerName: trainer ? `${trainer.first_name} ${trainer.last_name}` : 'Unassigned',
+        hours: batch?.total_hours ?? 0,
+        endDate: batch?.end_date ?? '',
+        cpr: d.me.cpr ?? '',
+        eligible: att0 >= 75 && (avg0 ?? 0) >= 60,
       }
     }
   } else {
@@ -54,17 +67,24 @@ export default function LearnerToday() {
     const enr = enrollments.find((e) => e.learnerId === LEARNER_ID)!
     const batch = batches.find((b) => b.id === enr.batchId)!
     const course = getCourse(batch.courseId)
+    const att0 = attendancePct(LEARNER_ID, batch.id)
+    const avg0 = averageGrade(LEARNER_ID, batch.id)
     vm = {
       firstName: me.firstName,
+      learnerName: fullName(me),
       courseTitle: course.title,
       batchCode: batch.batchCode,
       startTime: batch.startTime,
-      att: attendancePct(LEARNER_ID, batch.id),
-      avg: averageGrade(LEARNER_ID, batch.id),
+      att: att0,
+      avg: avg0,
       progress: enr.progress,
       modules: course.modules,
       completedCount: Math.floor((enr.progress / 100) * course.modules.length),
       trainerName: fullName(getUser(batch.trainerId)),
+      hours: batch.totalHours,
+      endDate: batch.endDate,
+      cpr: me.cpr ?? '',
+      eligible: att0 >= 75 && (avg0 ?? 0) >= 60,
     }
   }
 
@@ -101,6 +121,24 @@ export default function LearnerToday() {
           </div>
           <div className="ml-auto flex flex-wrap items-center gap-2.5">
             <Badge tone="brand">Next class · {vm.startTime}</Badge>
+            {vm.eligible && (
+              <Button
+                variant="gold"
+                onClick={() =>
+                  downloadCertificate({
+                    learnerName: vm!.learnerName,
+                    courseTitle: vm!.courseTitle,
+                    batchCode: vm!.batchCode,
+                    hours: vm!.hours,
+                    date: vm!.endDate,
+                    cpr: vm!.cpr || undefined,
+                  })
+                }
+                className="flex items-center gap-2"
+              >
+                <Award size={15} /> My certificate
+              </Button>
+            )}
             <Button className="flex items-center gap-2">
               <PlayCircle size={15} /> Join live class
             </Button>

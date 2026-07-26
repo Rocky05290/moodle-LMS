@@ -10,6 +10,7 @@ import TrainerDashboard from './pages/TrainerDashboard'
 import LearnerToday from './pages/LearnerToday'
 import AuditorDashboard from './pages/AuditorDashboard'
 import Attendance from './pages/Attendance'
+import Certificates from './pages/Certificates'
 import { Batches, Courses, People, Grading, MyCourse } from './pages/Extra'
 
 const META: Record<string, { title: string; subtitle?: string }> = {
@@ -24,6 +25,7 @@ const META: Record<string, { title: string; subtitle?: string }> = {
   '/mycourse': { title: 'My Course', subtitle: 'Modules and learning path' },
   '/auditor': { title: 'Compliance', subtitle: 'Read-only verification and export' },
   '/audit-log': { title: 'Audit Log', subtitle: 'Every change, timestamped' },
+  '/certificates': { title: 'Certificates', subtitle: 'Issue completion certificates as PDF' },
 }
 
 function Shell({
@@ -99,6 +101,7 @@ export default function App() {
         <Route path="/batches" element={guard(<Batches />)} />
         <Route path="/courses" element={guard(<Courses />)} />
         <Route path="/people" element={guard(<People />)} />
+        <Route path="/certificates" element={guard(<Certificates />)} />
 
         <Route path="/trainer" element={guard(<TrainerDashboard />)} />
         <Route path="/attendance" element={guard(<Attendance />)} />

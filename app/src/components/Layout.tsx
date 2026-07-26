@@ -2,7 +2,7 @@ import type { ReactNode } from 'react'
 import { NavLink, useNavigate } from 'react-router-dom'
 import {
   LayoutDashboard, BookOpen, Layers, Users, CalendarCheck, ClipboardCheck,
-  ShieldCheck, FileBarChart, LogOut, Bell, Search, HelpCircle, ChevronRight,
+  ShieldCheck, FileBarChart, LogOut, Bell, Search, HelpCircle, ChevronRight, Award,
 } from 'lucide-react'
 import type { Role, User } from '../data/mock'
 import { fullName, initials } from '../data/mock'
@@ -15,6 +15,7 @@ const NAV: Record<Role, { to: string; label: string; icon: ReactNode }[]> = {
     { to: '/batches', label: 'Batches', icon: <Layers size={17} /> },
     { to: '/courses', label: 'Courses', icon: <BookOpen size={17} /> },
     { to: '/people', label: 'People', icon: <Users size={17} /> },
+    { to: '/certificates', label: 'Certificates', icon: <Award size={17} /> },
   ],
   trainer: [
     { to: '/trainer', label: 'My Batches', icon: <LayoutDashboard size={17} /> },
@@ -27,6 +28,7 @@ const NAV: Record<Role, { to: string; label: string; icon: ReactNode }[]> = {
   ],
   auditor: [
     { to: '/auditor', label: 'Compliance', icon: <ShieldCheck size={17} /> },
+    { to: '/certificates', label: 'Certificates', icon: <Award size={17} /> },
     { to: '/audit-log', label: 'Audit Log', icon: <FileBarChart size={17} /> },
   ],
   company: [{ to: '/admin', label: 'Dashboard', icon: <LayoutDashboard size={17} /> }],
