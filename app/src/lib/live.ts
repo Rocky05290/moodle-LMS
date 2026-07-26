@@ -35,6 +35,8 @@ export type BatchRow = {
   trainer_id: string | null
   start_date: string
   end_date: string
+  start_time: string | null
+  end_time: string | null
   total_hours: number
   status: string
 }
@@ -83,7 +85,7 @@ export function useLiveData(): LiveData {
         sb.from('courses').select('id,code,title,category,total_hours,modules').order('id'),
         sb
           .from('batches')
-          .select('id,batch_code,course_id,trainer_id,start_date,end_date,total_hours,status')
+          .select('id,batch_code,course_id,trainer_id,start_date,end_date,start_time,end_time,total_hours,status')
           .order('start_date'),
         sb.from('enrollments').select('id,learner_id,batch_id,progress'),
         sb.from('attendance').select('learner_id,batch_id,code'),
@@ -114,6 +116,9 @@ export function useLiveData(): LiveData {
 }
 
 /* ------------------------- pure metric helpers ------------------------- */
+export const nameInitials = (name: string) =>
+  name.split(' ').filter(Boolean).map((s) => s[0]).slice(0, 2).join('').toUpperCase()
+
 export function attPct(att: AttRow[], learnerId: string, batchId: number): number {
   const rows = att.filter((r) => r.learner_id === learnerId && r.batch_id === batchId)
   if (!rows.length) return 0
