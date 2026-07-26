@@ -3,19 +3,137 @@ import {
   batches, courses, users, enrollments, getCourse, getUser, learnersInBatch,
   attendancePct, batchAttendancePct, averageGrade, fullName, initials,
 } from '../data/mock'
+import { useLiveData, attPct, batchAttPct, avgGradeLive } from '../lib/live'
 import { Avatar, Badge, Button, Card, IconTile, type IconTone, ProgressBar, Ring, SectionTitle, Stat, Td, Th } from '../components/ui'
 
 const CARD_TONES: IconTone[] = ['blue', 'violet', 'amber', 'sky', 'emerald', 'navy']
 
-export default function AdminDashboard() {
-  const learners = users.filter((u) => u.role === 'learner')
-  const activeBatch = batches.find((b) => b.status === 'active')!
-  const roster = learnersInBatch(activeBatch.id)
+type RosterVM = { key: string | number; name: string; init: string; company: string | null; attendance: number; avgGrade: number | null; progress: number }
+type BatchVM = { key: string | number; code: string; status: string; courseTitle: string; trainerName: string; count: number; ring: number; startDate: string; endDate: string; totalHours: number }
+type CourseVM = { id: number; code: string; title: string; category: string; totalHours: number; modules: { num: string; title: string; desc: string }[] }
+type DashVM = {
+  live: boolean
+  name: string
+  batchesCount: number
+  learnersCount: number
+  coursesCount: number
+  activeCode: string
+  avgAttendance: number
+  passRate: number
+  roster: RosterVM[]
+  batchList: BatchVM[]
+  courses: CourseVM[]
+}
 
-  const passRate = Math.round(
-    (roster.filter((r) => (averageGrade(r.learnerId, activeBatch.id) ?? 0) >= 60).length /
-      roster.length) * 100,
-  )
+const nm = (name: string) =>
+  name.split(' ').filter(Boolean).map((s) => s[0]).slice(0, 2).join('').toUpperCase()
+
+export default function AdminDashboard() {
+  const d = useLiveData()
+
+  let vm: DashVM
+  if (d.live) {
+    const liveLearners = d.profiles.filter((p) => p.role === 'learner')
+    const active = d.batches.find((b) => b.status === 'active') ?? d.batches[0]
+    const courseById = (id: number) => d.courses.find((c) => c.id === id)
+    const profById = (id: string | null) => d.profiles.find((p) => p.id === id)
+    const rosterEnroll = active ? d.enrollments.filter((e) => e.batch_id === active.id) : []
+    const roster: RosterVM[] = rosterEnroll.map((e) => {
+      const u = profById(e.learner_id)
+      const name = u ? `${u.first_name} ${u.last_name}` : '—'
+      return {
+        key: e.id,
+        name,
+        init: nm(name),
+        company: u?.company ?? null,
+        attendance: active ? attPct(d.attendance, e.learner_id, active.id) : 0,
+        avgGrade: active ? avgGradeLive(d.grades, e.learner_id, active.id) : null,
+        progress: e.progress,
+      }
+    })
+    const passRate = roster.length
+      ? Math.round((roster.filter((r) => (r.avgGrade ?? 0) >= 60).length / roster.length) * 100)
+      : 0
+    vm = {
+      live: true,
+      name: d.me ? `${d.me.first_name} ${d.me.last_name}` : 'Admin',
+      batchesCount: d.batches.length,
+      learnersCount: liveLearners.length,
+      coursesCount: d.courses.length,
+      activeCode: active?.batch_code ?? '—',
+      avgAttendance: active ? batchAttPct(d.attendance, active.id) : 0,
+      passRate,
+      roster,
+      batchList: d.batches.map((b) => {
+        const c = courseById(b.course_id)
+        const t = profById(b.trainer_id)
+        return {
+          key: b.id,
+          code: b.batch_code,
+          status: b.status,
+          courseTitle: c?.title ?? '—',
+          trainerName: t ? `${t.first_name} ${t.last_name}` : 'Unassigned',
+          count: d.enrollments.filter((e) => e.batch_id === b.id).length,
+          ring: b.status === 'active' ? batchAttPct(d.attendance, b.id) : 0,
+          startDate: b.start_date,
+          endDate: b.end_date,
+          totalHours: b.total_hours,
+        }
+      }),
+      courses: d.courses.map((c) => ({
+        id: c.id,
+        code: c.code,
+        title: c.title,
+        category: c.category ?? '',
+        totalHours: c.total_hours,
+        modules: c.modules ?? [],
+      })),
+    }
+  } else {
+    const learners = users.filter((u) => u.role === 'learner')
+    const active = batches.find((b) => b.status === 'active')!
+    const roster: RosterVM[] = learnersInBatch(active.id).map((r) => ({
+      key: r.id,
+      name: fullName(r.user),
+      init: initials(r.user),
+      company: r.user.company ?? null,
+      attendance: attendancePct(r.learnerId, active.id),
+      avgGrade: averageGrade(r.learnerId, active.id),
+      progress: r.progress,
+    }))
+    const passRate = Math.round((roster.filter((r) => (r.avgGrade ?? 0) >= 60).length / roster.length) * 100)
+    vm = {
+      live: false,
+      name: 'Ankit Srivastav',
+      batchesCount: batches.length,
+      learnersCount: learners.length,
+      coursesCount: courses.length,
+      activeCode: active.batchCode,
+      avgAttendance: batchAttendancePct(active.id),
+      passRate,
+      roster,
+      batchList: batches.map((b) => ({
+        key: b.id,
+        code: b.batchCode,
+        status: b.status,
+        courseTitle: getCourse(b.courseId).title,
+        trainerName: fullName(getUser(b.trainerId)),
+        count: enrollments.filter((e) => e.batchId === b.id).length,
+        ring: b.status === 'active' ? batchAttendancePct(b.id) : 0,
+        startDate: b.startDate,
+        endDate: b.endDate,
+        totalHours: b.totalHours,
+      })),
+      courses: courses.map((c) => ({
+        id: c.id,
+        code: c.code,
+        title: c.title,
+        category: c.category,
+        totalHours: c.totalHours,
+        modules: c.modules,
+      })),
+    }
+  }
 
   return (
     <div className="space-y-5">
@@ -25,17 +143,20 @@ export default function AdminDashboard() {
           <div className="min-w-0">
             <div className="flex items-center gap-2">
               <Sparkles size={13} className="text-brand-400" />
-              <span className="text-[10.5px] font-bold tracking-[0.14em] text-white/45 uppercase">
-                Welcome back
+              <span className="text-[10.5px] font-bold tracking-[0.14em] text-white/45 uppercase">Welcome back</span>
+              <span
+                className={`ml-1 inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[9.5px] font-bold tracking-wide uppercase ${
+                  vm.live ? 'bg-ok-600/20 text-ok-600' : 'bg-white/10 text-white/50'
+                }`}
+              >
+                <span className={`h-1.5 w-1.5 rounded-full ${vm.live ? 'bg-ok-600' : 'bg-white/40'}`} />
+                {vm.live ? 'Live data' : 'Sample data'}
               </span>
             </div>
-            <h2 className="mt-1.5 text-[24px] font-extrabold tracking-tight text-white">
-              Ankit Srivastav
-            </h2>
+            <h2 className="mt-1.5 text-[24px] font-extrabold tracking-tight text-white">{vm.name}</h2>
             <p className="mt-1 text-[13px] text-white/55">
-              {batches.length} batches running · {learners.length} learners in training ·{' '}
-              <span className="font-semibold text-brand-400">{activeBatch.batchCode}</span> active
-              today
+              {vm.batchesCount} batches running · {vm.learnersCount} learners in training ·{' '}
+              <span className="font-semibold text-brand-400">{vm.activeCode}</span> active today
             </p>
           </div>
 
@@ -55,64 +176,62 @@ export default function AdminDashboard() {
 
       {/* ---------------- KPIs ---------------- */}
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-        <Stat icon={<Layers size={18} />} value={batches.length} label="Active Batches" tone="blue" delta="▲ 1" />
-        <Stat icon={<Users size={18} />} value={learners.length} label="Enrolled Learners" tone="violet" delta="▲ 3" />
-        <Stat icon={<CalendarCheck size={18} />} value={`${batchAttendancePct(activeBatch.id)}%`} label="Avg Attendance" tone="emerald" delta="▲ 4%" />
-        <Stat icon={<Trophy size={18} />} value={`${passRate}%`} label="Pass Rate" tone="amber" />
+        <Stat icon={<Layers size={18} />} value={vm.batchesCount} label="Active Batches" tone="blue" />
+        <Stat icon={<Users size={18} />} value={vm.learnersCount} label="Enrolled Learners" tone="violet" />
+        <Stat icon={<CalendarCheck size={18} />} value={`${vm.avgAttendance}%`} label="Avg Attendance" tone="emerald" />
+        <Stat icon={<Trophy size={18} />} value={`${vm.passRate}%`} label="Pass Rate" tone="amber" />
       </div>
 
       <div className="grid gap-4 xl:grid-cols-[1.5fr_1fr]">
         {/* ---------------- Batch Health ---------------- */}
         <Card className="p-5">
-          <SectionTitle right={<Badge tone="brand">{activeBatch.batchCode}</Badge>}>
-            Batch Health
-          </SectionTitle>
+          <SectionTitle right={<Badge tone="brand">{vm.activeCode}</Badge>}>Batch Health</SectionTitle>
 
-          <div className="overflow-x-auto">
-            <table className="w-full min-w-[540px]">
-              <thead>
-                <tr>
-                  <Th>Learner</Th>
-                  <Th>Company</Th>
-                  <Th className="text-center">Attendance</Th>
-                  <Th className="text-center">Avg Grade</Th>
-                  <Th>Progress</Th>
-                </tr>
-              </thead>
-              <tbody>
-                {roster.map((r) => {
-                  const att = attendancePct(r.learnerId, activeBatch.id)
-                  const avg = averageGrade(r.learnerId, activeBatch.id)
-                  return (
-                    <tr
-                      key={r.id}
-                      className="hover:bg-brand-50/60"
-                    >
+          {vm.roster.length === 0 ? (
+            <div className="rounded-xl border border-dashed border-line2 bg-soft p-8 text-center">
+              <p className="text-[13px] font-semibold text-ink-600">No learners enrolled in the active batch yet.</p>
+              <p className="mt-1 text-[12px] text-ink-400">Enrol learners on the Attendance page to see their health here.</p>
+            </div>
+          ) : (
+            <div className="overflow-x-auto">
+              <table className="w-full min-w-[540px]">
+                <thead>
+                  <tr>
+                    <Th className="w-full">Learner</Th>
+                    <Th>Company</Th>
+                    <Th className="text-center">Attendance</Th>
+                    <Th className="text-center">Avg Grade</Th>
+                    <Th>Progress</Th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {vm.roster.map((r) => (
+                    <tr key={r.key} className="hover:bg-brand-50/60">
                       <Td>
                         <div className="flex items-center gap-2.5">
-                          <Avatar text={initials(r.user)} size={28} />
-                          <span className="font-semibold text-navy-900">{fullName(r.user)}</span>
+                          <Avatar text={r.init} size={28} />
+                          <span className="font-semibold text-navy-900">{r.name}</span>
                         </div>
                       </Td>
-                      <Td className="text-ink-500">{r.user.company ?? '—'}</Td>
+                      <Td className="text-ink-500">{r.company ?? '—'}</Td>
                       <Td className="text-center">
-                        <Badge tone={att >= 80 ? 'ok' : att >= 60 ? 'warn' : 'bad'}>{att}%</Badge>
+                        <Badge tone={r.attendance >= 80 ? 'ok' : r.attendance >= 60 ? 'warn' : 'bad'}>
+                          {r.attendance}%
+                        </Badge>
                       </Td>
-                      <Td className="text-center font-bold text-navy-900">{avg ?? '—'}</Td>
+                      <Td className="text-center font-bold text-navy-900">{r.avgGrade ?? '—'}</Td>
                       <Td>
                         <div className="flex items-center gap-2.5">
                           <ProgressBar value={r.progress} className="w-24" />
-                          <span className="text-[11.5px] font-semibold text-ink-500">
-                            {r.progress}%
-                          </span>
+                          <span className="text-[11.5px] font-semibold text-ink-500">{r.progress}%</span>
                         </div>
                       </Td>
                     </tr>
-                  )
-                })}
-              </tbody>
-            </table>
-          </div>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
         </Card>
 
         {/* ---------------- Batches ---------------- */}
@@ -128,46 +247,35 @@ export default function AdminDashboard() {
           </SectionTitle>
 
           <div className="space-y-2.5">
-            {batches.map((b) => {
-              const course = getCourse(b.courseId)
-              const trainer = getUser(b.trainerId)
-              const count = enrollments.filter((e) => e.batchId === b.id).length
-              return (
-                <div
-                  key={b.id}
-                  className="group flex items-center gap-3.5 rounded-xl border border-line bg-soft p-3.5 hover:border-brand-500/25 hover:bg-surface hover:shadow-md"
-                >
-                  <Ring value={b.status === 'active' ? batchAttendancePct(b.id) : 0} size={42} />
-                  <div className="min-w-0 flex-1">
-                    <div className="flex items-center gap-2">
-                      <span className="truncate text-[13.5px] font-bold text-navy-900">
-                        {b.batchCode}
-                      </span>
-                      <Badge tone={b.status === 'active' ? 'ok' : 'muted'}>
-                        {b.status.toUpperCase()}
-                      </Badge>
-                    </div>
-                    <div className="mt-0.5 truncate text-[11.5px] text-ink-500">
-                      {course.title} · {fullName(trainer)}
-                    </div>
-                    <div className="mt-1 text-[11px] text-ink-400">
-                      {b.startDate} → {b.endDate} · {b.totalHours}h · {count} learners
-                    </div>
+            {vm.batchList.map((b) => (
+              <div
+                key={b.key}
+                className="group flex items-center gap-3.5 rounded-xl border border-line bg-soft p-3.5 hover:border-brand-500/25 hover:bg-surface hover:shadow-md"
+              >
+                <Ring value={b.ring} size={42} />
+                <div className="min-w-0 flex-1">
+                  <div className="flex items-center gap-2">
+                    <span className="truncate text-[13.5px] font-bold text-navy-900">{b.code}</span>
+                    <Badge tone={b.status === 'active' ? 'ok' : 'muted'}>{b.status.toUpperCase()}</Badge>
+                  </div>
+                  <div className="mt-0.5 truncate text-[11.5px] text-ink-500">
+                    {b.courseTitle} · {b.trainerName}
+                  </div>
+                  <div className="mt-1 text-[11px] text-ink-400">
+                    {b.startDate} → {b.endDate} · {b.totalHours}h · {b.count} learners
                   </div>
                 </div>
-              )
-            })}
+              </div>
+            ))}
           </div>
         </Card>
       </div>
 
       {/* ---------------- Course inventory ---------------- */}
       <Card className="p-5">
-        <SectionTitle right={<Badge tone="muted">{courses.length} courses</Badge>}>
-          Master Course Inventory
-        </SectionTitle>
+        <SectionTitle right={<Badge tone="muted">{vm.coursesCount} courses</Badge>}>Master Course Inventory</SectionTitle>
         <div className="grid gap-4 md:grid-cols-3">
-          {courses.map((c, i) => (
+          {vm.courses.map((c, i) => (
             <div
               key={c.id}
               className="group relative cursor-pointer overflow-hidden rounded-2xl border border-line bg-surface p-5 shadow-[0_10px_28px_-16px_rgba(15,27,53,0.18)] transition-all hover:-translate-y-1 hover:border-brand-500/30 hover:shadow-[0_24px_50px_-20px_rgba(15,27,53,0.32)]"
