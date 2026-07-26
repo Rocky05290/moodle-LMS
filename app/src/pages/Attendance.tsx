@@ -3,6 +3,7 @@ import { QrCode, Save, Download, CalendarDays, UserPlus, X } from 'lucide-react'
 import type { AttendanceCode } from '../data/mock'
 import { ATTENDANCE_META } from '../data/mock'
 import { supabase, hasSupabase } from '../lib/supabase'
+import { downloadCSV } from '../lib/reports'
 import { Avatar, Badge, Button, Card, SectionTitle, Td, Th } from '../components/ui'
 
 const CODES: AttendanceCode[] = ['P', 'L1', 'L2', 'L3', 'A']
@@ -151,6 +152,15 @@ export default function Attendance() {
     if (!error) loadMarks()
   }
 
+  const exportCSV = () => {
+    if (!roster.length) return
+    downloadCSV(
+      `${batch?.batch_code ?? 'attendance'}_${date}.csv`,
+      ['Learner', 'CPR', 'Company', 'Attendance', 'Remarks'],
+      roster.map((r) => [r.name, r.cpr || '', r.company || '', marks[r.learnerId] ?? '', remarks[r.learnerId] ?? '']),
+    )
+  }
+
   if (hasSupabase && !live && !batchList.length) {
     return (
       <Card className="p-8 text-center text-[13px] text-ink-500">
@@ -207,7 +217,7 @@ export default function Attendance() {
           <Button variant="gold" onClick={() => setShowQr((v) => !v)} className="flex items-center gap-2">
             <QrCode size={15} /> QR Check-in
           </Button>
-          <Button variant="ghost" className="flex items-center gap-2">
+          <Button variant="ghost" onClick={exportCSV} className="flex items-center gap-2">
             <Download size={15} /> Export
           </Button>
           <Button onClick={save} className="flex items-center gap-2">

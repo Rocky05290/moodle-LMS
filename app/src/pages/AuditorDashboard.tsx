@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { ShieldCheck, FileDown, Search, Lock, FileCheck2 } from 'lucide-react'
 import {
   batches, getCourse, learnersInBatch, attendancePct, averageGrade,
@@ -29,6 +30,7 @@ type LogRow = { t: string; who: string; what: string; detail: string; reason: st
 
 export default function AuditorDashboard() {
   const d = useLiveData()
+  const navigate = useNavigate()
   const [log, setLog] = useState<LogRow[] | null>(null)
 
   // live audit trail (falls back to the sample if the log is empty)
@@ -125,7 +127,7 @@ export default function AuditorDashboard() {
             You can view and export records. Editing is disabled at the database level.
           </div>
         </div>
-        <Button variant="gold" className="ml-auto flex items-center gap-2">
+        <Button variant="gold" onClick={() => navigate('/reports')} className="ml-auto flex items-center gap-2">
           <FileDown size={15} /> Compliance Report Bundle
         </Button>
       </Card>

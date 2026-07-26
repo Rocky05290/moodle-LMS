@@ -41,7 +41,7 @@ export type BatchRow = {
   status: string
 }
 export type EnrollRow = { id: number; learner_id: string; batch_id: number; progress: number }
-export type AttRow = { learner_id: string; batch_id: number; code: AttendanceCode }
+export type AttRow = { learner_id: string; batch_id: number; code: AttendanceCode; session_date: string }
 export type GradeRow = { learner_id: string; batch_id: number; score: number }
 
 export type LiveData = {
@@ -88,7 +88,7 @@ export function useLiveData(): LiveData {
           .select('id,batch_code,course_id,trainer_id,start_date,end_date,start_time,end_time,total_hours,status')
           .order('start_date'),
         sb.from('enrollments').select('id,learner_id,batch_id,progress'),
-        sb.from('attendance').select('learner_id,batch_id,code'),
+        sb.from('attendance').select('learner_id,batch_id,code,session_date'),
         sb.from('grades').select('learner_id,batch_id,score'),
       ])
       if (cancelled) return
