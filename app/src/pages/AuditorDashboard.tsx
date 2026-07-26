@@ -5,9 +5,10 @@ import {
   batches, getCourse, learnersInBatch, attendancePct, averageGrade,
   batchAttendancePct, fullName, initials,
 } from '../data/mock'
-import { useLiveData, attPct, batchAttPct, avgGradeLive, nameInitials } from '../lib/live'
+import { useLiveData, attPct, batchAttPct, avgGradeLive, nameInitials, hasSupabase } from '../lib/live'
 import { supabase } from '../lib/supabase'
 import { Avatar, Badge, Button, Card, IconTile, SectionTitle, Stat, Td, Th } from '../components/ui'
+import Loading from '../components/Loading'
 
 const SAMPLE_LOG = [
   { t: '2026-08-06 14:22', who: 'Eng. Sayed Al-Alawi', what: 'Changed grade for Jasem Al-Saffar', detail: 'Mid: 55 → 61', reason: 'Re-mark after redo submission' },
@@ -58,6 +59,8 @@ export default function AuditorDashboard() {
       })
   }, [])
 
+  if (hasSupabase && d.loading) return <Loading label="Loading compliance data…" />
+
   let live: boolean
   let batchCode: string
   let courseTitle: string
@@ -65,7 +68,7 @@ export default function AuditorDashboard() {
   let batchAtt: number
   let rows: AudRow[]
 
-  if (d.live) {
+  if (hasSupabase) {
     live = true
     const batch = d.batches.find((b) => b.status === 'active') ?? d.batches[0] ?? null
     const course = batch ? d.courses.find((c) => c.id === batch.course_id) : undefined

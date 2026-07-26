@@ -117,24 +117,26 @@ export function Batches() {
 
   const display: BatchRow[] =
     rows ??
-    batches.map((b) => {
-      const c = getCourse(b.courseId)
-      const t = getUser(b.trainerId)
-      return {
-        id: b.id,
-        batch_code: b.batchCode,
-        start_date: b.startDate,
-        end_date: b.endDate,
-        start_time: b.startTime,
-        end_time: b.endTime,
-        total_hours: b.totalHours,
-        status: b.status,
-        attendancePct: b.status === 'active' ? batchAttendancePct(b.id) : null,
-        course: { title: c.title, code: c.code },
-        trainer: { first_name: t.firstName, last_name: t.lastName },
-        learners: enrollments.filter((e) => e.batchId === b.id).length,
-      }
-    })
+    (hasSupabase
+      ? []
+      : batches.map((b) => {
+          const c = getCourse(b.courseId)
+          const t = getUser(b.trainerId)
+          return {
+            id: b.id,
+            batch_code: b.batchCode,
+            start_date: b.startDate,
+            end_date: b.endDate,
+            start_time: b.startTime,
+            end_time: b.endTime,
+            total_hours: b.totalHours,
+            status: b.status,
+            attendancePct: b.status === 'active' ? batchAttendancePct(b.id) : null,
+            course: { title: c.title, code: c.code },
+            trainer: { first_name: t.firstName, last_name: t.lastName },
+            learners: enrollments.filter((e) => e.batchId === b.id).length,
+          }
+        }))
 
   return (
     <>
@@ -350,7 +352,7 @@ function CreateBatch({
 
 /* ----------------------------- Courses ---------------------------- */
 export function Courses() {
-  const [list, setList] = useState<Course[]>(mockCourses)
+  const [list, setList] = useState<Course[]>(hasSupabase ? [] : mockCourses)
   const [live, setLive] = useState(false)
 
   useEffect(() => {
@@ -456,16 +458,18 @@ export function People() {
 
   const rows: Person[] =
     people ??
-    users.map((u) => ({
-      id: String(u.id),
-      first_name: u.firstName,
-      last_name: u.lastName,
-      email: u.email,
-      mobile: u.mobile,
-      cpr: u.cpr,
-      company: u.company ?? null,
-      role: u.role,
-    }))
+    (hasSupabase
+      ? []
+      : users.map((u) => ({
+          id: String(u.id),
+          first_name: u.firstName,
+          last_name: u.lastName,
+          email: u.email,
+          mobile: u.mobile,
+          cpr: u.cpr,
+          company: u.company ?? null,
+          role: u.role,
+        })))
 
   return (
     <>

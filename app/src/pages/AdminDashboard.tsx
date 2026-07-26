@@ -3,8 +3,9 @@ import {
   batches, courses, users, enrollments, getCourse, getUser, learnersInBatch,
   attendancePct, batchAttendancePct, averageGrade, fullName, initials,
 } from '../data/mock'
-import { useLiveData, attPct, batchAttPct, avgGradeLive } from '../lib/live'
+import { useLiveData, attPct, batchAttPct, avgGradeLive, hasSupabase } from '../lib/live'
 import { Avatar, Badge, Button, Card, IconTile, type IconTone, ProgressBar, Ring, SectionTitle, Stat, Td, Th } from '../components/ui'
+import Loading from '../components/Loading'
 
 const CARD_TONES: IconTone[] = ['blue', 'violet', 'amber', 'sky', 'emerald', 'navy']
 
@@ -31,8 +32,10 @@ const nm = (name: string) =>
 export default function AdminDashboard() {
   const d = useLiveData()
 
+  if (hasSupabase && d.loading) return <Loading label="Loading dashboard…" />
+
   let vm: DashVM
-  if (d.live) {
+  if (hasSupabase) {
     const liveLearners = d.profiles.filter((p) => p.role === 'learner')
     const active = d.batches.find((b) => b.status === 'active') ?? d.batches[0]
     const courseById = (id: number) => d.courses.find((c) => c.id === id)

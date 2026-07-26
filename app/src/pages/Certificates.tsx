@@ -4,9 +4,10 @@ import {
   batches as mockBatches, getCourse, learnersInBatch, attendancePct, averageGrade,
   fullName, initials,
 } from '../data/mock'
-import { useLiveData, attPct, avgGradeLive, nameInitials } from '../lib/live'
+import { useLiveData, attPct, avgGradeLive, nameInitials, hasSupabase } from '../lib/live'
 import { downloadCertificate } from '../lib/certificate'
 import { Avatar, Badge, Card, SectionTitle, Td, Th } from '../components/ui'
+import Loading from '../components/Loading'
 
 type RowVM = {
   key: string | number
@@ -23,7 +24,9 @@ export default function Certificates() {
   const d = useLiveData()
   const [batchId, setBatchId] = useState<number | null>(null)
 
-  const batchList: BatchLite[] = d.live
+  if (hasSupabase && d.loading) return <Loading label="Loading certificates…" />
+
+  const batchList: BatchLite[] = hasSupabase
     ? d.batches.map((b) => ({
         id: b.id,
         code: b.batch_code,
@@ -44,7 +47,7 @@ export default function Certificates() {
 
   let rows: RowVM[] = []
   if (cur) {
-    if (d.live) {
+    if (hasSupabase) {
       rows = d.enrollments
         .filter((e) => e.batch_id === cur.id)
         .map((e) => {
@@ -108,7 +111,7 @@ export default function Certificates() {
           </div>
         </div>
         <div className="ml-auto flex items-center gap-2.5">
-          {d.live && (
+          {hasSupabase && (
             <span className="flex items-center gap-1.5 text-[11.5px] font-semibold text-ok-600">
               <span className="h-2 w-2 rounded-full bg-ok-600" /> Live
             </span>

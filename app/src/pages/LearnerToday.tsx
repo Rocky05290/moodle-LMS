@@ -2,9 +2,10 @@ import { PlayCircle, Lock, CheckCircle2, Clock, Award } from 'lucide-react'
 import {
   batches, getCourse, getUser, enrollments, attendancePct, averageGrade, fullName,
 } from '../data/mock'
-import { useLiveData, attPct, avgGradeLive } from '../lib/live'
+import { useLiveData, attPct, avgGradeLive, hasSupabase } from '../lib/live'
 import { downloadCertificate } from '../lib/certificate'
 import { Badge, Button, Card, ProgressBar, Ring, SectionTitle, Stat } from '../components/ui'
+import Loading from '../components/Loading'
 
 const LEARNER_ID = 101
 
@@ -30,10 +31,12 @@ type LearnerVM = {
 export default function LearnerToday() {
   const d = useLiveData()
 
+  if (hasSupabase && d.loading) return <Loading label="Loading your course…" />
+
   let vm: LearnerVM | null = null
   let notEnrolledName = ''
 
-  if (d.live && d.me) {
+  if (hasSupabase && d.me) {
     const enr = d.enrollments.find((e) => e.learner_id === d.me!.id)
     if (!enr) {
       notEnrolledName = d.me.first_name

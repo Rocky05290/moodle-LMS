@@ -3,6 +3,8 @@ import { supabase } from './supabase'
 import { ATTENDANCE_META } from '../data/mock'
 import type { AttendanceCode } from '../data/mock'
 
+export { hasSupabase } from './supabase'
+
 /**
  * Central live-data hook for the dashboards.
  *

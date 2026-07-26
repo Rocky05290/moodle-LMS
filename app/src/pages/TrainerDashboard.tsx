@@ -4,8 +4,9 @@ import {
   batches, getCourse, learnersInBatch, batchAttendancePct, averageGrade, attendancePct,
   fullName, initials,
 } from '../data/mock'
-import { useLiveData, attPct, batchAttPct, avgGradeLive, nameInitials } from '../lib/live'
+import { useLiveData, attPct, batchAttPct, avgGradeLive, nameInitials, hasSupabase } from '../lib/live'
 import { Avatar, Badge, Card, ProgressBar, SectionTitle, Stat, Td, Th } from '../components/ui'
+import Loading from '../components/Loading'
 
 const TRAINER_ID = 104
 
@@ -25,6 +26,8 @@ type RowVM = { key: string | number; name: string; init: string; attendance: num
 export default function TrainerDashboard() {
   const d = useLiveData()
 
+  if (hasSupabase && d.loading) return <Loading label="Loading your batches…" />
+
   let live: boolean
   let activeCode: string
   let mineCount: number
@@ -33,7 +36,7 @@ export default function TrainerDashboard() {
   let batchVMs: BatchVM[]
   let rows: RowVM[]
 
-  if (d.live && d.me) {
+  if (hasSupabase && d.me) {
     live = true
     const mine = d.batches.filter((b) => b.trainer_id === d.me!.id)
     const active = mine.find((b) => b.status === 'active') ?? mine[0] ?? null

@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { FileText, ShieldCheck, Sheet, CalendarDays } from 'lucide-react'
-import { useLiveData, attPct, avgGradeLive } from '../lib/live'
+import { useLiveData, attPct, avgGradeLive, hasSupabase } from '../lib/live'
 import {
   batches as mockBatches, getCourse, getUser, learnersInBatch, attendancePct, averageGrade, fullName,
 } from '../data/mock'
@@ -8,6 +8,7 @@ import {
   downloadAttendanceRegister, downloadComplianceReport, downloadCSV,
 } from '../lib/reports'
 import { Badge, Button, Card, SectionTitle, Td, Th } from '../components/ui'
+import Loading from '../components/Loading'
 
 type RowVM = {
   key: string | number
@@ -37,7 +38,9 @@ export default function Reports() {
   const d = useLiveData()
   const [batchId, setBatchId] = useState<number | null>(null)
 
-  const batchList: BatchLite[] = d.live
+  if (hasSupabase && d.loading) return <Loading label="Loading report data…" />
+
+  const batchList: BatchLite[] = hasSupabase
     ? d.batches.map((b) => {
         const t = d.profiles.find((p) => p.id === b.trainer_id)
         return {
@@ -64,7 +67,7 @@ export default function Reports() {
   let rows: RowVM[] = []
   let sessions = 0
   if (cur) {
-    if (d.live) {
+    if (hasSupabase) {
       const att = d.attendance.filter((a) => a.batch_id === cur.id)
       sessions = new Set(att.map((a) => a.session_date)).size
       rows = d.enrollments
@@ -176,7 +179,7 @@ export default function Reports() {
             </div>
           </div>
         </div>
-        {d.live && (
+        {hasSupabase && (
           <span className="ml-auto flex items-center gap-1.5 text-[11.5px] font-semibold text-ok-600">
             <span className="h-2 w-2 rounded-full bg-ok-600" /> Live
           </span>
