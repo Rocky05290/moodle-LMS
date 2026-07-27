@@ -48,32 +48,49 @@ function Shell({
   )
 }
 
+function FullScreenLoader() {
+  return (
+    <div className="flex min-h-screen items-center justify-center bg-canvas">
+      <span className="h-8 w-8 animate-spin rounded-full border-[3px] border-brand-500/25 border-t-brand-500" />
+    </div>
+  )
+}
+
 export default function App() {
   const [user, setUser] = useState<User | null>(null)
+  const [authReady, setAuthReady] = useState(!supabase)
 
-  // Restore a real Supabase session on page load (so refresh keeps you signed in)
+  // Restore a real Supabase session on page load (so refresh keeps you signed in).
+  // authReady stays false until this resolves, so guarded routes wait instead of
+  // bouncing to the dashboard/login before the session is known.
   useEffect(() => {
     if (!supabase) return
-    supabase.auth.getSession().then(async ({ data }) => {
-      const s = data.session
-      if (!s) return
-      const { data: prof } = await supabase!
-        .from('profiles')
-        .select('*')
-        .eq('id', s.user.id)
-        .maybeSingle()
-      if (!prof) return
-      setUser({
-        id: 0,
-        firstName: prof.first_name,
-        lastName: prof.last_name,
-        email: s.user.email ?? prof.email,
-        mobile: prof.mobile ?? '',
-        cpr: prof.cpr ?? '',
-        role: prof.role as Role,
-        company: prof.company ?? undefined,
+    supabase.auth
+      .getSession()
+      .then(async ({ data }) => {
+        const s = data.session
+        if (s) {
+          const { data: prof } = await supabase!
+            .from('profiles')
+            .select('*')
+            .eq('id', s.user.id)
+            .maybeSingle()
+          if (prof) {
+            setUser({
+              id: 0,
+              firstName: prof.first_name,
+              lastName: prof.last_name,
+              email: s.user.email ?? prof.email,
+              mobile: prof.mobile ?? '',
+              cpr: prof.cpr ?? '',
+              role: prof.role as Role,
+              company: prof.company ?? undefined,
+            })
+          }
+        }
+        setAuthReady(true)
       })
-    })
+      .catch(() => setAuthReady(true))
   }, [])
 
   const signOut = async () => {
@@ -82,7 +99,9 @@ export default function App() {
   }
 
   const guard = (el: ReactNode) =>
-    user ? (
+    !authReady ? (
+      <FullScreenLoader />
+    ) : user ? (
       <Shell user={user} onSignOut={signOut}>
         {el}
       </Shell>

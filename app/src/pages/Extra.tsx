@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import type { ReactNode } from 'react'
 import { Plus, Upload, Mail, Phone, X, Trash2 } from 'lucide-react'
 import {
@@ -427,6 +427,7 @@ export function People() {
   const [people, setPeople] = useState<Person[] | null>(null)
   const [live, setLive] = useState(false)
   const [open, setOpen] = useState(false)
+  const [showImport, setShowImport] = useState(false)
 
   const load = () => {
     if (!supabase) return
@@ -477,7 +478,11 @@ export function People() {
         <SectionTitle
           right={
             <div className="flex gap-2">
-              <Button variant="ghost" className="flex items-center gap-1.5 !px-3 !py-2 !text-[12px]">
+              <Button
+                variant="ghost"
+                onClick={() => setShowImport(true)}
+                className="flex items-center gap-1.5 !px-3 !py-2 !text-[12px]"
+              >
                 <Upload size={13} /> Bulk CSV import
               </Button>
               <button
@@ -565,6 +570,8 @@ export function People() {
           }}
         />
       )}
+
+      {showImport && <BulkImport onClose={() => setShowImport(false)} onRefresh={load} />}
     </>
   )
 }
@@ -673,6 +680,183 @@ function AddPerson({ onClose, onDone }: { onClose: () => void; onDone: () => voi
         <div className="flex gap-2 pt-1">
           <Button onClick={save} className="flex-1">{busy ? 'Creating…' : 'Add person'}</Button>
           <Button variant="ghost" onClick={onClose}>Cancel</Button>
+        </div>
+      </div>
+    </Modal>
+  )
+}
+
+/* -------- CSV parsing + bulk import -------- */
+function parseCSV(text: string): Record<string, string>[] {
+  const rows: string[][] = []
+  let cur: string[] = []
+  let field = ''
+  let q = false
+  for (let i = 0; i < text.length; i++) {
+    const ch = text[i]
+    if (q) {
+      if (ch === '"') {
+        if (text[i + 1] === '"') {
+          field += '"'
+          i++
+        } else q = false
+      } else field += ch
+    } else if (ch === '"') {
+      q = true
+    } else if (ch === ',') {
+      cur.push(field)
+      field = ''
+    } else if (ch === '\n' || ch === '\r') {
+      if (ch === '\r' && text[i + 1] === '\n') i++
+      cur.push(field)
+      field = ''
+      if (cur.some((c) => c.trim() !== '')) rows.push(cur)
+      cur = []
+    } else field += ch
+  }
+  if (field !== '' || cur.length) {
+    cur.push(field)
+    if (cur.some((c) => c.trim() !== '')) rows.push(cur)
+  }
+  if (rows.length < 2) return []
+  const headers = rows[0].map((h) => h.trim().toLowerCase().replace(/\s+/g, '_'))
+  return rows.slice(1).map((r) => {
+    const o: Record<string, string> = {}
+    headers.forEach((h, i) => (o[h] = (r[i] ?? '').trim()))
+    return o
+  })
+}
+
+function BulkImport({ onClose, onRefresh }: { onClose: () => void; onRefresh: () => void }) {
+  const [rows, setRows] = useState<Record<string, string>[]>([])
+  const [fileName, setFileName] = useState('')
+  const [busy, setBusy] = useState(false)
+  const [doneN, setDoneN] = useState(0)
+  const [result, setResult] = useState<{ ok: number; fail: number; errors: string[] } | null>(null)
+  const fileRef = useRef<HTMLInputElement>(null)
+  const roles = ['learner', 'trainer', 'admin', 'auditor', 'company']
+
+  const run = async () => {
+    if (busy || rows.length === 0) return
+    setBusy(true)
+    setDoneN(0)
+    setResult(null)
+    let ok = 0
+    let fail = 0
+    const errors: string[] = []
+    for (let i = 0; i < rows.length; i++) {
+      const r = rows[i]
+      const email = (r.email || '').trim()
+      const first = r.first_name || r.firstname || 'New'
+      const last = r.last_name || r.lastname || 'User'
+      const role = roles.includes((r.role || '').toLowerCase()) ? (r.role || '').toLowerCase() : 'learner'
+      if (!email) {
+        fail++
+        errors.push(`Row ${i + 2}: missing email`)
+        setDoneN(i + 1)
+        continue
+      }
+      const res = await createAccount({ email, password: r.password || 'demo1234', firstName: first, lastName: last, role })
+      if (!res.ok) {
+        fail++
+        errors.push(`${email}: ${res.error}`)
+        setDoneN(i + 1)
+        continue
+      }
+      if (res.id && supabase && (r.cpr || r.mobile || r.company)) {
+        await supabase
+          .from('profiles')
+          .update({ cpr: r.cpr || null, mobile: r.mobile || null, company: r.company || null })
+          .eq('id', res.id)
+      }
+      ok++
+      setDoneN(i + 1)
+      await new Promise((rz) => setTimeout(rz, 120))
+    }
+    setBusy(false)
+    setResult({ ok, fail, errors: errors.slice(0, 8) })
+    if (ok > 0) onRefresh()
+  }
+
+  const template = () => {
+    const csv =
+      'first_name,last_name,email,role,cpr,mobile,company\n' +
+      'Ali,Hassan,ali.hassan@example.bh,learner,900112233,39000000,Batelco\n'
+    const url = URL.createObjectURL(new Blob([csv], { type: 'text/csv' }))
+    const a = document.createElement('a')
+    a.href = url
+    a.download = 'cordoba_people_template.csv'
+    a.click()
+    URL.revokeObjectURL(url)
+  }
+
+  const showImportBtn = rows.length > 0 && !result
+
+  return (
+    <Modal title="Bulk CSV import" onClose={onClose}>
+      <div className="space-y-3">
+        <p className="text-[12px] leading-relaxed text-ink-600">
+          Upload a CSV with a header row. Columns: <b>first_name, last_name, email, role, cpr, mobile, company</b>. Role
+          is learner / trainer / admin / auditor / company (defaults to learner).
+        </p>
+        <button onClick={template} className="cursor-pointer text-[12px] font-bold text-brand-600 hover:text-brand-700">
+          ⬇ Download template CSV
+        </button>
+
+        <input
+          ref={fileRef}
+          type="file"
+          accept=".csv,text/csv"
+          className="hidden"
+          onChange={async (e) => {
+            const f = e.target.files?.[0]
+            if (!f) return
+            setFileName(f.name)
+            setResult(null)
+            setRows(parseCSV(await f.text()))
+          }}
+        />
+        <button
+          onClick={() => fileRef.current?.click()}
+          className="flex w-full cursor-pointer items-center justify-center gap-2 rounded-lg border-2 border-dashed border-line2 bg-soft px-4 py-4 text-[12.5px] font-semibold text-ink-600 transition-colors hover:border-brand-500/50 hover:text-brand-600"
+        >
+          <Upload size={15} /> {fileName ? `${fileName} — ${rows.length} rows` : 'Choose a CSV file'}
+        </button>
+
+        {busy && (
+          <div>
+            <ProgressBar value={rows.length ? Math.round((doneN / rows.length) * 100) : 0} />
+            <p className="mt-1.5 text-[11.5px] text-ink-500">
+              Importing {doneN} / {rows.length}…
+            </p>
+          </div>
+        )}
+
+        {result && (
+          <div className="rounded-lg border border-line bg-soft p-3 text-[12px]">
+            <p className="font-bold text-ok-600">
+              ✓ {result.ok} created
+              {result.fail > 0 && <span className="text-bad-600"> · {result.fail} skipped</span>}
+            </p>
+            {result.errors.length > 0 && (
+              <ul className="mt-1.5 space-y-0.5 text-[11px] text-ink-500">
+                {result.errors.map((er, i) => (
+                  <li key={i}>• {er}</li>
+                ))}
+              </ul>
+            )}
+          </div>
+        )}
+
+        <div className="flex gap-2 pt-1">
+          {showImportBtn && (
+            <Button onClick={run} className="flex-1">
+              {busy ? 'Importing…' : `Import ${rows.length} people`}
+            </Button>
+          )}
+          <Button variant="ghost" onClick={onClose} className={showImportBtn ? '' : 'flex-1'}>
+            {result ? 'Close' : 'Cancel'}
+          </Button>
         </div>
       </div>
     </Modal>
