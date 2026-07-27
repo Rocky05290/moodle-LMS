@@ -8,7 +8,7 @@ import Reveal from '../components/Reveal'
 import Tilt from '../components/Tilt'
 import SiteFooter from '../components/SiteFooter'
 import LoginCard from '../components/LoginCard'
-import { IconTile, type IconTone } from '../components/ui'
+import { type IconTone } from '../components/ui'
 
 const FEATURES: { icon: typeof Layers; title: string; desc: string; tone: IconTone }[] = [
   { icon: Layers, title: 'Batch management', desc: 'Create batches with auto codes (CTC-CCNA-2601), schedules and contracted hours.', tone: 'blue' },
@@ -32,6 +32,16 @@ const ROLE_OUTLINE: Record<string, { border: string; text: string; hover: string
   emerald: { border: 'border-emerald-500', text: 'text-emerald-600', hover: 'hover:bg-emerald-50' },
   sky: { border: 'border-sky-500', text: 'text-sky-600', hover: 'hover:bg-sky-50' },
   amber: { border: 'border-amber-500', text: 'text-amber-600', hover: 'hover:bg-amber-50' },
+}
+
+// clean, flat, soft-tinted icon tiles for the feature cards (calmer than glossy gradients)
+const FEATURE_TILE: Record<string, string> = {
+  blue: 'bg-brand-50 text-brand-600',
+  emerald: 'bg-emerald-50 text-emerald-600',
+  violet: 'bg-violet-50 text-violet-600',
+  sky: 'bg-sky-50 text-sky-600',
+  navy: 'bg-soft2 text-navy-800',
+  amber: 'bg-amber-50 text-amber-600',
 }
 
 export default function Landing({ onSignIn }: { onSignIn: (u: User) => void }) {
@@ -173,10 +183,7 @@ export default function Landing({ onSignIn }: { onSignIn: (u: User) => void }) {
                   Capabilities
                 </span>
               </div>
-              <h2
-                className="mx-auto mt-2 max-w-2xl bg-gradient-to-r from-brand-600 via-violet-500 to-fuchsia-500 bg-clip-text text-[30px] leading-tight font-extrabold tracking-tight text-transparent sm:text-[38px]"
-                style={{ backgroundSize: '220% auto', animation: 'gradientPan 5s linear infinite alternate' }}
-              >
+              <h2 className="mx-auto mt-2 max-w-2xl text-[30px] leading-tight font-extrabold tracking-tight text-navy-900 sm:text-[38px]">
                 Everything from enrolment to certificate
               </h2>
               <div className="mt-6 flex justify-center">
@@ -199,8 +206,10 @@ export default function Landing({ onSignIn }: { onSignIn: (u: User) => void }) {
               return (
                 <Reveal key={f.title} delay={(i % 3) * 90}>
                   <Tilt className="h-full">
-                    <div className="group h-full rounded-2xl border border-line bg-surface p-6 shadow-[0_12px_30px_-14px_rgba(15,27,53,0.16),0_2px_6px_-3px_rgba(15,27,53,0.08)] transition-all hover:border-brand-500/25 hover:shadow-[0_24px_48px_-18px_rgba(15,27,53,0.3)]">
-                      <IconTile icon={<Icon size={27} />} tone={f.tone} size={58} />
+                    <div className="group h-full rounded-2xl border border-line bg-surface p-6 shadow-sm transition-all hover:-translate-y-0.5 hover:border-brand-500/30 hover:shadow-md">
+                      <div className={`flex h-12 w-12 items-center justify-center rounded-xl ${FEATURE_TILE[f.tone]}`}>
+                        <Icon size={22} strokeWidth={2} />
+                      </div>
                       <h3 className="mt-5 text-[16px] font-extrabold text-navy-900">{f.title}</h3>
                       <p className="mt-2 text-[13.5px] leading-relaxed text-ink-500">{f.desc}</p>
                     </div>
