@@ -12,6 +12,7 @@ import AuditorDashboard from './pages/AuditorDashboard'
 import Attendance from './pages/Attendance'
 import Certificates from './pages/Certificates'
 import Reports from './pages/Reports'
+import Calendar from './pages/Calendar'
 import { Batches, Courses, People, Grading, MyCourse } from './pages/Extra'
 
 const META: Record<string, { title: string; subtitle?: string }> = {
@@ -28,6 +29,7 @@ const META: Record<string, { title: string; subtitle?: string }> = {
   '/audit-log': { title: 'Audit Log', subtitle: 'Every change, timestamped' },
   '/certificates': { title: 'Certificates', subtitle: 'Issue completion certificates as PDF' },
   '/reports': { title: 'Tamkeen Reports', subtitle: 'Attendance registers and compliance bundles' },
+  '/calendar': { title: 'Training Calendar', subtitle: 'Tamkeen session schedule · Sun–Thu working week' },
 }
 
 function Shell({
@@ -124,6 +126,7 @@ export default function App() {
         <Route path="/people" element={guard(<People />)} />
         <Route path="/certificates" element={guard(<Certificates />)} />
         <Route path="/reports" element={guard(<Reports />)} />
+        <Route path="/calendar" element={guard(<Calendar />)} />
 
         <Route path="/trainer" element={guard(<TrainerDashboard />)} />
         <Route path="/attendance" element={guard(<Attendance />)} />

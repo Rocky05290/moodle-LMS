@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import type { ReactNode } from 'react'
-import { Plus, Upload, Mail, Phone, X, Trash2 } from 'lucide-react'
+import { Plus, Upload, Mail, Phone, X, Trash2, Pencil } from 'lucide-react'
 import {
   batches, courses as mockCourses, users, enrollments, getCourse, getUser,
   batchAttendancePct,
@@ -53,6 +53,7 @@ type BatchRow = {
   end_time: string | null
   total_hours: number
   status: string
+  trainer_id: string | null
   attendancePct: number | null
   course: { title: string; code: string } | null
   trainer: { first_name: string; last_name: string } | null
@@ -65,6 +66,7 @@ export function Batches() {
   const [courses, setCourses] = useState<{ id: number; code: string; title: string }[]>([])
   const [trainers, setTrainers] = useState<{ id: string; first_name: string; last_name: string }[]>([])
   const [open, setOpen] = useState(false)
+  const [editing, setEditing] = useState<BatchRow | null>(null)
 
   const load = () => {
     if (!supabase) return
@@ -87,6 +89,7 @@ export function Batches() {
             end_time: (b.end_time as string) ?? null,
             total_hours: b.total_hours as number,
             status: b.status as string,
+            trainer_id: (b.trainer_id as string) ?? null,
             attendancePct: null,
             course: (b.course as BatchRow['course']) ?? null,
             trainer: (b.trainer as BatchRow['trainer']) ?? null,
@@ -131,6 +134,7 @@ export function Batches() {
             end_time: b.endTime,
             total_hours: b.totalHours,
             status: b.status,
+            trainer_id: String(b.trainerId),
             attendancePct: b.status === 'active' ? batchAttendancePct(b.id) : null,
             course: { title: c.title, code: c.code },
             trainer: { first_name: t.firstName, last_name: t.lastName },
@@ -194,13 +198,22 @@ export function Batches() {
                   </Td>
                   <Td className="text-right pr-2">
                     {live && (
-                      <button
-                        onClick={() => removeBatch(b.id, b.batch_code)}
-                        title="Delete batch"
-                        className="cursor-pointer rounded-md p-1.5 text-ink-400 transition-colors hover:bg-bad-50 hover:text-bad-600"
-                      >
-                        <Trash2 size={15} />
-                      </button>
+                      <div className="flex items-center justify-end gap-1">
+                        <button
+                          onClick={() => setEditing(b)}
+                          title="Edit / assign trainer"
+                          className="cursor-pointer rounded-md p-1.5 text-ink-400 transition-colors hover:bg-brand-50 hover:text-brand-600"
+                        >
+                          <Pencil size={14} />
+                        </button>
+                        <button
+                          onClick={() => removeBatch(b.id, b.batch_code)}
+                          title="Delete batch"
+                          className="cursor-pointer rounded-md p-1.5 text-ink-400 transition-colors hover:bg-bad-50 hover:text-bad-600"
+                        >
+                          <Trash2 size={15} />
+                        </button>
+                      </div>
                     )}
                   </Td>
                 </tr>
@@ -221,7 +234,95 @@ export function Batches() {
           }}
         />
       )}
+
+      {editing && (
+        <EditBatch
+          batch={editing}
+          trainers={trainers}
+          onClose={() => setEditing(null)}
+          onDone={() => {
+            setEditing(null)
+            load()
+          }}
+        />
+      )}
     </>
+  )
+}
+
+function EditBatch({
+  batch,
+  trainers,
+  onClose,
+  onDone,
+}: {
+  batch: BatchRow
+  trainers: { id: string; first_name: string; last_name: string }[]
+  onClose: () => void
+  onDone: () => void
+}) {
+  const [trainerId, setTrainerId] = useState(batch.trainer_id ?? '')
+  const [status, setStatus] = useState(batch.status)
+  const [busy, setBusy] = useState(false)
+  const [err, setErr] = useState('')
+
+  const save = async () => {
+    if (!supabase) return
+    setBusy(true)
+    const { error } = await supabase
+      .from('batches')
+      .update({ trainer_id: trainerId || null, status })
+      .eq('id', batch.id)
+    setBusy(false)
+    if (error) {
+      setErr(error.message)
+      return
+    }
+    onDone()
+  }
+
+  return (
+    <Modal title={`Edit ${batch.batch_code}`} onClose={onClose}>
+      <div className="space-y-3">
+        <div>
+          <label className={labelCls}>Trainer</label>
+          <select className={fieldCls} value={trainerId} onChange={(e) => setTrainerId(e.target.value)}>
+            <option value="">— Unassigned —</option>
+            {trainers.map((t) => (
+              <option key={t.id} value={t.id}>
+                {t.first_name} {t.last_name}
+              </option>
+            ))}
+          </select>
+          {trainers.length === 0 && (
+            <p className="mt-1 text-[11px] text-ink-400">
+              No trainers yet — add a person with role "Trainer" on the People page first.
+            </p>
+          )}
+        </div>
+        <div>
+          <label className={labelCls}>Status</label>
+          <select className={fieldCls} value={status} onChange={(e) => setStatus(e.target.value)}>
+            <option value="upcoming">Upcoming</option>
+            <option value="active">Active</option>
+            <option value="completed">Completed</option>
+          </select>
+        </div>
+        {err && (
+          <p className="rounded-md border border-bad-600/20 bg-bad-50 px-3 py-2 text-[12px] font-semibold text-bad-600">
+            {err}
+          </p>
+        )}
+        <div className="flex gap-2 pt-1">
+          <Button onClick={save} className="flex-1">
+            {busy ? 'Saving…' : 'Save changes'}
+          </Button>
+          <Button variant="ghost" onClick={onClose}>
+            Cancel
+          </Button>
+        </div>
+      </div>
+    </Modal>
   )
 }
 
