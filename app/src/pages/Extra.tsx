@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import type { ReactNode } from 'react'
-import { Plus, Upload, Mail, Phone, X, Trash2, Pencil } from 'lucide-react'
+import { Plus, Upload, Mail, Phone, X, Trash2, Pencil, Network, ShieldCheck, Cloud, BookOpen, ChevronDown } from 'lucide-react'
 import {
   batches, courses as mockCourses, users, enrollments, getCourse, getUser,
   batchAttendancePct,
@@ -452,9 +452,19 @@ function CreateBatch({
 }
 
 /* ----------------------------- Courses ---------------------------- */
+const COURSE_CAT: Record<string, { grad: string; Icon: typeof Network }> = {
+  Networking: { grad: 'from-brand-500 via-brand-600 to-indigo-700', Icon: Network },
+  Cybersecurity: { grad: 'from-violet-500 via-violet-600 to-fuchsia-700', Icon: ShieldCheck },
+  'Cloud Systems': { grad: 'from-sky-500 via-sky-600 to-cyan-700', Icon: Cloud },
+}
+const courseCat = (cat?: string) => COURSE_CAT[cat ?? ''] ?? { grad: 'from-navy-700 via-navy-800 to-navy-900', Icon: BookOpen }
+const courseLevel = (h: number) => (h >= 90 ? 'Advanced' : h >= 60 ? 'Intermediate' : 'Foundation')
+type CourseCard = Course & { description?: string; level?: string; price?: string }
+
 export function Courses() {
-  const [list, setList] = useState<Course[]>(hasSupabase ? [] : mockCourses)
+  const [list, setList] = useState<CourseCard[]>(hasSupabase ? [] : mockCourses)
   const [live, setLive] = useState(false)
+  const [open, setOpen] = useState<Record<number, boolean>>({})
 
   useEffect(() => {
     if (!supabase) return
@@ -472,6 +482,9 @@ export function Courses() {
             category: r.category as string,
             totalHours: r.total_hours as number,
             modules: (r.modules ?? []) as Course['modules'],
+            description: (r.description as string) ?? undefined,
+            level: (r.level as string) ?? undefined,
+            price: (r.price as string) ?? undefined,
           })),
         )
         setLive(true)
@@ -481,29 +494,72 @@ export function Courses() {
   return (
     <div className="space-y-4">
       <LiveTag live={live} />
-      <div className="grid gap-4 md:grid-cols-3">
-        {list.map((c) => (
-          <Card key={c.id} hover className="p-5">
-            <div className="flex items-start justify-between gap-2">
-              <Badge tone="brand">{c.code}</Badge>
-              <span className="text-[11.5px] font-bold text-ink-400">{c.totalHours}h</span>
-            </div>
-            <h3 className="mt-3 text-[15px] leading-snug font-extrabold">{c.title}</h3>
-            <p className="mt-1 text-[11.5px] text-ink-400">{c.category}</p>
+      <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+        {list.map((c) => {
+          const cat = courseCat(c.category)
+          const level = c.level ?? courseLevel(c.totalHours)
+          const desc =
+            c.description ??
+            `A verified ${c.category ?? 'certification'} track covering ${c.modules
+              .map((m) => m.title)
+              .slice(0, 3)
+              .join(', ')}${c.modules.length > 3 ? ' and more' : ''}.`
+          const expanded = !!open[c.id]
+          return (
+            <div
+              key={c.id}
+              className="group flex flex-col overflow-hidden rounded-2xl border border-line bg-surface shadow-[0_10px_28px_-16px_rgba(15,27,53,0.18)] transition-all hover:-translate-y-1 hover:shadow-[0_24px_50px_-20px_rgba(15,27,53,0.28)]"
+            >
+              {/* banner */}
+              <div className={`relative h-28 overflow-hidden bg-gradient-to-br ${cat.grad}`}>
+                <cat.Icon className="absolute -right-2 -bottom-3 text-white/15" size={92} strokeWidth={1.5} />
+                <span className="absolute top-3.5 left-4 rounded-full bg-white/20 px-2.5 py-1 text-[10px] font-bold tracking-wide text-white uppercase backdrop-blur-sm">
+                  {c.category ?? 'Programme'}
+                </span>
+                <span className="absolute top-3.5 right-4 rounded-md bg-white/90 px-2 py-0.5 text-[11px] font-extrabold text-navy-900">
+                  {c.code}
+                </span>
+              </div>
 
-            <div className="mt-4 space-y-2">
-              {c.modules.map((m) => (
-                <div key={m.num} className="flex gap-2.5 rounded-lg border border-line bg-soft p-2.5">
-                  <span className="text-[11px] font-extrabold text-brand-500">{m.num}</span>
-                  <div className="min-w-0">
-                    <div className="truncate text-[12px] font-bold">{m.title}</div>
-                    <div className="line-clamp-2 text-[11px] text-ink-400">{m.desc}</div>
-                  </div>
+              {/* body */}
+              <div className="flex flex-1 flex-col p-5">
+                <div className="text-[10.5px] font-bold tracking-wide text-ink-400 uppercase">
+                  {c.totalHours} Hours · {level}
                 </div>
-              ))}
+                <h3 className="mt-1.5 text-[16px] leading-snug font-extrabold text-navy-900">{c.title}</h3>
+                <p className="mt-2 flex-1 text-[12.5px] leading-relaxed text-ink-500">{desc}</p>
+
+                <div className="mt-4 flex items-end justify-between">
+                  <div>
+                    <div className="text-[9.5px] font-bold tracking-wide text-ink-400 uppercase">Registration Price</div>
+                    <div className="text-[17px] font-extrabold text-brand-600">{c.price ?? 'Enquire'}</div>
+                  </div>
+                  <button
+                    onClick={() => setOpen((o) => ({ ...o, [c.id]: !o[c.id] }))}
+                    className="flex cursor-pointer items-center gap-1.5 rounded-lg border-2 border-brand-500/30 px-3.5 py-2 text-[12px] font-bold text-brand-600 transition-all hover:border-brand-500 hover:bg-brand-50"
+                  >
+                    {expanded ? 'Hide syllabus' : 'Details & Syllabus'}
+                    <ChevronDown size={13} className={`transition-transform ${expanded ? 'rotate-180' : ''}`} />
+                  </button>
+                </div>
+
+                {expanded && (
+                  <div className="mt-4 space-y-2 border-t border-line pt-4">
+                    {c.modules.map((m) => (
+                      <div key={m.num} className="flex gap-2.5 rounded-lg border border-line bg-soft p-2.5">
+                        <span className="text-[11px] font-extrabold text-brand-500">{m.num}</span>
+                        <div className="min-w-0">
+                          <div className="truncate text-[12px] font-bold">{m.title}</div>
+                          <div className="line-clamp-2 text-[11px] text-ink-400">{m.desc}</div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
             </div>
-          </Card>
-        ))}
+          )
+        })}
       </div>
     </div>
   )
