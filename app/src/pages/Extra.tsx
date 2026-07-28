@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import type { ReactNode } from 'react'
+import { useSearchParams } from 'react-router-dom'
 import { Plus, Upload, Mail, Phone, X, Trash2, Pencil, Network, ShieldCheck, Cloud, BookOpen, ChevronDown } from 'lucide-react'
 import {
   batches, courses as mockCourses, users, enrollments, getCourse, getUser,
@@ -68,6 +69,7 @@ export function Batches() {
   const [trainers, setTrainers] = useState<{ id: string; first_name: string; last_name: string }[]>([])
   const [open, setOpen] = useState(false)
   const [editing, setEditing] = useState<BatchRow | null>(null)
+  const [sp] = useSearchParams()
 
   const load = () => {
     if (!supabase) return
@@ -107,6 +109,9 @@ export function Batches() {
       .then(({ data }) => data && setTrainers(data as never))
   }
   useEffect(load, [])
+  useEffect(() => {
+    if (sp.get('new')) setOpen(true)
+  }, [])
 
   const removeBatch = async (id: number, code: string) => {
     if (!supabase) return
@@ -892,6 +897,7 @@ export function People() {
   const [live, setLive] = useState(false)
   const [open, setOpen] = useState(false)
   const [showImport, setShowImport] = useState(false)
+  const [sp] = useSearchParams()
 
   const load = () => {
     if (!supabase) return
@@ -909,6 +915,9 @@ export function People() {
       })
   }
   useEffect(load, [])
+  useEffect(() => {
+    if (sp.get('import')) setShowImport(true)
+  }, [])
 
   const removePerson = async (id: string, name: string) => {
     if (!supabase) return
