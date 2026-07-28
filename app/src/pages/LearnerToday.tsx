@@ -1,4 +1,5 @@
-import { PlayCircle, Lock, CheckCircle2, Clock, Award } from 'lucide-react'
+import { useState } from 'react'
+import { PlayCircle, Lock, CheckCircle2, Clock, Award, FileText, X, BookOpen } from 'lucide-react'
 import {
   batches, getCourse, getUser, enrollments, attendancePct, averageGrade, fullName,
 } from '../data/mock'
@@ -10,6 +11,13 @@ import Loading from '../components/Loading'
 const LEARNER_ID = 101
 
 type Module = { num: string; title: string; desc: string }
+type Scores = { pre: number | null; act: number | null; mid: number | null; post: number | null }
+const ASSESSMENTS: { key: keyof Scores; label: string; desc: string }[] = [
+  { key: 'pre', label: 'Pre-test', desc: 'Initial skills benchmark' },
+  { key: 'act', label: 'Activity', desc: 'Practical task' },
+  { key: 'mid', label: 'Mid-term', desc: 'Mid-course evaluation' },
+  { key: 'post', label: 'Post-test', desc: 'Final certification' },
+]
 type LearnerVM = {
   firstName: string
   learnerName: string
@@ -26,10 +34,12 @@ type LearnerVM = {
   endDate: string
   cpr: string
   eligible: boolean
+  scores: Scores
 }
 
 export default function LearnerToday() {
   const d = useLiveData()
+  const [lesson, setLesson] = useState<number | null>(null)
 
   if (hasSupabase && d.loading) return <Loading label="Loading your course…" />
 
@@ -47,6 +57,11 @@ export default function LearnerToday() {
       const modules = course?.modules ?? []
       const att0 = batch ? attPct(d.attendance, d.me.id, batch.id) : 0
       const avg0 = batch ? avgGradeLive(d.grades, d.me.id, batch.id) : null
+      const myGrades = batch ? d.grades.filter((g) => g.learner_id === d.me!.id && g.batch_id === batch.id) : []
+      const sc = (k: string): number | null => {
+        const g = myGrades.find((x) => x.assessment === k)
+        return g ? Number(g.score) : null
+      }
       vm = {
         firstName: d.me.first_name,
         learnerName: `${d.me.first_name} ${d.me.last_name}`,
@@ -63,6 +78,7 @@ export default function LearnerToday() {
         endDate: batch?.end_date ?? '',
         cpr: d.me.cpr ?? '',
         eligible: att0 >= 75 && (avg0 ?? 0) >= 60,
+        scores: { pre: sc('pre'), act: sc('act'), mid: sc('mid'), post: sc('post') },
       }
     }
   } else {
@@ -88,6 +104,7 @@ export default function LearnerToday() {
       endDate: batch.endDate,
       cpr: me.cpr ?? '',
       eligible: att0 >= 75 && (avg0 ?? 0) >= 60,
+      scores: { pre: null, act: null, mid: null, post: null },
     }
   }
 
@@ -174,8 +191,11 @@ export default function LearnerToday() {
                 return (
                   <div
                     key={m.num}
-                    className={`flex items-start gap-3.5 rounded-xl border p-4 ${
-                      current ? 'border-brand-500/30 bg-brand-50' : 'border-line bg-soft hover:bg-soft'
+                    onClick={() => setLesson(i)}
+                    className={`flex cursor-pointer items-start gap-3.5 rounded-xl border p-4 transition-colors ${
+                      current
+                        ? 'border-brand-500/30 bg-brand-50'
+                        : 'border-line bg-soft hover:border-brand-500/30 hover:bg-brand-50/50'
                     } ${locked ? 'opacity-55' : ''}`}
                   >
                     <div
@@ -200,23 +220,22 @@ export default function LearnerToday() {
           )}
         </Card>
 
-        {/* deadlines */}
+        {/* assessments */}
         <Card className="p-5">
-          <SectionTitle>What's next</SectionTitle>
+          <SectionTitle>My Assessments</SectionTitle>
           <div className="space-y-2.5">
-            {[
-              ['Mid Assessment', 'Due in 3 days', 'warn'],
-              ['Practical Task submission', 'Due in 6 days', 'muted'],
-              ['Course Evaluation Form', 'End of batch', 'muted'],
-            ].map(([t, dd, tone]) => (
-              <div key={t} className="flex items-center gap-3 rounded-xl border border-line bg-soft p-3.5">
-                <div className="min-w-0 flex-1">
-                  <div className="truncate text-[13px] font-bold">{t}</div>
-                  <div className="text-[11.5px] text-ink-400">{dd}</div>
+            {ASSESSMENTS.map((a) => {
+              const s = vm!.scores[a.key]
+              return (
+                <div key={a.key} className="flex items-center gap-3 rounded-xl border border-line bg-soft p-3.5">
+                  <div className="min-w-0 flex-1">
+                    <div className="text-[13px] font-bold">{a.label}</div>
+                    <div className="text-[11.5px] text-ink-400">{a.desc}</div>
+                  </div>
+                  {s == null ? <Badge tone="muted">Not taken</Badge> : <Badge tone={s >= 60 ? 'ok' : 'bad'}>{s}%</Badge>}
                 </div>
-                <Badge tone={tone as 'warn' | 'muted'}>DUE</Badge>
-              </div>
-            ))}
+              )
+            })}
           </div>
 
           <div className="mt-5">
@@ -228,6 +247,46 @@ export default function LearnerToday() {
           </div>
         </Card>
       </div>
+
+      {lesson !== null && vm.modules[lesson] && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+          <div className="absolute inset-0 bg-navy-950/50 backdrop-blur-sm" onClick={() => setLesson(null)} />
+          <div className="relative z-10 w-full max-w-lg rounded-2xl border border-line bg-white p-6 shadow-2xl">
+            <div className="flex items-center justify-between">
+              <span className="text-[11px] font-bold tracking-wide text-brand-600 uppercase">
+                Module {vm.modules[lesson].num} · Lesson {lesson + 1} of {vm.modules.length}
+              </span>
+              <button onClick={() => setLesson(null)} className="cursor-pointer text-ink-400 hover:text-navy-900">
+                <X size={18} />
+              </button>
+            </div>
+            <div className="mt-3 flex items-center gap-3">
+              <div className="flex h-11 w-11 flex-none items-center justify-center rounded-xl bg-brand-50 text-brand-600">
+                <FileText size={20} />
+              </div>
+              <h3 className="text-[17px] leading-snug font-extrabold text-navy-900">{vm.modules[lesson].title}</h3>
+            </div>
+            <p className="mt-4 text-[13px] leading-relaxed text-ink-600">{vm.modules[lesson].desc}</p>
+            <div className="mt-4 flex items-center gap-2 rounded-lg border border-brand-500/15 bg-brand-50 px-3 py-2.5 text-[11.5px] text-ink-600">
+              <BookOpen size={14} className="flex-none text-brand-500" />
+              Lesson slides &amp; video appear here once your trainer uploads the material.
+            </div>
+            <div className="mt-5 flex items-center justify-between">
+              <Button variant="ghost" onClick={() => setLesson(Math.max(0, lesson - 1))}>
+                ← Previous
+              </Button>
+              <span className="text-[11.5px] font-semibold text-ink-400">
+                {lesson + 1} / {vm.modules.length}
+              </span>
+              {lesson < vm.modules.length - 1 ? (
+                <Button onClick={() => setLesson(lesson + 1)}>Next →</Button>
+              ) : (
+                <Button onClick={() => setLesson(null)}>Finish</Button>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }

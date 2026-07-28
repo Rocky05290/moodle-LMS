@@ -44,7 +44,7 @@ export type BatchRow = {
 }
 export type EnrollRow = { id: number; learner_id: string; batch_id: number; progress: number }
 export type AttRow = { learner_id: string; batch_id: number; code: AttendanceCode; session_date: string }
-export type GradeRow = { learner_id: string; batch_id: number; score: number }
+export type GradeRow = { learner_id: string; batch_id: number; score: number; assessment: string }
 
 export type LiveData = {
   live: boolean
@@ -91,7 +91,7 @@ export function useLiveData(): LiveData {
           .order('start_date'),
         sb.from('enrollments').select('id,learner_id,batch_id,progress'),
         sb.from('attendance').select('learner_id,batch_id,code,session_date'),
-        sb.from('grades').select('learner_id,batch_id,score'),
+        sb.from('grades').select('learner_id,batch_id,score,assessment'),
       ])
       if (cancelled) return
       const profiles = (p.data ?? []) as ProfileRow[]
