@@ -132,7 +132,7 @@ export default function Landing({ onSignIn }: { onSignIn: (u: User) => void }) {
       </section>
 
       {/* ========================= INTRO STRIP ======================== */}
-      <section className="bg-[#4a90d9] py-16">
+      <section id="compliance" className="scroll-mt-24 bg-[#4a90d9] py-16">
         <div className="mx-auto max-w-6xl px-5 lg:px-8">
           <Reveal>
             <div className="flex justify-center">
@@ -173,7 +173,7 @@ export default function Landing({ onSignIn }: { onSignIn: (u: User) => void }) {
       </section>
 
       {/* ========================== FEATURES ========================= */}
-      <section className="bg-canvas py-20">
+      <section id="features" className="scroll-mt-24 bg-canvas py-20">
         <div className="mx-auto max-w-6xl px-5 lg:px-8">
           <Reveal>
             <div className="mb-12 text-center">
@@ -253,7 +253,9 @@ export default function Landing({ onSignIn }: { onSignIn: (u: User) => void }) {
         </div>
       </section>
 
-      <SiteFooter />
+      <div id="site-footer" className="scroll-mt-24">
+        <SiteFooter />
+      </div>
     </div>
   )
 }

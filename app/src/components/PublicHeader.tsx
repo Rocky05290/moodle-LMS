@@ -2,7 +2,12 @@ import { useState } from 'react'
 import { Menu, X } from 'lucide-react'
 import { useScrolled } from '../hooks'
 
-const LINKS = ['Solutions', 'Product', 'Compliance', 'Pricing', 'About']
+const LINKS = [
+  { label: 'Programs', href: '#features' },
+  { label: 'Compliance', href: '#compliance' },
+  { label: 'About', href: '#site-footer' },
+  { label: 'Contact', href: '#site-footer' },
+]
 
 export default function PublicHeader() {
   const scrolled = useScrolled(40)
@@ -32,13 +37,13 @@ export default function PublicHeader() {
         <nav className="ml-auto hidden items-center gap-1.5 lg:flex">
           {LINKS.map((l) => (
             <a
-              key={l}
-              href="#top"
+              key={l.label}
+              href={l.href}
               className={`rounded-md px-4 py-2 text-[22.5px] font-semibold transition-colors ${
                 scrolled ? 'text-ink-500 hover:bg-soft2' : 'text-white/85 hover:bg-white/10'
               }`}
             >
-              {l}
+              {l.label}
             </a>
           ))}
         </nav>
@@ -59,12 +64,12 @@ export default function PublicHeader() {
         <div className="mx-4 mt-2 rounded-lg border border-line bg-white p-2 shadow-lg lg:hidden">
           {LINKS.map((l) => (
             <a
-              key={l}
-              href="#top"
+              key={l.label}
+              href={l.href}
               onClick={() => setOpen(false)}
               className="block rounded-md px-3 py-2.5 text-[13.5px] font-semibold text-ink-700 hover:bg-soft2"
             >
-              {l}
+              {l.label}
             </a>
           ))}
         </div>
