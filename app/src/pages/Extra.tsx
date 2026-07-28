@@ -7,6 +7,7 @@ import {
 } from '../data/mock'
 import type { Course, Role } from '../data/mock'
 import { supabase, hasSupabase, createAccount } from '../lib/supabase'
+import type { CourseModule } from '../lib/live'
 import { Avatar, Badge, Button, Card, ProgressBar, SectionTitle, Td, Th } from '../components/ui'
 
 /* ------------------------ shared little bits ---------------------- */
@@ -459,7 +460,12 @@ const COURSE_CAT: Record<string, { grad: string; Icon: typeof Network }> = {
 }
 const courseCat = (cat?: string) => COURSE_CAT[cat ?? ''] ?? { grad: 'from-navy-700 via-navy-800 to-navy-900', Icon: BookOpen }
 const courseLevel = (h: number) => (h >= 90 ? 'Advanced' : h >= 60 ? 'Intermediate' : 'Foundation')
-type CourseCard = Course & { description?: string; level?: string; price?: string }
+type CourseCard = Omit<Course, 'modules'> & {
+  modules: CourseModule[]
+  description?: string
+  level?: string
+  price?: string
+}
 
 export function Courses() {
   const [list, setList] = useState<CourseCard[]>(hasSupabase ? [] : mockCourses)
@@ -484,7 +490,7 @@ export function Courses() {
             title: r.title as string,
             category: r.category as string,
             totalHours: r.total_hours as number,
-            modules: (r.modules ?? []) as Course['modules'],
+            modules: (r.modules ?? []) as CourseModule[],
             description: (r.description as string) ?? undefined,
             level: (r.level as string) ?? undefined,
             price: (r.price as string) ?? undefined,
@@ -648,16 +654,35 @@ function CourseForm({ course, onClose, onDone }: { course: CourseCard | null; on
     price: course?.price ?? '',
     description: course?.description ?? '',
   })
-  const [modules, setModules] = useState<{ num: string; title: string; desc: string }[]>(
+  const [modules, setModules] = useState<CourseModule[]>(
     course?.modules?.length ? course.modules.map((m) => ({ ...m })) : [{ num: '01', title: '', desc: '' }],
   )
   const [busy, setBusy] = useState(false)
   const [err, setErr] = useState('')
   const set = (k: keyof typeof f) => (e: { target: { value: string } }) => setF({ ...f, [k]: e.target.value })
-  const setMod = (i: number, key: 'num' | 'title' | 'desc', val: string) =>
-    setModules((ms) => ms.map((m, j) => (j === i ? { ...m, [key]: val } : m)))
+  const patchMod = (i: number, patch: Partial<CourseModule>) =>
+    setModules((ms) => ms.map((m, j) => (j === i ? { ...m, ...patch } : m)))
+  const setMod = (i: number, key: 'num' | 'title' | 'desc' | 'material', val: string) => patchMod(i, { [key]: val })
   const addMod = () => setModules((ms) => [...ms, { num: String(ms.length + 1).padStart(2, '0'), title: '', desc: '' }])
   const removeMod = (i: number) => setModules((ms) => ms.filter((_, j) => j !== i))
+  const addQ = (i: number) =>
+    setModules((ms) =>
+      ms.map((m, j) => (j === i ? { ...m, quiz: [...(m.quiz ?? []), { q: '', opts: ['', '', '', ''], correct: 0 }] } : m)),
+    )
+  const removeQ = (i: number, qi: number) =>
+    setModules((ms) => ms.map((m, j) => (j === i ? { ...m, quiz: (m.quiz ?? []).filter((_, k) => k !== qi) } : m)))
+  const setQ = (i: number, qi: number, patch: Partial<{ q: string; correct: number }>) =>
+    setModules((ms) =>
+      ms.map((m, j) => (j === i ? { ...m, quiz: (m.quiz ?? []).map((qq, k) => (k === qi ? { ...qq, ...patch } : qq)) } : m)),
+    )
+  const setOpt = (i: number, qi: number, oi: number, val: string) =>
+    setModules((ms) =>
+      ms.map((m, j) =>
+        j === i
+          ? { ...m, quiz: (m.quiz ?? []).map((qq, k) => (k === qi ? { ...qq, opts: qq.opts.map((o, p) => (p === oi ? val : o)) } : qq)) }
+          : m,
+      ),
+    )
 
   const save = async () => {
     setErr('')
@@ -746,31 +771,84 @@ function CourseForm({ course, onClose, onDone }: { course: CourseCard | null; on
               <Plus size={12} /> Add module
             </button>
           </div>
-          <div className="space-y-2">
+          <div className="space-y-2.5">
             {modules.map((m, i) => (
-              <div key={i} className="flex gap-2 rounded-lg border border-line bg-soft p-2">
-                <input
-                  className="w-10 flex-none rounded border border-line bg-white px-1 text-center text-[12px] font-bold outline-none"
-                  value={m.num}
-                  onChange={(e) => setMod(i, 'num', e.target.value)}
-                />
-                <div className="min-w-0 flex-1 space-y-1">
+              <div key={i} className="space-y-1.5 rounded-lg border border-line bg-soft p-2.5">
+                <div className="flex gap-2">
                   <input
-                    className="w-full rounded border border-line bg-white px-2 py-1 text-[12px] font-semibold outline-none"
+                    className="w-10 flex-none rounded border border-line bg-white px-1 text-center text-[12px] font-bold outline-none"
+                    value={m.num}
+                    onChange={(e) => setMod(i, 'num', e.target.value)}
+                  />
+                  <input
+                    className="min-w-0 flex-1 rounded border border-line bg-white px-2 py-1 text-[12px] font-semibold outline-none"
                     placeholder="Module title"
                     value={m.title}
                     onChange={(e) => setMod(i, 'title', e.target.value)}
                   />
-                  <input
-                    className="w-full rounded border border-line bg-white px-2 py-1 text-[11px] outline-none"
-                    placeholder="Short description"
-                    value={m.desc}
-                    onChange={(e) => setMod(i, 'desc', e.target.value)}
-                  />
+                  <button onClick={() => removeMod(i)} className="flex-none cursor-pointer text-ink-400 hover:text-bad-600">
+                    <Trash2 size={14} />
+                  </button>
                 </div>
-                <button onClick={() => removeMod(i)} className="flex-none cursor-pointer text-ink-400 hover:text-bad-600">
-                  <Trash2 size={13} />
-                </button>
+                <input
+                  className="w-full rounded border border-line bg-white px-2 py-1 text-[11px] outline-none"
+                  placeholder="Short description"
+                  value={m.desc}
+                  onChange={(e) => setMod(i, 'desc', e.target.value)}
+                />
+                <input
+                  className="w-full rounded border border-line bg-white px-2 py-1 text-[11px] outline-none"
+                  placeholder="📎 Material link — PDF / video / slides URL (optional)"
+                  value={m.material ?? ''}
+                  onChange={(e) => setMod(i, 'material', e.target.value)}
+                />
+
+                <div className="rounded border border-line bg-white p-1.5">
+                  <div className="flex items-center justify-between px-0.5">
+                    <span className="text-[10px] font-bold tracking-wide text-ink-400 uppercase">
+                      Quiz · {(m.quiz ?? []).length} question{(m.quiz ?? []).length === 1 ? '' : 's'}
+                    </span>
+                    <button
+                      onClick={() => addQ(i)}
+                      className="cursor-pointer text-[10.5px] font-bold text-brand-600 hover:text-brand-700"
+                    >
+                      + Add question
+                    </button>
+                  </div>
+                  {(m.quiz ?? []).map((qq, qi) => (
+                    <div key={qi} className="mt-1.5 space-y-1 rounded border border-line bg-soft p-1.5">
+                      <div className="flex gap-1">
+                        <input
+                          className="min-w-0 flex-1 rounded border border-line bg-white px-2 py-1 text-[11.5px] font-semibold outline-none"
+                          placeholder={`Question ${qi + 1}`}
+                          value={qq.q}
+                          onChange={(e) => setQ(i, qi, { q: e.target.value })}
+                        />
+                        <button onClick={() => removeQ(i, qi)} className="flex-none cursor-pointer text-ink-400 hover:text-bad-600">
+                          <X size={13} />
+                        </button>
+                      </div>
+                      <div className="grid grid-cols-2 gap-1">
+                        {qq.opts.map((o, oi) => (
+                          <label key={oi} className="flex items-center gap-1.5" title="Tick the correct answer">
+                            <input
+                              type="radio"
+                              className="h-3 w-3 flex-none accent-ok-600"
+                              checked={qq.correct === oi}
+                              onChange={() => setQ(i, qi, { correct: oi })}
+                            />
+                            <input
+                              className="min-w-0 flex-1 rounded border border-line bg-white px-1.5 py-0.5 text-[11px] outline-none"
+                              placeholder={String.fromCharCode(65 + oi)}
+                              value={o}
+                              onChange={(e) => setOpt(i, qi, oi, e.target.value)}
+                            />
+                          </label>
+                        ))}
+                      </div>
+                    </div>
+                  ))}
+                </div>
               </div>
             ))}
           </div>

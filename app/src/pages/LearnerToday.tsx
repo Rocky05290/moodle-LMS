@@ -10,7 +10,13 @@ import Loading from '../components/Loading'
 
 const LEARNER_ID = 101
 
-type Module = { num: string; title: string; desc: string }
+type Module = {
+  num: string
+  title: string
+  desc: string
+  material?: string
+  quiz?: { q: string; opts: string[]; correct: number }[]
+}
 type Scores = { pre: number | null; act: number | null; mid: number | null; post: number | null }
 const ASSESSMENTS: { key: keyof Scores; label: string; desc: string }[] = [
   { key: 'pre', label: 'Pre-test', desc: 'Initial skills benchmark' },
@@ -40,6 +46,13 @@ type LearnerVM = {
 export default function LearnerToday() {
   const d = useLiveData()
   const [lesson, setLesson] = useState<number | null>(null)
+  const [answers, setAnswers] = useState<Record<number, number>>({})
+  const [score, setScore] = useState<number | null>(null)
+  const goLesson = (i: number | null) => {
+    setLesson(i)
+    setAnswers({})
+    setScore(null)
+  }
 
   if (hasSupabase && d.loading) return <Loading label="Loading your course…" />
 
@@ -191,7 +204,7 @@ export default function LearnerToday() {
                 return (
                   <div
                     key={m.num}
-                    onClick={() => setLesson(i)}
+                    onClick={() => goLesson(i)}
                     className={`flex cursor-pointer items-start gap-3.5 rounded-xl border p-4 transition-colors ${
                       current
                         ? 'border-brand-500/30 bg-brand-50'
@@ -250,13 +263,13 @@ export default function LearnerToday() {
 
       {lesson !== null && vm.modules[lesson] && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-          <div className="absolute inset-0 bg-navy-950/50 backdrop-blur-sm" onClick={() => setLesson(null)} />
-          <div className="relative z-10 w-full max-w-lg rounded-2xl border border-line bg-white p-6 shadow-2xl">
+          <div className="absolute inset-0 bg-navy-950/50 backdrop-blur-sm" onClick={() => goLesson(null)} />
+          <div className="relative z-10 max-h-[88vh] w-full max-w-lg overflow-y-auto rounded-2xl border border-line bg-white p-6 shadow-2xl">
             <div className="flex items-center justify-between">
               <span className="text-[11px] font-bold tracking-wide text-brand-600 uppercase">
                 Module {vm.modules[lesson].num} · Lesson {lesson + 1} of {vm.modules.length}
               </span>
-              <button onClick={() => setLesson(null)} className="cursor-pointer text-ink-400 hover:text-navy-900">
+              <button onClick={() => goLesson(null)} className="cursor-pointer text-ink-400 hover:text-navy-900">
                 <X size={18} />
               </button>
             </div>
@@ -267,21 +280,92 @@ export default function LearnerToday() {
               <h3 className="text-[17px] leading-snug font-extrabold text-navy-900">{vm.modules[lesson].title}</h3>
             </div>
             <p className="mt-4 text-[13px] leading-relaxed text-ink-600">{vm.modules[lesson].desc}</p>
-            <div className="mt-4 flex items-center gap-2 rounded-lg border border-brand-500/15 bg-brand-50 px-3 py-2.5 text-[11.5px] text-ink-600">
-              <BookOpen size={14} className="flex-none text-brand-500" />
-              Lesson slides &amp; video appear here once your trainer uploads the material.
-            </div>
+
+            {vm.modules[lesson].material ? (
+              <a
+                href={vm.modules[lesson].material}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="mt-4 flex items-center gap-2 rounded-lg border border-brand-500/30 bg-brand-50 px-3 py-2.5 text-[12.5px] font-bold text-brand-600 transition-colors hover:bg-brand-100"
+              >
+                <BookOpen size={15} /> Open lesson material ↗
+              </a>
+            ) : (
+              <div className="mt-4 flex items-center gap-2 rounded-lg border border-line bg-soft px-3 py-2.5 text-[11.5px] text-ink-500">
+                <BookOpen size={14} className="flex-none text-ink-400" />
+                No material attached to this lesson yet.
+              </div>
+            )}
+
+            {vm.modules[lesson].quiz && vm.modules[lesson].quiz!.length > 0 && (
+              <div className="mt-5 border-t border-line pt-4">
+                <div className="text-[12.5px] font-extrabold text-navy-900">Quick quiz</div>
+                <div className="mt-2 space-y-3">
+                  {vm.modules[lesson].quiz!.map((qq, qi) => (
+                    <div key={qi}>
+                      <div className="text-[12.5px] font-semibold text-navy-900">
+                        {qi + 1}. {qq.q}
+                      </div>
+                      <div className="mt-1.5 space-y-1">
+                        {qq.opts.map((o, oi) => {
+                          const chosen = answers[qi] === oi
+                          const revealed = score != null
+                          const cls = revealed
+                            ? oi === qq.correct
+                              ? 'border-ok-600/40 bg-ok-50 text-ok-600'
+                              : chosen
+                                ? 'border-bad-600/40 bg-bad-50 text-bad-600'
+                                : 'border-line text-ink-500'
+                            : chosen
+                              ? 'border-brand-500 bg-brand-50 text-navy-900'
+                              : 'border-line text-ink-600 hover:border-brand-500/40'
+                          return (
+                            <label key={oi} className={`flex cursor-pointer items-center gap-2 rounded-md border px-2.5 py-1.5 text-[12px] ${cls}`}>
+                              <input
+                                type="radio"
+                                className="h-3 w-3 accent-brand-500"
+                                disabled={revealed}
+                                checked={chosen}
+                                onChange={() => setAnswers((a) => ({ ...a, [qi]: oi }))}
+                              />
+                              {o || <span className="text-ink-400">Option {String.fromCharCode(65 + oi)}</span>}
+                            </label>
+                          )
+                        })}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+                {score == null ? (
+                  <Button
+                    onClick={() => {
+                      const q = vm!.modules[lesson].quiz!
+                      setScore(q.reduce((n, qq, qi) => n + (answers[qi] === qq.correct ? 1 : 0), 0))
+                    }}
+                    className="mt-3"
+                  >
+                    Submit quiz
+                  </Button>
+                ) : (
+                  <div className="mt-3 rounded-lg bg-brand-50 px-3 py-2 text-[12.5px] font-extrabold text-brand-700">
+                    You scored {score} / {vm.modules[lesson].quiz!.length} (
+                    {Math.round((score / vm.modules[lesson].quiz!.length) * 100)}%)
+                  </div>
+                )}
+              </div>
+            )}
+
             <div className="mt-5 flex items-center justify-between">
-              <Button variant="ghost" onClick={() => setLesson(Math.max(0, lesson - 1))}>
+              <Button variant="ghost" onClick={() => goLesson(Math.max(0, lesson - 1))}>
                 ← Previous
               </Button>
               <span className="text-[11.5px] font-semibold text-ink-400">
                 {lesson + 1} / {vm.modules.length}
               </span>
               {lesson < vm.modules.length - 1 ? (
-                <Button onClick={() => setLesson(lesson + 1)}>Next →</Button>
+                <Button onClick={() => goLesson(lesson + 1)}>Next →</Button>
               ) : (
-                <Button onClick={() => setLesson(null)}>Finish</Button>
+                <Button onClick={() => goLesson(null)}>Finish</Button>
               )}
             </div>
           </div>

@@ -22,13 +22,21 @@ export type ProfileRow = {
   cpr: string | null
   role: string
 }
+export type QuizQuestion = { q: string; opts: string[]; correct: number }
+export type CourseModule = {
+  num: string
+  title: string
+  desc: string
+  material?: string // link to a PDF / video / slides
+  quiz?: QuizQuestion[]
+}
 export type CourseRow = {
   id: number
   code: string
   title: string
   category: string | null
   total_hours: number
-  modules: { num: string; title: string; desc: string }[]
+  modules: CourseModule[]
 }
 export type BatchRow = {
   id: number
