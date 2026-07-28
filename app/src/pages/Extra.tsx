@@ -465,15 +465,18 @@ export function Courses() {
   const [list, setList] = useState<CourseCard[]>(hasSupabase ? [] : mockCourses)
   const [live, setLive] = useState(false)
   const [open, setOpen] = useState<Record<number, boolean>>({})
+  const [isAdmin, setIsAdmin] = useState(false)
+  const [formOpen, setFormOpen] = useState(false)
+  const [editCourse, setEditCourse] = useState<CourseCard | null>(null)
 
-  useEffect(() => {
+  const load = () => {
     if (!supabase) return
     supabase
       .from('courses')
       .select('*')
       .order('id')
       .then(({ data, error }) => {
-        if (error || !data || !data.length) return
+        if (error || !data) return
         setList(
           data.map((r) => ({
             id: r.id as number,
@@ -489,11 +492,49 @@ export function Courses() {
         )
         setLive(true)
       })
+  }
+
+  useEffect(() => {
+    load()
+    if (!supabase) return
+    supabase.auth.getUser().then(({ data }) => {
+      if (!data.user || !supabase) return
+      supabase
+        .from('profiles')
+        .select('role')
+        .eq('id', data.user.id)
+        .maybeSingle()
+        .then(({ data: p }) => setIsAdmin((p?.role as string) === 'admin'))
+    })
   }, [])
+
+  const delCourse = async (c: CourseCard) => {
+    if (!supabase) return
+    if (!window.confirm(`Delete course "${c.title}"?\n(Only works if no batches use it.)`)) return
+    const { error } = await supabase.from('courses').delete().eq('id', c.id)
+    if (error) {
+      window.alert('Could not delete: ' + error.message)
+      return
+    }
+    load()
+  }
 
   return (
     <div className="space-y-4">
-      <LiveTag live={live} />
+      <div className="flex items-center justify-between gap-3">
+        <LiveTag live={live} />
+        {isAdmin && (
+          <button
+            onClick={() => {
+              setEditCourse(null)
+              setFormOpen(true)
+            }}
+            className="flex flex-none cursor-pointer items-center gap-1.5 rounded-md bg-gradient-to-r from-brand-500 to-indigo-500 px-3.5 py-2 text-[12.5px] font-bold text-white shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-md"
+          >
+            <Plus size={14} /> New course
+          </button>
+        )}
+      </div>
       <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
         {list.map((c) => {
           const cat = courseCat(c.category)
@@ -556,12 +597,200 @@ export function Courses() {
                     ))}
                   </div>
                 )}
+
+                {isAdmin && (
+                  <div className="mt-4 flex gap-3 border-t border-line pt-3 text-[11px]">
+                    <button
+                      onClick={() => {
+                        setEditCourse(c)
+                        setFormOpen(true)
+                      }}
+                      className="flex cursor-pointer items-center gap-1 font-bold text-ink-500 transition-colors hover:text-brand-600"
+                    >
+                      <Pencil size={12} /> Edit
+                    </button>
+                    <button
+                      onClick={() => delCourse(c)}
+                      className="flex cursor-pointer items-center gap-1 font-bold text-ink-500 transition-colors hover:text-bad-600"
+                    >
+                      <Trash2 size={12} /> Delete
+                    </button>
+                  </div>
+                )}
               </div>
             </div>
           )
         })}
       </div>
+
+      {formOpen && (
+        <CourseForm
+          course={editCourse}
+          onClose={() => setFormOpen(false)}
+          onDone={() => {
+            setFormOpen(false)
+            load()
+          }}
+        />
+      )}
     </div>
+  )
+}
+
+function CourseForm({ course, onClose, onDone }: { course: CourseCard | null; onClose: () => void; onDone: () => void }) {
+  const editing = !!course
+  const [f, setF] = useState({
+    code: course?.code ?? '',
+    title: course?.title ?? '',
+    category: course?.category ?? 'Networking',
+    total_hours: String(course?.totalHours ?? 40),
+    level: course?.level ?? 'Intermediate',
+    price: course?.price ?? '',
+    description: course?.description ?? '',
+  })
+  const [modules, setModules] = useState<{ num: string; title: string; desc: string }[]>(
+    course?.modules?.length ? course.modules.map((m) => ({ ...m })) : [{ num: '01', title: '', desc: '' }],
+  )
+  const [busy, setBusy] = useState(false)
+  const [err, setErr] = useState('')
+  const set = (k: keyof typeof f) => (e: { target: { value: string } }) => setF({ ...f, [k]: e.target.value })
+  const setMod = (i: number, key: 'num' | 'title' | 'desc', val: string) =>
+    setModules((ms) => ms.map((m, j) => (j === i ? { ...m, [key]: val } : m)))
+  const addMod = () => setModules((ms) => [...ms, { num: String(ms.length + 1).padStart(2, '0'), title: '', desc: '' }])
+  const removeMod = (i: number) => setModules((ms) => ms.filter((_, j) => j !== i))
+
+  const save = async () => {
+    setErr('')
+    if (!f.code.trim() || !f.title.trim()) {
+      setErr('Course code and title are required.')
+      return
+    }
+    if (!supabase) return
+    setBusy(true)
+    const payload = {
+      code: f.code.trim(),
+      title: f.title.trim(),
+      category: f.category,
+      total_hours: Number(f.total_hours) || 0,
+      level: f.level || null,
+      price: f.price || null,
+      description: f.description || null,
+      modules: modules.filter((m) => m.title.trim()),
+    }
+    const { error } = editing
+      ? await supabase.from('courses').update(payload).eq('id', course!.id)
+      : await supabase.from('courses').insert(payload)
+    setBusy(false)
+    if (error) {
+      setErr(
+        error.message.toLowerCase().includes('column')
+          ? 'Run supabase_course_details.sql once to add the price/level/description columns. (' + error.message + ')'
+          : error.message,
+      )
+      return
+    }
+    onDone()
+  }
+
+  return (
+    <Modal title={editing ? `Edit ${course!.code}` : 'New course'} onClose={onClose}>
+      <div className="space-y-3">
+        <div className="grid grid-cols-2 gap-3">
+          <div>
+            <label className={labelCls}>Code</label>
+            <input className={fieldCls} placeholder="CCNA" value={f.code} onChange={set('code')} />
+          </div>
+          <div>
+            <label className={labelCls}>Total hours</label>
+            <input type="number" className={fieldCls} value={f.total_hours} onChange={set('total_hours')} />
+          </div>
+        </div>
+        <div>
+          <label className={labelCls}>Title</label>
+          <input className={fieldCls} placeholder="CCNA — Networking Fundamentals" value={f.title} onChange={set('title')} />
+        </div>
+        <div className="grid grid-cols-2 gap-3">
+          <div>
+            <label className={labelCls}>Category</label>
+            <select className={fieldCls} value={f.category} onChange={set('category')}>
+              <option>Networking</option>
+              <option>Cybersecurity</option>
+              <option>Cloud Systems</option>
+            </select>
+          </div>
+          <div>
+            <label className={labelCls}>Level</label>
+            <select className={fieldCls} value={f.level} onChange={set('level')}>
+              <option>Foundation</option>
+              <option>Intermediate</option>
+              <option>Advanced</option>
+            </select>
+          </div>
+        </div>
+        <div>
+          <label className={labelCls}>Price</label>
+          <input className={fieldCls} placeholder="180 BHD" value={f.price} onChange={set('price')} />
+        </div>
+        <div>
+          <label className={labelCls}>Description</label>
+          <textarea className={`${fieldCls} min-h-[64px]`} value={f.description} onChange={set('description')} />
+        </div>
+
+        <div>
+          <div className="mb-1 flex items-center justify-between">
+            <label className={labelCls}>Modules / Syllabus</label>
+            <button
+              onClick={addMod}
+              className="flex cursor-pointer items-center gap-1 text-[11px] font-bold text-brand-600 hover:text-brand-700"
+            >
+              <Plus size={12} /> Add module
+            </button>
+          </div>
+          <div className="space-y-2">
+            {modules.map((m, i) => (
+              <div key={i} className="flex gap-2 rounded-lg border border-line bg-soft p-2">
+                <input
+                  className="w-10 flex-none rounded border border-line bg-white px-1 text-center text-[12px] font-bold outline-none"
+                  value={m.num}
+                  onChange={(e) => setMod(i, 'num', e.target.value)}
+                />
+                <div className="min-w-0 flex-1 space-y-1">
+                  <input
+                    className="w-full rounded border border-line bg-white px-2 py-1 text-[12px] font-semibold outline-none"
+                    placeholder="Module title"
+                    value={m.title}
+                    onChange={(e) => setMod(i, 'title', e.target.value)}
+                  />
+                  <input
+                    className="w-full rounded border border-line bg-white px-2 py-1 text-[11px] outline-none"
+                    placeholder="Short description"
+                    value={m.desc}
+                    onChange={(e) => setMod(i, 'desc', e.target.value)}
+                  />
+                </div>
+                <button onClick={() => removeMod(i)} className="flex-none cursor-pointer text-ink-400 hover:text-bad-600">
+                  <Trash2 size={13} />
+                </button>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {err && (
+          <p className="rounded-md border border-bad-600/20 bg-bad-50 px-3 py-2 text-[12px] font-semibold text-bad-600">
+            {err}
+          </p>
+        )}
+        <div className="flex gap-2 pt-1">
+          <Button onClick={save} className="flex-1">
+            {busy ? 'Saving…' : editing ? 'Save changes' : 'Create course'}
+          </Button>
+          <Button variant="ghost" onClick={onClose}>
+            Cancel
+          </Button>
+        </div>
+      </div>
+    </Modal>
   )
 }
 
