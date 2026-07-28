@@ -84,6 +84,20 @@ export default function LoginCard({ onSignIn }: { onSignIn: (u: User) => void })
     navigate(active.home)
   }
 
+  const signInMicrosoft = async () => {
+    setErr('')
+    setNotice('')
+    if (!hasSupabase || !supabase) {
+      setErr('Backend not connected.')
+      return
+    }
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: 'azure',
+      options: { scopes: 'email openid profile', redirectTo: window.location.origin },
+    })
+    if (error) setErr(error.message)
+  }
+
   const register = async () => {
     setErr('')
     setNotice('')
@@ -246,7 +260,7 @@ export default function LoginCard({ onSignIn }: { onSignIn: (u: User) => void })
 
           {/* Microsoft 365 sign-in */}
           <button
-            onClick={submit}
+            onClick={signInMicrosoft}
             className="flex w-full cursor-pointer items-center justify-center gap-2.5 rounded-lg border border-brand-500/25 bg-white px-4 py-2.5 text-[12.5px] font-bold text-navy-900 shadow-sm transition-all hover:-translate-y-0.5 hover:border-brand-500/40 hover:shadow-md"
           >
             <MicrosoftIcon /> Sign in with Microsoft 365
