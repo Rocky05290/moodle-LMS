@@ -1,3 +1,4 @@
+import { useNavigate } from 'react-router-dom'
 import { Layers, Users, CalendarCheck, Trophy, Plus, Upload, Sparkles, ArrowRight } from 'lucide-react'
 import {
   batches, courses, users, enrollments, getCourse, getUser, learnersInBatch,
@@ -31,6 +32,7 @@ const nm = (name: string) =>
 
 export default function AdminDashboard() {
   const d = useLiveData()
+  const navigate = useNavigate()
 
   if (hasSupabase && d.loading) return <Loading label="Loading dashboard…" />
 
@@ -281,6 +283,7 @@ export default function AdminDashboard() {
           {vm.courses.map((c, i) => (
             <div
               key={c.id}
+              onClick={() => navigate('/courses')}
               className="group relative cursor-pointer overflow-hidden rounded-2xl border border-line bg-surface p-5 shadow-[0_10px_28px_-16px_rgba(15,27,53,0.18)] transition-all hover:-translate-y-1 hover:border-brand-500/30 hover:shadow-[0_24px_50px_-20px_rgba(15,27,53,0.32)]"
             >
               {/* decorative gradient glow on hover */}
@@ -301,6 +304,9 @@ export default function AdminDashboard() {
               <h3 className="relative mt-2 text-[15px] leading-snug font-extrabold text-navy-900 transition-colors group-hover:text-brand-600">
                 {c.title}
               </h3>
+              <p className="relative mt-1.5 line-clamp-2 text-[11.5px] leading-relaxed text-ink-400">
+                {c.modules.map((m) => m.title).join(' · ')}
+              </p>
 
               <div className="relative mt-4 flex items-center justify-between border-t border-line pt-3">
                 <span className="text-[11.5px] font-semibold text-ink-400">{c.modules.length} modules</span>
