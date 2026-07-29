@@ -565,8 +565,10 @@ export function Courses() {
               className="group flex cursor-pointer flex-col overflow-hidden rounded-2xl border border-line bg-surface shadow-[0_10px_28px_-16px_rgba(15,27,53,0.18)] transition-all hover:-translate-y-1 hover:border-brand-500/30 hover:shadow-[0_24px_50px_-20px_rgba(15,27,53,0.28)]"
             >
               {/* banner */}
-              <div className={`relative h-28 overflow-hidden bg-gradient-to-br ${cat.grad}`}>
-                <cat.Icon className="absolute -right-2 -bottom-3 text-white/15" size={92} strokeWidth={1.5} />
+              <div className="relative h-28 overflow-hidden">
+                <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: 'url(/hero.jpg)' }} />
+                <div className={`absolute inset-0 bg-gradient-to-br ${cat.grad} opacity-80`} />
+                <cat.Icon className="absolute -right-2 -bottom-3 text-white/20" size={92} strokeWidth={1.5} />
                 <span className="absolute top-3.5 left-4 rounded-full bg-white/20 px-2.5 py-1 text-[10px] font-bold tracking-wide text-white uppercase backdrop-blur-sm">
                   {c.category ?? 'Programme'}
                 </span>
@@ -672,8 +674,10 @@ function CourseDetail({ course, onClose }: { course: CourseCard; onClose: () => 
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
       <div className="absolute inset-0 bg-navy-950/50 backdrop-blur-sm" onClick={onClose} />
       <div className="relative z-10 max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-2xl border border-line bg-white shadow-2xl">
-        <div className={`relative h-36 overflow-hidden bg-gradient-to-br ${cat.grad}`}>
-          <cat.Icon className="absolute -right-3 -bottom-5 text-white/15" size={128} strokeWidth={1.5} />
+        <div className="relative h-36 overflow-hidden">
+          <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: 'url(/hero.jpg)' }} />
+          <div className={`absolute inset-0 bg-gradient-to-br ${cat.grad} opacity-80`} />
+          <cat.Icon className="absolute -right-3 -bottom-5 text-white/20" size={128} strokeWidth={1.5} />
           <span className="absolute top-5 left-5 rounded-full bg-white/20 px-3 py-1 text-[11px] font-bold tracking-wide text-white uppercase backdrop-blur-sm">
             {course.category ?? 'Programme'}
           </span>
