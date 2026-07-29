@@ -135,7 +135,7 @@ export default function Layout({
       </aside>
 
       {/* -------------------------- Main --------------------------- */}
-      <div className="min-w-0 flex-1">
+      <div className="flex min-w-0 flex-1 flex-col">
         {/* topbar */}
         <header className="sticky top-0 z-20 border-b border-line bg-surface/85 px-5 py-3.5 backdrop-blur-xl lg:px-7">
           <div className="flex items-center gap-4">
@@ -172,7 +172,7 @@ export default function Layout({
           </div>
         </header>
 
-        <main className="px-5 py-6 lg:px-7">{children}</main>
+        <main className="flex-1 px-5 py-6 lg:px-7">{children}</main>
 
         <SiteFooter />
       </div>

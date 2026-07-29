@@ -1,14 +1,16 @@
 import { useEffect, useRef, useState } from 'react'
 import type { ReactNode } from 'react'
 import { useSearchParams } from 'react-router-dom'
-import { Plus, Upload, Mail, Phone, X, Trash2, Pencil, Network, ShieldCheck, Cloud, BookOpen, ChevronDown } from 'lucide-react'
+import { Plus, Upload, Mail, Phone, X, Trash2, Pencil, Network, ShieldCheck, Cloud, BookOpen, ChevronDown, FileText } from 'lucide-react'
 import {
   batches, courses as mockCourses, users, enrollments, getCourse, getUser,
   batchAttendancePct,
 } from '../data/mock'
 import type { Course, Role } from '../data/mock'
 import { supabase, hasSupabase, createAccount } from '../lib/supabase'
+import { useLiveData } from '../lib/live'
 import type { CourseModule } from '../lib/live'
+import Loading from '../components/Loading'
 import { Avatar, Badge, Button, Card, ProgressBar, SectionTitle, Td, Th } from '../components/ui'
 
 /* ------------------------ shared little bits ---------------------- */
@@ -649,10 +651,7 @@ export function Courses() {
         <CourseForm
           course={editCourse}
           onClose={() => setFormOpen(false)}
-          onDone={() => {
-            setFormOpen(false)
-            load()
-          }}
+          onDone={load}
         />
       )}
 
@@ -763,7 +762,12 @@ function CourseForm({ course, onClose, onDone }: { course: CourseCard | null; on
   const [busy, setBusy] = useState(false)
   const [err, setErr] = useState('')
   const [uploading, setUploading] = useState<number | null>(null)
-  const set = (k: keyof typeof f) => (e: { target: { value: string } }) => setF({ ...f, [k]: e.target.value })
+  const [savedId, setSavedId] = useState<number | null>(course?.id ?? null)
+  const [saved, setSaved] = useState(false)
+  const set = (k: keyof typeof f) => (e: { target: { value: string } }) => {
+    setSaved(false)
+    setF({ ...f, [k]: e.target.value })
+  }
   const patchMod = (i: number, patch: Partial<CourseModule>) =>
     setModules((ms) => ms.map((m, j) => (j === i ? { ...m, ...patch } : m)))
   const setMod = (i: number, key: 'num' | 'title' | 'desc' | 'material', val: string) => patchMod(i, { [key]: val })
@@ -811,6 +815,7 @@ function CourseForm({ course, onClose, onDone }: { course: CourseCard | null; on
 
   const save = async () => {
     setErr('')
+    setSaved(false)
     if (!f.code.trim() || !f.title.trim()) {
       setErr('Course code and title are required.')
       return
@@ -826,22 +831,25 @@ function CourseForm({ course, onClose, onDone }: { course: CourseCard | null; on
     }
     const full = { ...core, level: f.level || null, price: f.price || null, description: f.description || null }
 
+    // update if we already have an id (editing, or a new course saved once); else insert
     const run = (payload: Record<string, unknown>) =>
-      editing
-        ? supabase!.from('courses').update(payload).eq('id', course!.id)
-        : supabase!.from('courses').insert(payload)
+      savedId != null
+        ? supabase!.from('courses').update(payload).eq('id', savedId).select('id').maybeSingle()
+        : supabase!.from('courses').insert(payload).select('id').single()
 
-    let { error } = await run(full)
+    let { data, error } = await run(full)
     // If the price/level/description columns don't exist yet, still save the core course.
     if (error && /column|schema|description|level|price/i.test(error.message)) {
-      ;({ error } = await run(core))
+      ;({ data, error } = await run(core))
     }
     setBusy(false)
     if (error) {
       setErr(error.message)
       return
     }
-    onDone()
+    if (data && (data as { id?: number }).id != null) setSavedId((data as { id: number }).id)
+    setSaved(true)
+    onDone() // refresh the list behind — the modal stays open
   }
 
   return (
@@ -1000,6 +1008,11 @@ function CourseForm({ course, onClose, onDone }: { course: CourseCard | null; on
           </div>
         </div>
 
+        {saved && !err && (
+          <p className="rounded-md border border-ok-600/20 bg-ok-50 px-3 py-2 text-[12px] font-semibold text-ok-600">
+            ✓ Saved — the course list is updated. Keep editing, or close.
+          </p>
+        )}
         {err && (
           <p className="rounded-md border border-bad-600/20 bg-bad-50 px-3 py-2 text-[12px] font-semibold text-bad-600">
             {err}
@@ -1007,10 +1020,10 @@ function CourseForm({ course, onClose, onDone }: { course: CourseCard | null; on
         )}
         <div className="flex gap-2 pt-1">
           <Button onClick={save} className="flex-1">
-            {busy ? 'Saving…' : editing ? 'Save changes' : 'Create course'}
+            {busy ? 'Saving…' : savedId != null ? 'Save changes' : 'Create course'}
           </Button>
           <Button variant="ghost" onClick={onClose}>
-            Cancel
+            {saved ? 'Close' : 'Cancel'}
           </Button>
         </div>
       </div>
@@ -1705,25 +1718,179 @@ export function Grading() {
 
 /* --------------------------- MyCourse ----------------------------- */
 export function MyCourse() {
-  const c = getCourse(1)
+  const d = useLiveData()
+  const [lesson, setLesson] = useState<number | null>(null)
+  const [answers, setAnswers] = useState<Record<number, number>>({})
+  const [score, setScore] = useState<number | null>(null)
+  const openLesson = (i: number | null) => {
+    setLesson(i)
+    setAnswers({})
+    setScore(null)
+  }
+
+  if (hasSupabase && d.loading) return <Loading label="Loading your course…" />
+
+  let course: { code: string; title: string; totalHours: number; modules: CourseModule[] } | null = null
+  let progress = 0
+  if (hasSupabase && d.me) {
+    const enr = d.enrollments.find((e) => e.learner_id === d.me!.id)
+    const batch = enr ? d.batches.find((b) => b.id === enr.batch_id) : undefined
+    const cr = batch ? d.courses.find((c) => c.id === batch.course_id) : undefined
+    if (cr) course = { code: cr.code, title: cr.title, totalHours: cr.total_hours, modules: cr.modules }
+    progress = enr?.progress ?? 0
+  } else {
+    const c = getCourse(1)
+    course = { code: c.code, title: c.title, totalHours: c.totalHours, modules: c.modules }
+    progress = 65
+  }
+
+  if (!course) {
+    return (
+      <Card className="p-10 text-center text-[13px] text-ink-500">You're not enrolled in a course yet.</Card>
+    )
+  }
+  const modules = course.modules
+
   return (
     <div className="space-y-4">
       <Card className="p-5">
-        <SectionTitle right={<Badge tone="brand">{c.code}</Badge>}>{c.title}</SectionTitle>
-        <ProgressBar value={65} />
-        <p className="mt-2 text-[12px] text-ink-400">65% complete · {c.totalHours} hours total</p>
+        <SectionTitle right={<Badge tone="brand">{course.code}</Badge>}>{course.title}</SectionTitle>
+        <ProgressBar value={progress} />
+        <p className="mt-2 text-[12px] text-ink-400">
+          {progress}% complete · {course.totalHours} hours total · tap a module to open it
+        </p>
       </Card>
+
       <div className="grid gap-3 md:grid-cols-2">
-        {c.modules.map((m) => (
-          <Card key={m.num} hover className="p-4">
+        {modules.map((m, i) => (
+          <div
+            key={m.num}
+            onClick={() => openLesson(i)}
+            className="group cursor-pointer rounded-2xl border border-line bg-surface p-4 shadow-sm transition-all hover:-translate-y-0.5 hover:border-brand-500/30 hover:shadow-md"
+          >
             <div className="flex items-center gap-2">
               <span className="text-[11.5px] font-extrabold text-brand-500">MODULE {m.num}</span>
+              <span className="ml-auto flex items-center gap-2 text-[10.5px] font-bold">
+                {m.material && <span className="text-brand-600">📎 Material</span>}
+                {m.quiz && m.quiz.length > 0 && <span className="text-gold-600">📝 {m.quiz.length} quiz</span>}
+              </span>
             </div>
-            <h3 className="mt-1.5 text-[14px] font-bold">{m.title}</h3>
+            <h3 className="mt-1.5 text-[14px] font-bold transition-colors group-hover:text-brand-600">{m.title}</h3>
             <p className="mt-1 text-[12px] leading-relaxed text-ink-500">{m.desc}</p>
-          </Card>
+          </div>
         ))}
       </div>
+
+      {lesson !== null && modules[lesson] && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+          <div className="absolute inset-0 bg-navy-950/50 backdrop-blur-sm" onClick={() => openLesson(null)} />
+          <div className="relative z-10 max-h-[88vh] w-full max-w-lg overflow-y-auto rounded-2xl border border-line bg-white p-6 shadow-2xl">
+            <div className="flex items-center justify-between">
+              <span className="text-[11px] font-bold tracking-wide text-brand-600 uppercase">
+                Module {modules[lesson].num} · Lesson {lesson + 1} of {modules.length}
+              </span>
+              <button onClick={() => openLesson(null)} className="cursor-pointer text-ink-400 hover:text-navy-900">
+                <X size={18} />
+              </button>
+            </div>
+            <div className="mt-3 flex items-center gap-3">
+              <div className="flex h-11 w-11 flex-none items-center justify-center rounded-xl bg-brand-50 text-brand-600">
+                <FileText size={20} />
+              </div>
+              <h3 className="text-[17px] leading-snug font-extrabold text-navy-900">{modules[lesson].title}</h3>
+            </div>
+            <p className="mt-4 text-[13px] leading-relaxed text-ink-600">{modules[lesson].desc}</p>
+
+            {modules[lesson].material ? (
+              <a
+                href={modules[lesson].material}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="mt-4 flex items-center gap-2 rounded-lg border border-brand-500/30 bg-brand-50 px-3 py-2.5 text-[12.5px] font-bold text-brand-600 transition-colors hover:bg-brand-100"
+              >
+                <BookOpen size={15} /> Open lesson material ↗
+              </a>
+            ) : (
+              <div className="mt-4 flex items-center gap-2 rounded-lg border border-line bg-soft px-3 py-2.5 text-[11.5px] text-ink-500">
+                <BookOpen size={14} className="flex-none text-ink-400" />
+                No material attached to this lesson yet.
+              </div>
+            )}
+
+            {modules[lesson].quiz && modules[lesson].quiz!.length > 0 && (
+              <div className="mt-5 border-t border-line pt-4">
+                <div className="text-[12.5px] font-extrabold text-navy-900">Quick quiz</div>
+                <div className="mt-2 space-y-3">
+                  {modules[lesson].quiz!.map((qq, qi) => (
+                    <div key={qi}>
+                      <div className="text-[12.5px] font-semibold text-navy-900">
+                        {qi + 1}. {qq.q}
+                      </div>
+                      <div className="mt-1.5 space-y-1">
+                        {qq.opts.map((o, oi) => {
+                          const chosen = answers[qi] === oi
+                          const revealed = score != null
+                          const cls = revealed
+                            ? oi === qq.correct
+                              ? 'border-ok-600/40 bg-ok-50 text-ok-600'
+                              : chosen
+                                ? 'border-bad-600/40 bg-bad-50 text-bad-600'
+                                : 'border-line text-ink-500'
+                            : chosen
+                              ? 'border-brand-500 bg-brand-50 text-navy-900'
+                              : 'border-line text-ink-600 hover:border-brand-500/40'
+                          return (
+                            <label key={oi} className={`flex cursor-pointer items-center gap-2 rounded-md border px-2.5 py-1.5 text-[12px] ${cls}`}>
+                              <input
+                                type="radio"
+                                className="h-3 w-3 accent-brand-500"
+                                disabled={revealed}
+                                checked={chosen}
+                                onChange={() => setAnswers((a) => ({ ...a, [qi]: oi }))}
+                              />
+                              {o || <span className="text-ink-400">Option {String.fromCharCode(65 + oi)}</span>}
+                            </label>
+                          )
+                        })}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+                {score == null ? (
+                  <Button
+                    onClick={() => {
+                      const q = modules[lesson].quiz!
+                      setScore(q.reduce((n, qq, qi) => n + (answers[qi] === qq.correct ? 1 : 0), 0))
+                    }}
+                    className="mt-3"
+                  >
+                    Submit quiz
+                  </Button>
+                ) : (
+                  <div className="mt-3 rounded-lg bg-brand-50 px-3 py-2 text-[12.5px] font-extrabold text-brand-700">
+                    You scored {score} / {modules[lesson].quiz!.length} (
+                    {Math.round((score / modules[lesson].quiz!.length) * 100)}%)
+                  </div>
+                )}
+              </div>
+            )}
+
+            <div className="mt-5 flex items-center justify-between">
+              <Button variant="ghost" onClick={() => openLesson(Math.max(0, lesson - 1))}>
+                ← Previous
+              </Button>
+              <span className="text-[11.5px] font-semibold text-ink-400">
+                {lesson + 1} / {modules.length}
+              </span>
+              {lesson < modules.length - 1 ? (
+                <Button onClick={() => openLesson(lesson + 1)}>Next →</Button>
+              ) : (
+                <Button onClick={() => openLesson(null)}>Finish</Button>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
