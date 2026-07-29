@@ -664,6 +664,7 @@ function CourseForm({ course, onClose, onDone }: { course: CourseCard | null; on
   )
   const [busy, setBusy] = useState(false)
   const [err, setErr] = useState('')
+  const [uploading, setUploading] = useState<number | null>(null)
   const set = (k: keyof typeof f) => (e: { target: { value: string } }) => setF({ ...f, [k]: e.target.value })
   const patchMod = (i: number, patch: Partial<CourseModule>) =>
     setModules((ms) => ms.map((m, j) => (j === i ? { ...m, ...patch } : m)))
@@ -688,6 +689,27 @@ function CourseForm({ course, onClose, onDone }: { course: CourseCard | null; on
           : m,
       ),
     )
+
+  const uploadMaterial = async (i: number, file: File) => {
+    if (!supabase) return
+    setUploading(i)
+    setErr('')
+    const safe = file.name.replace(/[^a-zA-Z0-9._-]/g, '_')
+    const path = `${crypto.randomUUID()}_${safe}`
+    const { error: upErr } = await supabase.storage.from('materials').upload(path, file)
+    if (upErr) {
+      setUploading(null)
+      const msg = upErr.message.toLowerCase()
+      setErr(
+        msg.includes('bucket') || msg.includes('not found') || msg.includes('exist')
+          ? 'File storage isn\'t set up yet — run supabase_storage.sql once to create the "materials" bucket, then try again.'
+          : 'Upload failed: ' + upErr.message,
+      )
+      return
+    }
+    patchMod(i, { material: supabase.storage.from('materials').getPublicUrl(path).data.publicUrl })
+    setUploading(null)
+  }
 
   const save = async () => {
     setErr('')
@@ -801,12 +823,31 @@ function CourseForm({ course, onClose, onDone }: { course: CourseCard | null; on
                   value={m.desc}
                   onChange={(e) => setMod(i, 'desc', e.target.value)}
                 />
-                <input
-                  className="w-full rounded border border-line bg-white px-2 py-1 text-[11px] outline-none"
-                  placeholder="📎 Material link — PDF / video / slides URL (optional)"
-                  value={m.material ?? ''}
-                  onChange={(e) => setMod(i, 'material', e.target.value)}
-                />
+                <div className="flex gap-1.5">
+                  <input
+                    className="min-w-0 flex-1 rounded border border-line bg-white px-2 py-1 text-[11px] outline-none"
+                    placeholder="📎 Paste a PDF / video / slides link — or upload a file →"
+                    value={m.material ?? ''}
+                    onChange={(e) => setMod(i, 'material', e.target.value)}
+                  />
+                  <label
+                    className={`flex flex-none cursor-pointer items-center gap-1 rounded border border-brand-500/30 bg-brand-50 px-2.5 py-1 text-[11px] font-bold text-brand-600 transition-colors hover:bg-brand-100 ${
+                      uploading === i ? 'pointer-events-none opacity-60' : ''
+                    }`}
+                  >
+                    {uploading === i ? 'Uploading…' : '📤 Upload'}
+                    <input
+                      type="file"
+                      className="hidden"
+                      accept=".pdf,.mp4,.mov,.webm,.ppt,.pptx,.doc,.docx,.png,.jpg,.jpeg"
+                      onChange={(e) => {
+                        const file = e.target.files?.[0]
+                        if (file) uploadMaterial(i, file)
+                        e.target.value = ''
+                      }}
+                    />
+                  </label>
+                </div>
 
                 <div className="rounded border border-line bg-white p-1.5">
                   <div className="flex items-center justify-between px-0.5">
