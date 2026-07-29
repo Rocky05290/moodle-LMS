@@ -479,6 +479,7 @@ export function Courses() {
   const [isAdmin, setIsAdmin] = useState(false)
   const [formOpen, setFormOpen] = useState(false)
   const [editCourse, setEditCourse] = useState<CourseCard | null>(null)
+  const [detail, setDetail] = useState<CourseCard | null>(null)
 
   const load = () => {
     if (!supabase) return
@@ -560,7 +561,8 @@ export function Courses() {
           return (
             <div
               key={c.id}
-              className="group flex flex-col overflow-hidden rounded-2xl border border-line bg-surface shadow-[0_10px_28px_-16px_rgba(15,27,53,0.18)] transition-all hover:-translate-y-1 hover:shadow-[0_24px_50px_-20px_rgba(15,27,53,0.28)]"
+              onClick={() => setDetail(c)}
+              className="group flex cursor-pointer flex-col overflow-hidden rounded-2xl border border-line bg-surface shadow-[0_10px_28px_-16px_rgba(15,27,53,0.18)] transition-all hover:-translate-y-1 hover:border-brand-500/30 hover:shadow-[0_24px_50px_-20px_rgba(15,27,53,0.28)]"
             >
               {/* banner */}
               <div className={`relative h-28 overflow-hidden bg-gradient-to-br ${cat.grad}`}>
@@ -587,7 +589,10 @@ export function Courses() {
                     <div className="text-[17px] font-extrabold text-brand-600">{c.price ?? 'Enquire'}</div>
                   </div>
                   <button
-                    onClick={() => setOpen((o) => ({ ...o, [c.id]: !o[c.id] }))}
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      setOpen((o) => ({ ...o, [c.id]: !o[c.id] }))
+                    }}
                     className="flex cursor-pointer items-center gap-1.5 rounded-lg border-2 border-brand-500/30 px-3.5 py-2 text-[12px] font-bold text-brand-600 transition-all hover:border-brand-500 hover:bg-brand-50"
                   >
                     {expanded ? 'Hide syllabus' : 'Details & Syllabus'}
@@ -612,7 +617,8 @@ export function Courses() {
                 {isAdmin && (
                   <div className="mt-4 flex gap-3 border-t border-line pt-3 text-[11px]">
                     <button
-                      onClick={() => {
+                      onClick={(e) => {
+                        e.stopPropagation()
                         setEditCourse(c)
                         setFormOpen(true)
                       }}
@@ -621,7 +627,10 @@ export function Courses() {
                       <Pencil size={12} /> Edit
                     </button>
                     <button
-                      onClick={() => delCourse(c)}
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        delCourse(c)
+                      }}
                       className="flex cursor-pointer items-center gap-1 font-bold text-ink-500 transition-colors hover:text-bad-600"
                     >
                       <Trash2 size={12} /> Delete
@@ -644,6 +653,91 @@ export function Courses() {
           }}
         />
       )}
+
+      {detail && <CourseDetail course={detail} onClose={() => setDetail(null)} />}
+    </div>
+  )
+}
+
+function CourseDetail({ course, onClose }: { course: CourseCard; onClose: () => void }) {
+  const cat = courseCat(course.category)
+  const level = course.level ?? courseLevel(course.totalHours)
+  const desc =
+    course.description ??
+    `A verified ${course.category ?? 'certification'} track covering ${course.modules
+      .map((m) => m.title)
+      .slice(0, 3)
+      .join(', ')}${course.modules.length > 3 ? ' and more' : ''}.`
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+      <div className="absolute inset-0 bg-navy-950/50 backdrop-blur-sm" onClick={onClose} />
+      <div className="relative z-10 max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-2xl border border-line bg-white shadow-2xl">
+        <div className={`relative h-36 overflow-hidden bg-gradient-to-br ${cat.grad}`}>
+          <cat.Icon className="absolute -right-3 -bottom-5 text-white/15" size={128} strokeWidth={1.5} />
+          <span className="absolute top-5 left-5 rounded-full bg-white/20 px-3 py-1 text-[11px] font-bold tracking-wide text-white uppercase backdrop-blur-sm">
+            {course.category ?? 'Programme'}
+          </span>
+          <span className="absolute top-5 right-14 rounded-md bg-white/90 px-2.5 py-1 text-[12px] font-extrabold text-navy-900">
+            {course.code}
+          </span>
+          <button
+            onClick={onClose}
+            className="absolute top-4 right-4 flex h-8 w-8 cursor-pointer items-center justify-center rounded-md bg-white/20 text-white transition-colors hover:bg-white/30"
+          >
+            <X size={17} />
+          </button>
+        </div>
+
+        <div className="p-6">
+          <div className="text-[11px] font-bold tracking-wide text-ink-400 uppercase">
+            {course.totalHours} Hours · {level}
+          </div>
+          <h2 className="mt-1 text-[22px] leading-snug font-extrabold text-navy-900">{course.title}</h2>
+          <p className="mt-2 text-[13.5px] leading-relaxed text-ink-600">{desc}</p>
+
+          <div className="mt-4 flex flex-wrap items-center gap-6">
+            <div>
+              <div className="text-[9.5px] font-bold tracking-wide text-ink-400 uppercase">Registration Price</div>
+              <div className="text-[18px] font-extrabold text-brand-600">{course.price ?? 'Enquire'}</div>
+            </div>
+            <div>
+              <div className="text-[9.5px] font-bold tracking-wide text-ink-400 uppercase">Modules</div>
+              <div className="text-[18px] font-extrabold text-navy-900">{course.modules.length}</div>
+            </div>
+          </div>
+
+          <div className="mt-6">
+            <div className="text-[13px] font-extrabold text-navy-900">Syllabus</div>
+            <div className="mt-2 space-y-2">
+              {course.modules.map((m) => (
+                <div key={m.num} className="rounded-lg border border-line bg-soft p-3">
+                  <div className="flex items-center gap-2">
+                    <span className="text-[11px] font-extrabold text-brand-500">{m.num}</span>
+                    <span className="text-[13px] font-bold text-navy-900">{m.title}</span>
+                    <span className="ml-auto flex items-center gap-2">
+                      {m.material && <span className="text-[10.5px] font-bold text-brand-600">📎 Material</span>}
+                      {m.quiz && m.quiz.length > 0 && (
+                        <span className="text-[10.5px] font-bold text-gold-600">📝 {m.quiz.length} quiz</span>
+                      )}
+                    </span>
+                  </div>
+                  {m.desc && <div className="mt-1 text-[11.5px] text-ink-400">{m.desc}</div>}
+                  {m.material && (
+                    <a
+                      href={m.material}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="mt-1.5 inline-block text-[11.5px] font-bold text-brand-600 hover:underline"
+                    >
+                      Open material ↗
+                    </a>
+                  )}
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   )
 }
