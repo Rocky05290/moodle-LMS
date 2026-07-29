@@ -184,10 +184,30 @@ export default function AdminDashboard() {
 
       {/* ---------------- KPIs ---------------- */}
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-        <Stat icon={<Layers size={18} />} value={vm.batchesCount} label="Active Batches" tone="blue" />
-        <Stat icon={<Users size={18} />} value={vm.learnersCount} label="Enrolled Learners" tone="violet" />
-        <Stat icon={<CalendarCheck size={18} />} value={`${vm.avgAttendance}%`} label="Avg Attendance" tone="emerald" />
-        <Stat icon={<Trophy size={18} />} value={`${vm.passRate}%`} label="Pass Rate" tone="amber" />
+        <button
+          onClick={() => navigate('/batches')}
+          className="block w-full cursor-pointer text-left transition-transform hover:-translate-y-0.5"
+        >
+          <Stat icon={<Layers size={18} />} value={vm.batchesCount} label="Active Batches" tone="blue" />
+        </button>
+        <button
+          onClick={() => navigate('/people')}
+          className="block w-full cursor-pointer text-left transition-transform hover:-translate-y-0.5"
+        >
+          <Stat icon={<Users size={18} />} value={vm.learnersCount} label="Enrolled Learners" tone="violet" />
+        </button>
+        <button
+          onClick={() => navigate('/attendance')}
+          className="block w-full cursor-pointer text-left transition-transform hover:-translate-y-0.5"
+        >
+          <Stat icon={<CalendarCheck size={18} />} value={`${vm.avgAttendance}%`} label="Avg Attendance" tone="emerald" />
+        </button>
+        <button
+          onClick={() => navigate('/grading')}
+          className="block w-full cursor-pointer text-left transition-transform hover:-translate-y-0.5"
+        >
+          <Stat icon={<Trophy size={18} />} value={`${vm.passRate}%`} label="Pass Rate" tone="amber" />
+        </button>
       </div>
 
       <div className="grid gap-4 xl:grid-cols-[1.5fr_1fr]">
