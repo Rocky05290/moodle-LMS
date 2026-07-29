@@ -817,26 +817,28 @@ function CourseForm({ course, onClose, onDone }: { course: CourseCard | null; on
     }
     if (!supabase) return
     setBusy(true)
-    const payload = {
+    const core = {
       code: f.code.trim(),
       title: f.title.trim(),
       category: f.category,
       total_hours: Number(f.total_hours) || 0,
-      level: f.level || null,
-      price: f.price || null,
-      description: f.description || null,
       modules: modules.filter((m) => m.title.trim()),
     }
-    const { error } = editing
-      ? await supabase.from('courses').update(payload).eq('id', course!.id)
-      : await supabase.from('courses').insert(payload)
+    const full = { ...core, level: f.level || null, price: f.price || null, description: f.description || null }
+
+    const run = (payload: Record<string, unknown>) =>
+      editing
+        ? supabase!.from('courses').update(payload).eq('id', course!.id)
+        : supabase!.from('courses').insert(payload)
+
+    let { error } = await run(full)
+    // If the price/level/description columns don't exist yet, still save the core course.
+    if (error && /column|schema|description|level|price/i.test(error.message)) {
+      ;({ error } = await run(core))
+    }
     setBusy(false)
     if (error) {
-      setErr(
-        error.message.toLowerCase().includes('column')
-          ? 'Run supabase_course_details.sql once to add the price/level/description columns. (' + error.message + ')'
-          : error.message,
-      )
+      setErr(error.message)
       return
     }
     onDone()
