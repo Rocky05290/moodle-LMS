@@ -194,14 +194,20 @@ export default function Reports() {
           { icon: <Sheet size={20} />, title: 'Spreadsheet (CSV)', desc: 'Raw data for Excel / Tamkeen upload — every learner, every metric.', action: genCSV, cta: 'Export CSV' },
         ].map((c) => (
           <Card key={c.title} className="flex flex-col p-5">
-            <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-gradient-to-br from-brand-500 to-indigo-500 text-white shadow-md shadow-indigo-500/25">
+            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-brand-50 text-brand-600 ring-1 ring-brand-500/12">
               {c.icon}
             </div>
-            <h3 className="mt-4 text-[15px] font-extrabold text-navy-900">{c.title}</h3>
-            <p className="mt-1 flex-1 text-[12px] leading-relaxed text-ink-500">{c.desc}</p>
-            <Button onClick={c.action} className="mt-4 w-full justify-center" >
-              {disabled ? 'No data yet' : c.cta}
-            </Button>
+            <h3 className="mt-4 text-[14.5px] font-bold text-navy-900">{c.title}</h3>
+            <p className="mt-1.5 flex-1 text-[12px] leading-relaxed text-ink-500">{c.desc}</p>
+            {disabled ? (
+              <div className="mt-4 w-full rounded-md border border-line bg-soft2 py-2.5 text-center text-[12.5px] font-semibold text-ink-400">
+                Enrol learners first
+              </div>
+            ) : (
+              <Button onClick={c.action} className="mt-4 w-full justify-center">
+                {c.cta}
+              </Button>
+            )}
           </Card>
         ))}
       </div>
