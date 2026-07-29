@@ -25,8 +25,6 @@ const SOCIAL = [
   { icon: Video, label: 'YouTube' },
 ]
 
-const TAGS = ['Attendance', 'Compliance', 'Batches', 'Grading', 'Reporting', 'Tamkeen']
-
 export default function SiteFooter() {
   return (
     <footer className="bg-[#373948] text-[#c2c0c7]">
@@ -41,7 +39,7 @@ export default function SiteFooter() {
       </div>
 
       {/* main */}
-      <div className="mx-auto grid max-w-6xl gap-10 px-5 py-14 lg:grid-cols-[1.4fr_1fr_1.2fr_1.3fr] lg:px-8">
+      <div className="mx-auto grid max-w-6xl gap-8 px-5 py-9 lg:grid-cols-[1.7fr_1fr_1.1fr] lg:px-8">
         {/* brand */}
         <div>
           <img
@@ -49,11 +47,11 @@ export default function SiteFooter() {
             alt="Cordoba Training Center"
             className="h-9 w-auto brightness-0 invert"
           />
-          <p className="mt-4 max-w-xs text-[13px] leading-relaxed text-[#c2c0c7]/75">
-            The Tamkeen-ready platform for training providers — batches, attendance, grading and
-            audit-proof compliance reporting in one place.
+          <p className="mt-3 max-w-xs text-[13px] leading-relaxed text-[#c2c0c7]/75">
+            The Tamkeen-ready platform for training providers — attendance, grading and audit-proof
+            compliance in one place.
           </p>
-          <div className="mt-5 flex gap-2.5">
+          <div className="mt-4 flex gap-2.5">
             {SOCIAL.map((s) => {
               const Icon = s.icon
               return (
@@ -75,7 +73,7 @@ export default function SiteFooter() {
           <h4 className="text-[11px] font-bold tracking-[0.12em] text-[#c2c0c7]/55 uppercase">
             Platform
           </h4>
-          <ul className="mt-4 space-y-2.5">
+          <ul className="mt-3 space-y-2">
             {PLATFORM.map((c) => (
               <li key={c}>
                 <a href="#" className="text-[13px] text-[#c2c0c7]/85 transition-colors hover:text-white">
@@ -91,7 +89,7 @@ export default function SiteFooter() {
           <h4 className="text-[11px] font-bold tracking-[0.12em] text-[#c2c0c7]/55 uppercase">
             Features
           </h4>
-          <ul className="mt-4 space-y-2.5">
+          <ul className="mt-3 space-y-2">
             {FEATURES.map((r) => {
               const Icon = r.icon
               return (
@@ -109,40 +107,11 @@ export default function SiteFooter() {
           </ul>
         </div>
 
-        {/* insights panel */}
-        <div className="rounded-xl border border-white/10 bg-white/[0.04] p-5">
-          <h4 className="text-[11px] font-bold tracking-[0.12em] text-[#c2c0c7]/70 uppercase">
-            Explore by topic
-          </h4>
-          <div className="mt-4 flex flex-wrap gap-2">
-            {TAGS.map((t) => (
-              <a
-                key={t}
-                href="#"
-                className="rounded-md border border-white/10 bg-white/5 px-3 py-1.5 text-[12px] font-semibold text-[#c2c0c7]/85 transition-all hover:border-white/25 hover:text-white"
-              >
-                {t}
-              </a>
-            ))}
-          </div>
-          <div className="mt-5 border-t border-white/10 pt-4">
-            <div className="text-[11px] font-bold tracking-[0.1em] text-[#c2c0c7]/55 uppercase">
-              Runs on
-            </div>
-            <div className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-1 text-[12px] font-semibold text-[#c2c0c7]/70">
-              <span>Supabase</span>
-              <span>·</span>
-              <span>Cloudflare R2</span>
-              <span>·</span>
-              <span>React</span>
-            </div>
-          </div>
-        </div>
       </div>
 
       {/* bottom bar */}
       <div className="border-t border-white/10">
-        <div className="mx-auto flex max-w-6xl flex-wrap items-center gap-x-6 gap-y-3 px-5 py-6 lg:px-8">
+        <div className="mx-auto flex max-w-6xl flex-wrap items-center gap-x-6 gap-y-3 px-5 py-4 lg:px-8">
           <div className="flex flex-wrap gap-x-5 gap-y-2">
             {['Compliance', 'Privacy', 'Terms', 'Trademark'].map((l) => (
               <a
