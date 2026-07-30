@@ -1050,6 +1050,7 @@ export function People() {
   const [people, setPeople] = useState<Person[] | null>(null)
   const [live, setLive] = useState(false)
   const [open, setOpen] = useState(false)
+  const [editing, setEditing] = useState<Person | null>(null)
   const [showImport, setShowImport] = useState(false)
   const [sp] = useSearchParams()
 
@@ -1172,13 +1173,22 @@ export function People() {
                   </Td>
                   <Td className="text-right pr-2">
                     {live && (
-                      <button
-                        onClick={() => removePerson(u.id, pName(u))}
-                        title="Remove person"
-                        className="cursor-pointer rounded-md p-1.5 text-ink-400 transition-colors hover:bg-bad-50 hover:text-bad-600"
-                      >
-                        <Trash2 size={15} />
-                      </button>
+                      <div className="flex items-center justify-end gap-1">
+                        <button
+                          onClick={() => setEditing(u)}
+                          title="Edit info"
+                          className="cursor-pointer rounded-md p-1.5 text-ink-400 transition-colors hover:bg-brand-50 hover:text-brand-600"
+                        >
+                          <Pencil size={15} />
+                        </button>
+                        <button
+                          onClick={() => removePerson(u.id, pName(u))}
+                          title="Remove person"
+                          className="cursor-pointer rounded-md p-1.5 text-ink-400 transition-colors hover:bg-bad-50 hover:text-bad-600"
+                        >
+                          <Trash2 size={15} />
+                        </button>
+                      </div>
                     )}
                   </Td>
                 </tr>
@@ -1193,6 +1203,17 @@ export function People() {
           onClose={() => setOpen(false)}
           onDone={() => {
             setOpen(false)
+            load()
+          }}
+        />
+      )}
+
+      {editing && (
+        <EditPerson
+          person={editing}
+          onClose={() => setEditing(null)}
+          onDone={() => {
+            setEditing(null)
             load()
           }}
         />
@@ -1306,6 +1327,103 @@ function AddPerson({ onClose, onDone }: { onClose: () => void; onDone: () => voi
         </p>
         <div className="flex gap-2 pt-1">
           <Button onClick={save} className="flex-1">{busy ? 'Creating…' : 'Add person'}</Button>
+          <Button variant="ghost" onClick={onClose}>Cancel</Button>
+        </div>
+      </div>
+    </Modal>
+  )
+}
+
+function EditPerson({ person, onClose, onDone }: { person: Person; onClose: () => void; onDone: () => void }) {
+  const [f, setF] = useState({
+    first_name: person.first_name ?? '',
+    last_name: person.last_name ?? '',
+    role: (person.role ?? 'learner') as Role,
+    cpr: person.cpr ?? '',
+    mobile: person.mobile ?? '',
+    company: person.company ?? '',
+  })
+  const [err, setErr] = useState('')
+  const [busy, setBusy] = useState(false)
+  const set = (k: keyof typeof f) => (e: { target: { value: string } }) => setF({ ...f, [k]: e.target.value })
+
+  const save = async () => {
+    setErr('')
+    if (!f.first_name || !f.last_name) {
+      setErr('First name and last name are required.')
+      return
+    }
+    if (!supabase) return
+    setBusy(true)
+    const { error } = await supabase
+      .from('profiles')
+      .update({
+        first_name: f.first_name,
+        last_name: f.last_name,
+        role: f.role,
+        cpr: f.cpr || null,
+        mobile: f.mobile || null,
+        company: f.company || null,
+      })
+      .eq('id', person.id)
+    setBusy(false)
+    if (error) {
+      setErr('Could not save: ' + error.message)
+      return
+    }
+    onDone()
+  }
+
+  return (
+    <Modal title="Edit person" onClose={onClose}>
+      <div className="space-y-3">
+        <div className="grid grid-cols-2 gap-3">
+          <div>
+            <label className={labelCls}>First name</label>
+            <input className={fieldCls} value={f.first_name} onChange={set('first_name')} />
+          </div>
+          <div>
+            <label className={labelCls}>Last name</label>
+            <input className={fieldCls} value={f.last_name} onChange={set('last_name')} />
+          </div>
+        </div>
+        <div>
+          <label className={labelCls}>Email (login — cannot be changed here)</label>
+          <input className={`${fieldCls} cursor-not-allowed bg-soft2 text-ink-400`} value={person.email} disabled />
+        </div>
+        <div className="grid grid-cols-2 gap-3">
+          <div>
+            <label className={labelCls}>Role</label>
+            <select className={fieldCls} value={f.role} onChange={set('role')}>
+              <option value="learner">Learner</option>
+              <option value="trainer">Trainer</option>
+              <option value="admin">Admin</option>
+              <option value="auditor">Auditor</option>
+              <option value="company">Company</option>
+            </select>
+          </div>
+          <div>
+            <label className={labelCls}>Mobile</label>
+            <input className={fieldCls} value={f.mobile} onChange={set('mobile')} />
+          </div>
+        </div>
+        <div className="grid grid-cols-2 gap-3">
+          <div>
+            <label className={labelCls}>CPR (national ID)</label>
+            <input className={fieldCls} value={f.cpr} onChange={set('cpr')} />
+          </div>
+          <div>
+            <label className={labelCls}>Company / sponsor</label>
+            <input className={fieldCls} placeholder="Batelco, Tamkeen…" value={f.company} onChange={set('company')} />
+          </div>
+        </div>
+        {err && (
+          <p className="rounded-md border border-bad-600/20 bg-bad-50 px-3 py-2 text-[12px] font-semibold text-bad-600">
+            {err}
+          </p>
+        )}
+        <div className="flex gap-2 pt-1">
+          <Button onClick={save} className="flex-1">{busy ? 'Saving…' : 'Save changes'}</Button>
           <Button variant="ghost" onClick={onClose}>Cancel</Button>
         </div>
       </div>
