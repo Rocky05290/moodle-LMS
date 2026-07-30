@@ -39,7 +39,7 @@ export default function PublicHeader() {
             <a
               key={l.label}
               href={l.href}
-              className={`rounded-md px-4 py-2 text-[22.5px] font-semibold transition-colors ${
+              className={`rounded-md px-4 py-2 text-[14px] font-semibold transition-colors ${
                 scrolled ? 'text-ink-500 hover:bg-soft2' : 'text-white/85 hover:bg-white/10'
               }`}
             >

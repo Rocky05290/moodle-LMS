@@ -1,5 +1,6 @@
 import { useState } from 'react'
-import { FileText, ShieldCheck, Sheet, CalendarDays } from 'lucide-react'
+import { useNavigate } from 'react-router-dom'
+import { FileText, ShieldCheck, Sheet, CalendarDays, UserPlus } from 'lucide-react'
 import { useLiveData, attPct, avgGradeLive, hasSupabase } from '../lib/live'
 import {
   batches as mockBatches, getCourse, getUser, learnersInBatch, attendancePct, averageGrade, fullName,
@@ -36,6 +37,7 @@ const LATE = ['L1', 'L2', 'L3']
 
 export default function Reports() {
   const d = useLiveData()
+  const navigate = useNavigate()
   const [batchId, setBatchId] = useState<number | null>(null)
 
   if (hasSupabase && d.loading) return <Loading label="Loading report data…" />
@@ -200,9 +202,12 @@ export default function Reports() {
             <h3 className="mt-4 text-[14.5px] font-bold text-navy-900">{c.title}</h3>
             <p className="mt-1.5 flex-1 text-[12px] leading-relaxed text-ink-500">{c.desc}</p>
             {disabled ? (
-              <div className="mt-4 w-full rounded-md border border-line bg-soft2 py-2.5 text-center text-[12.5px] font-semibold text-ink-400">
-                Enrol learners first
-              </div>
+              <button
+                onClick={() => navigate('/people?import=1')}
+                className="mt-4 flex w-full cursor-pointer items-center justify-center gap-2 rounded-md border border-dashed border-brand-500/40 bg-brand-50 py-2.5 text-[12.5px] font-semibold text-brand-600 transition-colors hover:border-brand-500 hover:bg-brand-100"
+              >
+                <UserPlus size={15} /> Enrol learners first
+              </button>
             ) : (
               <Button onClick={c.action} className="mt-4 w-full justify-center">
                 {c.cta}

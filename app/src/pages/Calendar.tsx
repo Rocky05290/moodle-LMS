@@ -218,11 +218,15 @@ export default function Calendar() {
                             return (
                               <td
                                 key={ci}
-                                onClick={() => info?.inRange && (info.session || info.holiday) !== undefined && toggleHoliday(iso)}
-                                className={`h-16 cursor-pointer border border-line align-top ${
-                                  out ? 'bg-white text-ink-300' : info?.holiday ? 'bg-gold-100' : info?.session ? 'bg-white' : 'bg-white'
+                                onClick={() => { if (info?.inRange) toggleHoliday(iso) }}
+                                className={`h-16 border border-line align-top transition-colors ${
+                                  out
+                                    ? 'bg-white text-ink-300'
+                                    : info?.holiday
+                                      ? 'cursor-pointer bg-gold-100 hover:bg-gold-200'
+                                      : 'cursor-pointer bg-white hover:bg-brand-50'
                                 }`}
-                                title={info?.inRange ? 'Click to toggle holiday' : ''}
+                                title={info?.inRange ? 'Click to mark / unmark a holiday' : ''}
                               >
                                 <div className="p-1.5">
                                   <div className={`text-[11px] font-bold ${out ? 'text-ink-300' : 'text-ink-500'}`}>{day}</div>
