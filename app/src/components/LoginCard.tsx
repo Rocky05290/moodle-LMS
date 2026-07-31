@@ -149,6 +149,12 @@ export default function LoginCard({ onSignIn }: { onSignIn: (u: User) => void })
 
   return (
     <div className="w-full overflow-hidden rounded-xl border-2 border-brand-500 bg-white p-5 shadow-2xl shadow-black/25">
+      {/* logo */}
+      <img
+        src="/logo.png"
+        alt="Cordoba Training Center"
+        className="mx-auto mb-3 h-10 w-auto"
+      />
       {/* heading */}
       <h2 className="bg-gradient-to-r from-brand-600 via-indigo-500 to-violet-500 bg-clip-text text-center text-[21px] leading-tight font-extrabold tracking-tight text-transparent">
         {mode === 'signin' ? 'Welcome to CORDOBA!' : 'Create your account'}

@@ -264,15 +264,7 @@ export default function AdminDashboard() {
 
         {/* ---------------- Batches ---------------- */}
         <Card className="p-5">
-          <SectionTitle
-            right={
-              <Button variant="ghost" className="flex items-center gap-1.5 !px-3 !py-1.5 !text-[12px]">
-                <Plus size={13} /> New
-              </Button>
-            }
-          >
-            Batches
-          </SectionTitle>
+          <SectionTitle>Batches</SectionTitle>
 
           <div className="space-y-2.5">
             {vm.batchList.map((b) => (
