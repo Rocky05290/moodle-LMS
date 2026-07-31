@@ -30,11 +30,25 @@ function LiveTag({ live }: { live: boolean }) {
   )
 }
 
-function Modal({ title, onClose, children }: { title: string; onClose: () => void; children: ReactNode }) {
+function Modal({
+  title,
+  onClose,
+  children,
+  wide,
+}: {
+  title: string
+  onClose: () => void
+  children: ReactNode
+  wide?: boolean
+}) {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
       <div className="absolute inset-0 bg-navy-950/50 backdrop-blur-sm" onClick={onClose} />
-      <div className="relative z-10 max-h-[90vh] w-full max-w-md overflow-y-auto rounded-2xl border border-line bg-white p-6 shadow-2xl">
+      <div
+        className={`relative z-10 max-h-[90vh] w-full overflow-y-auto rounded-2xl border border-line bg-white p-6 shadow-2xl ${
+          wide ? 'max-w-2xl' : 'max-w-md'
+        }`}
+      >
         <div className="mb-4 flex items-center justify-between">
           <h3 className="text-[16px] font-extrabold text-navy-900">{title}</h3>
           <button onClick={onClose} className="cursor-pointer text-ink-400 transition-colors hover:text-navy-900">
@@ -428,7 +442,7 @@ function CreateBatch({
   const seqs = Array.from({ length: 20 }, (_, i) => String(i + 1).padStart(2, '0'))
 
   return (
-    <Modal title="Deploy Certified Training Batch" onClose={onClose}>
+    <Modal title="Deploy Certified Training Batch" onClose={onClose} wide>
       <div className="space-y-4">
         {/* program */}
         <div>
