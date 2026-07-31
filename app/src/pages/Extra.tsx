@@ -526,7 +526,7 @@ function CreateBatch({
           </div>
           <div>
             <label className={labelCls}>End date (auto)</label>
-            <div className="flex h-[38px] items-center rounded-md border border-line bg-soft2 px-3 text-[13px] font-bold text-navy-900">
+            <div className={`${fieldCls} flex items-center`}>
               {prettyDate(endDate)}
             </div>
           </div>
@@ -557,12 +557,7 @@ function CreateBatch({
               </div>
             </div>
           </div>
-          {totalHours > 0 ? (
-            <p className="mt-2 text-[11.5px] text-ink-500">
-              📅 <b className="text-navy-900">{totalHours}h</b> program ÷ {dailyH}h/day ={' '}
-              <b className="text-navy-900">{sessionsNeeded} sessions</b> · Sun–Thu only (Fri &amp; Sat are holidays) → end date set automatically.
-            </p>
-          ) : (
+          {totalHours === 0 && (
             <p className="mt-2 text-[11.5px] font-semibold text-warn-600">
               ⚠️ This program has no total hours yet — set the course hours so the end date can calculate.
             </p>
