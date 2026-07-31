@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import type { ReactNode } from 'react'
 import { useSearchParams } from 'react-router-dom'
-import { Plus, Upload, Mail, Phone, X, Trash2, Pencil, Network, ShieldCheck, Cloud, BookOpen, ChevronDown, FileText } from 'lucide-react'
+import { Plus, Upload, Mail, Phone, X, Trash2, Pencil, Network, ShieldCheck, Cloud, BookOpen, ChevronDown, FileText, Search } from 'lucide-react'
 import {
   batches, courses as mockCourses, users, enrollments, getCourse, getUser,
   batchAttendancePct,
@@ -81,7 +81,7 @@ type BatchRow = {
 export function Batches() {
   const [rows, setRows] = useState<BatchRow[] | null>(null)
   const [live, setLive] = useState(false)
-  const [courses, setCourses] = useState<{ id: number; code: string; title: string }[]>([])
+  const [courses, setCourses] = useState<{ id: number; code: string; title: string; total_hours: number }[]>([])
   const [trainers, setTrainers] = useState<{ id: string; first_name: string; last_name: string }[]>([])
   const [open, setOpen] = useState(false)
   const [editing, setEditing] = useState<BatchRow | null>(null)
@@ -117,7 +117,7 @@ export function Batches() {
         )
         setLive(true)
       })
-    supabase.from('courses').select('id,code,title').order('code').then(({ data }) => data && setCourses(data as never))
+    supabase.from('courses').select('id,code,title,total_hours').order('code').then(({ data }) => data && setCourses(data as never))
     supabase
       .from('profiles')
       .select('id,first_name,last_name')
@@ -247,7 +247,7 @@ export function Batches() {
 
       {open && (
         <CreateBatch
-          courses={courses.length ? courses : mockCourses.map((c) => ({ id: c.id, code: c.code, title: c.title }))}
+          courses={courses.length ? courses : mockCourses.map((c) => ({ id: c.id, code: c.code, title: c.title, total_hours: c.totalHours }))}
           trainers={trainers}
           onClose={() => setOpen(false)}
           onDone={() => {
@@ -354,7 +354,7 @@ function CreateBatch({
   onClose,
   onDone,
 }: {
-  courses: { id: number; code: string; title: string }[]
+  courses: { id: number; code: string; title: string; total_hours: number }[]
   trainers: { id: string; first_name: string; last_name: string }[]
   onClose: () => void
   onDone: () => void
@@ -397,24 +397,47 @@ function CreateBatch({
     return `${hh}:${String(m).padStart(2, '0')} ${ap}`
   }
 
-  // total contracted hours = working days (Sun–Thu) in range × daily hours
-  const totalHours = (() => {
-    if (!f.start_date || !f.end_date) return 0
-    const s = new Date(f.start_date)
-    const e = new Date(f.end_date)
-    if (e < s) return 0
-    let days = 0
-    for (const d = new Date(s); d <= e; d.setDate(d.getDate() + 1)) {
-      const dow = d.getDay() // 0 Sun … 6 Sat
-      if (dow >= 0 && dow <= 4) days++ // Bahrain working week
+  // total contracted hours come from the selected program
+  const totalHours = course?.total_hours ?? 0
+  const dailyH = Number(f.daily_hours) || 1
+  // number of teaching days needed = ceil(total hours / daily hours)
+  const sessionsNeeded = totalHours > 0 ? Math.ceil(totalHours / dailyH) : 0
+
+  // auto End Date: from Start Date, count forward over WORKING days only
+  // (Sun–Thu). Friday & Saturday are holidays and are skipped.
+  const fmtISO = (d: Date) =>
+    `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
+  const endDate = (() => {
+    if (!f.start_date || sessionsNeeded === 0) return ''
+    const d = new Date(f.start_date + 'T00:00:00')
+    let counted = 0
+    // walk day by day; only Sun(0)–Thu(4) count as a session day
+    while (true) {
+      const dow = d.getDay()
+      if (dow >= 0 && dow <= 4) {
+        counted++
+        if (counted >= sessionsNeeded) break
+      }
+      d.setDate(d.getDate() + 1)
+      if (counted === 0 && d.getDay() > 4) continue // skip leading Fri/Sat before first session
     }
-    return days * Number(f.daily_hours)
+    return fmtISO(d)
   })()
+  const prettyDate = (iso: string) => {
+    if (!iso) return '—'
+    const [y, m, dd] = iso.split('-').map(Number)
+    const MON = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+    return `${String(dd).padStart(2, '0')} ${MON[m - 1]} ${y}`
+  }
 
   const save = async () => {
     setErr('')
-    if (!f.course_id || !f.start_date || !f.end_date) {
-      setErr('Program, start date and end date are required.')
+    if (!f.course_id || !f.start_date) {
+      setErr('Program and start date are required.')
+      return
+    }
+    if (!endDate) {
+      setErr('This program has no total hours set — add hours to the course first.')
       return
     }
     if (!supabase) return
@@ -424,7 +447,7 @@ function CreateBatch({
       course_id: Number(f.course_id),
       trainer_id: f.trainer_id || null,
       start_date: f.start_date,
-      end_date: f.end_date,
+      end_date: endDate,
       start_time: f.start_time || null,
       end_time: dailyEnd || null,
       total_hours: totalHours,
@@ -495,15 +518,17 @@ function CreateBatch({
           </select>
         </div>
 
-        {/* dates */}
+        {/* dates — End Date auto-calculates from Start Date + program hours */}
         <div className="grid grid-cols-2 gap-3">
           <div>
             <label className={labelCls}>Start date</label>
             <input type="date" className={fieldCls} value={f.start_date} onChange={set('start_date')} />
           </div>
           <div>
-            <label className={labelCls}>End date</label>
-            <input type="date" className={fieldCls} value={f.end_date} onChange={set('end_date')} />
+            <label className={labelCls}>End date (auto)</label>
+            <div className="flex h-[38px] items-center rounded-md border border-line bg-soft2 px-3 text-[13px] font-bold text-navy-900">
+              {prettyDate(endDate)}
+            </div>
           </div>
         </div>
 
@@ -532,9 +557,14 @@ function CreateBatch({
               </div>
             </div>
           </div>
-          {totalHours > 0 && (
+          {totalHours > 0 ? (
             <p className="mt-2 text-[11.5px] text-ink-500">
-              📅 Sun–Thu working week · <b className="text-navy-900">{totalHours}h</b> total contracted over the date range.
+              📅 <b className="text-navy-900">{totalHours}h</b> program ÷ {dailyH}h/day ={' '}
+              <b className="text-navy-900">{sessionsNeeded} sessions</b> · Sun–Thu only (Fri &amp; Sat are holidays) → end date set automatically.
+            </p>
+          ) : (
+            <p className="mt-2 text-[11.5px] font-semibold text-warn-600">
+              ⚠️ This program has no total hours yet — set the course hours so the end date can calculate.
             </p>
           )}
         </div>
@@ -1156,6 +1186,9 @@ export function People() {
   const [open, setOpen] = useState(false)
   const [editing, setEditing] = useState<Person | null>(null)
   const [showImport, setShowImport] = useState(false)
+  const [query, setQuery] = useState('')
+  const [roleFilter, setRoleFilter] = useState('')
+  const [companyFilter, setCompanyFilter] = useState('')
   const [sp] = useSearchParams()
 
   const load = () => {
@@ -1189,7 +1222,7 @@ export function People() {
     load()
   }
 
-  const rows: Person[] =
+  const allRows: Person[] =
     people ??
     (hasSupabase
       ? []
@@ -1203,6 +1236,21 @@ export function People() {
           company: u.company ?? null,
           role: u.role,
         })))
+
+  // distinct companies for the company filter dropdown
+  const companies = Array.from(new Set(allRows.map((r) => r.company).filter(Boolean))) as string[]
+
+  // apply search + role + company filters (like the demo directory)
+  const q = query.trim().toLowerCase()
+  const rows = allRows.filter((u) => {
+    if (roleFilter && u.role !== roleFilter) return false
+    if (companyFilter && (u.company ?? '') !== companyFilter) return false
+    if (q) {
+      const hay = `${u.first_name} ${u.last_name} ${u.email} ${u.cpr ?? ''} ${u.mobile ?? ''} ${u.role}`.toLowerCase()
+      if (!hay.includes(q)) return false
+    }
+    return true
+  })
 
   return (
     <>
@@ -1232,6 +1280,45 @@ export function People() {
           Directory
         </SectionTitle>
         <LiveTag live={live} />
+
+        {/* ---- filter toolbar (search + role + company) ---- */}
+        <div className="mb-4 grid gap-2.5 sm:grid-cols-2 lg:grid-cols-[1.6fr_1fr_1fr_auto]">
+          <div className="flex items-center gap-2 rounded-md border border-line bg-soft px-3 py-2 focus-within:border-brand-500 focus-within:bg-white">
+            <Search size={14} className="flex-none text-ink-400" />
+            <input
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              placeholder="Search name, CPR, email or mobile…"
+              className="w-full bg-transparent text-[13px] text-ink-700 outline-none placeholder:text-ink-400"
+            />
+          </div>
+          <select
+            value={roleFilter}
+            onChange={(e) => setRoleFilter(e.target.value)}
+            className="cursor-pointer rounded-md border border-line bg-white px-3 py-2 text-[13px] font-semibold text-ink-700 outline-none focus:border-brand-500"
+          >
+            <option value="">All roles</option>
+            <option value="learner">Learner</option>
+            <option value="trainer">Trainer</option>
+            <option value="admin">Admin</option>
+            <option value="auditor">Auditor</option>
+            <option value="company">Company</option>
+          </select>
+          <select
+            value={companyFilter}
+            onChange={(e) => setCompanyFilter(e.target.value)}
+            className="cursor-pointer rounded-md border border-line bg-white px-3 py-2 text-[13px] font-semibold text-ink-700 outline-none focus:border-brand-500"
+          >
+            <option value="">All companies</option>
+            {companies.map((c) => (
+              <option key={c} value={c}>{c}</option>
+            ))}
+          </select>
+          <div className="flex items-center justify-center rounded-md border border-brand-500/20 bg-brand-50 px-3 py-2 text-[12px] font-bold whitespace-nowrap text-brand-600">
+            {rows.length} {rows.length === 1 ? 'account' : 'accounts'}
+          </div>
+        </div>
+
         <div className="overflow-x-auto">
           <table className="w-full min-w-[680px]">
             <thead>
@@ -1379,11 +1466,11 @@ function AddPerson({ onClose, onDone }: { onClose: () => void; onDone: () => voi
         <div className="grid grid-cols-2 gap-3">
           <div>
             <label className={labelCls}>First name</label>
-            <input className={fieldCls} value={f.first_name} onChange={set('first_name')} />
+            <input className={fieldCls} placeholder="e.g. Ali" value={f.first_name} onChange={set('first_name')} />
           </div>
           <div>
             <label className={labelCls}>Last name</label>
-            <input className={fieldCls} value={f.last_name} onChange={set('last_name')} />
+            <input className={fieldCls} placeholder="e.g. Al-Mansoori" value={f.last_name} onChange={set('last_name')} />
           </div>
         </div>
         <div>
@@ -1409,11 +1496,11 @@ function AddPerson({ onClose, onDone }: { onClose: () => void; onDone: () => voi
         <div className="grid grid-cols-2 gap-3">
           <div>
             <label className={labelCls}>CPR (national ID)</label>
-            <input className={fieldCls} value={f.cpr} onChange={set('cpr')} />
+            <input className={fieldCls} placeholder="e.g. 990012345" value={f.cpr} onChange={set('cpr')} />
           </div>
           <div>
             <label className={labelCls}>Mobile</label>
-            <input className={fieldCls} value={f.mobile} onChange={set('mobile')} />
+            <input className={fieldCls} placeholder="e.g. +973 3900 0000" value={f.mobile} onChange={set('mobile')} />
           </div>
         </div>
         <div>
@@ -1484,11 +1571,11 @@ function EditPerson({ person, onClose, onDone }: { person: Person; onClose: () =
         <div className="grid grid-cols-2 gap-3">
           <div>
             <label className={labelCls}>First name</label>
-            <input className={fieldCls} value={f.first_name} onChange={set('first_name')} />
+            <input className={fieldCls} placeholder="e.g. Ali" value={f.first_name} onChange={set('first_name')} />
           </div>
           <div>
             <label className={labelCls}>Last name</label>
-            <input className={fieldCls} value={f.last_name} onChange={set('last_name')} />
+            <input className={fieldCls} placeholder="e.g. Al-Mansoori" value={f.last_name} onChange={set('last_name')} />
           </div>
         </div>
         <div>
@@ -1508,13 +1595,13 @@ function EditPerson({ person, onClose, onDone }: { person: Person; onClose: () =
           </div>
           <div>
             <label className={labelCls}>Mobile</label>
-            <input className={fieldCls} value={f.mobile} onChange={set('mobile')} />
+            <input className={fieldCls} placeholder="e.g. +973 3900 0000" value={f.mobile} onChange={set('mobile')} />
           </div>
         </div>
         <div className="grid grid-cols-2 gap-3">
           <div>
             <label className={labelCls}>CPR (national ID)</label>
-            <input className={fieldCls} value={f.cpr} onChange={set('cpr')} />
+            <input className={fieldCls} placeholder="e.g. 990012345" value={f.cpr} onChange={set('cpr')} />
           </div>
           <div>
             <label className={labelCls}>Company / sponsor</label>
