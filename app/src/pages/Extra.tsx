@@ -345,38 +345,75 @@ function CreateBatch({
   onClose: () => void
   onDone: () => void
 }) {
+  const thisYear = new Date().getFullYear()
   const [f, setF] = useState({
-    batch_code: '',
     course_id: courses[0]?.id ? String(courses[0].id) : '',
+    year: String(thisYear),
+    seq: '01',
     trainer_id: '',
     start_date: '',
     end_date: '',
-    start_time: '09:00',
-    end_time: '13:00',
-    total_hours: '48',
+    start_time: '10:00',
+    daily_hours: '4',
     status: 'upcoming',
   })
   const [err, setErr] = useState('')
   const [busy, setBusy] = useState(false)
   const set = (k: keyof typeof f) => (e: { target: { value: string } }) => setF({ ...f, [k]: e.target.value })
 
+  // --- derived values (auto-calculated, like the demo) ---
+  const course = courses.find((c) => String(c.id) === f.course_id)
+  // program short code: first token of the course code (e.g. "CCNA" from "CCNA-101")
+  const progCode = (course?.code ?? 'GEN').split(/[-\s]/)[0].toUpperCase()
+  // batch code = CTC-<PROG>-<YY><SEQ>  →  CTC-CCNA-2601
+  const batchCode = `CTC-${progCode}-${f.year.slice(2)}${f.seq}`
+
+  // calculated daily end time = start + daily hours
+  const dailyEnd = (() => {
+    if (!f.start_time) return ''
+    const [h, m] = f.start_time.split(':').map(Number)
+    const end = (h * 60 + m + Number(f.daily_hours) * 60) % (24 * 60)
+    return `${String(Math.floor(end / 60)).padStart(2, '0')}:${String(end % 60).padStart(2, '0')}`
+  })()
+  const prettyTime = (t: string) => {
+    if (!t) return '—'
+    const [h, m] = t.split(':').map(Number)
+    const ap = h >= 12 ? 'PM' : 'AM'
+    const hh = h % 12 === 0 ? 12 : h % 12
+    return `${hh}:${String(m).padStart(2, '0')} ${ap}`
+  }
+
+  // total contracted hours = working days (Sun–Thu) in range × daily hours
+  const totalHours = (() => {
+    if (!f.start_date || !f.end_date) return 0
+    const s = new Date(f.start_date)
+    const e = new Date(f.end_date)
+    if (e < s) return 0
+    let days = 0
+    for (const d = new Date(s); d <= e; d.setDate(d.getDate() + 1)) {
+      const dow = d.getDay() // 0 Sun … 6 Sat
+      if (dow >= 0 && dow <= 4) days++ // Bahrain working week
+    }
+    return days * Number(f.daily_hours)
+  })()
+
   const save = async () => {
     setErr('')
-    if (!f.batch_code || !f.course_id || !f.start_date || !f.end_date) {
-      setErr('Batch code, course, start and end dates are required.')
+    if (!f.course_id || !f.start_date || !f.end_date) {
+      setErr('Program, start date and end date are required.')
       return
     }
     if (!supabase) return
     setBusy(true)
     const { error } = await supabase.from('batches').insert({
-      batch_code: f.batch_code,
+      batch_code: batchCode,
       course_id: Number(f.course_id),
       trainer_id: f.trainer_id || null,
       start_date: f.start_date,
       end_date: f.end_date,
       start_time: f.start_time || null,
-      end_time: f.end_time || null,
-      total_hours: Number(f.total_hours) || 0,
+      end_time: dailyEnd || null,
+      total_hours: totalHours,
       status: f.status,
     })
     setBusy(false)
@@ -387,15 +424,15 @@ function CreateBatch({
     onDone()
   }
 
+  const years = [thisYear, thisYear + 1, thisYear + 2].map(String)
+  const seqs = Array.from({ length: 20 }, (_, i) => String(i + 1).padStart(2, '0'))
+
   return (
-    <Modal title="Create batch" onClose={onClose}>
-      <div className="space-y-3">
+    <Modal title="Deploy Certified Training Batch" onClose={onClose}>
+      <div className="space-y-4">
+        {/* program */}
         <div>
-          <label className={labelCls}>Batch code</label>
-          <input className={fieldCls} placeholder="CTC-CCNA-2604" value={f.batch_code} onChange={set('batch_code')} />
-        </div>
-        <div>
-          <label className={labelCls}>Course</label>
+          <label className={labelCls}>Select registered core program</label>
           <select className={fieldCls} value={f.course_id} onChange={set('course_id')}>
             {courses.map((c) => (
               <option key={c.id} value={c.id}>
@@ -404,8 +441,36 @@ function CreateBatch({
             ))}
           </select>
         </div>
+
+        {/* year + sequence → auto batch code */}
+        <div className="grid grid-cols-3 gap-3">
+          <div>
+            <label className={labelCls}>Academic target year</label>
+            <select className={fieldCls} value={f.year} onChange={set('year')}>
+              {years.map((y) => (
+                <option key={y} value={y}>{y}</option>
+              ))}
+            </select>
+          </div>
+          <div>
+            <label className={labelCls}>Sequence batch no.</label>
+            <select className={fieldCls} value={f.seq} onChange={set('seq')}>
+              {seqs.map((s) => (
+                <option key={s} value={s}>{s}</option>
+              ))}
+            </select>
+          </div>
+          <div>
+            <label className={labelCls}>Resulting batch code</label>
+            <div className="flex h-[38px] items-center rounded-md border border-brand-500/25 bg-brand-50 px-3 font-mono text-[13px] font-bold text-brand-600">
+              {batchCode}
+            </div>
+          </div>
+        </div>
+
+        {/* trainer */}
         <div>
-          <label className={labelCls}>Trainer</label>
+          <label className={labelCls}>Assign lead instructor</label>
           <select className={fieldCls} value={f.trainer_id} onChange={set('trainer_id')}>
             <option value="">— Unassigned —</option>
             {trainers.map((t) => (
@@ -415,6 +480,8 @@ function CreateBatch({
             ))}
           </select>
         </div>
+
+        {/* dates */}
         <div className="grid grid-cols-2 gap-3">
           <div>
             <label className={labelCls}>Start date</label>
@@ -424,34 +491,57 @@ function CreateBatch({
             <label className={labelCls}>End date</label>
             <input type="date" className={fieldCls} value={f.end_date} onChange={set('end_date')} />
           </div>
-          <div>
-            <label className={labelCls}>Start time</label>
-            <input type="time" className={fieldCls} value={f.start_time} onChange={set('start_time')} />
-          </div>
-          <div>
-            <label className={labelCls}>End time</label>
-            <input type="time" className={fieldCls} value={f.end_time} onChange={set('end_time')} />
-          </div>
-          <div>
-            <label className={labelCls}>Total hours</label>
-            <input type="number" className={fieldCls} value={f.total_hours} onChange={set('total_hours')} />
-          </div>
-          <div>
-            <label className={labelCls}>Status</label>
-            <select className={fieldCls} value={f.status} onChange={set('status')}>
-              <option value="upcoming">Upcoming</option>
-              <option value="active">Active</option>
-              <option value="completed">Completed</option>
-            </select>
-          </div>
         </div>
+
+        {/* daily schedule config */}
+        <div>
+          <label className="mb-2 block text-[11px] font-bold tracking-[0.08em] text-ink-500 uppercase">
+            Daily schedule hours configuration
+          </label>
+          <div className="grid grid-cols-3 gap-3">
+            <div>
+              <label className={labelCls}>Daily start</label>
+              <input type="time" className={fieldCls} value={f.start_time} onChange={set('start_time')} />
+            </div>
+            <div>
+              <label className={labelCls}>Daily class hours</label>
+              <select className={fieldCls} value={f.daily_hours} onChange={set('daily_hours')}>
+                {[2, 3, 4, 5, 6, 8].map((h) => (
+                  <option key={h} value={h}>{h} Hours per Day</option>
+                ))}
+              </select>
+            </div>
+            <div>
+              <label className={labelCls}>Calculated end</label>
+              <div className="flex h-[38px] items-center justify-center rounded-md border border-line bg-soft2 px-3 text-[13px] font-bold text-navy-900">
+                {prettyTime(dailyEnd)}
+              </div>
+            </div>
+          </div>
+          {totalHours > 0 && (
+            <p className="mt-2 text-[11.5px] text-ink-500">
+              📅 Sun–Thu working week · <b className="text-navy-900">{totalHours}h</b> total contracted over the date range.
+            </p>
+          )}
+        </div>
+
+        {/* status */}
+        <div>
+          <label className={labelCls}>Status</label>
+          <select className={fieldCls} value={f.status} onChange={set('status')}>
+            <option value="upcoming">Upcoming</option>
+            <option value="active">Active</option>
+            <option value="completed">Completed</option>
+          </select>
+        </div>
+
         {err && (
           <p className="rounded-md border border-bad-600/20 bg-bad-50 px-3 py-2 text-[12px] font-semibold text-bad-600">
             {err}
           </p>
         )}
         <div className="flex gap-2 pt-1">
-          <Button onClick={save} className="flex-1" >{busy ? 'Saving…' : 'Create batch'}</Button>
+          <Button onClick={save} className="flex-1">{busy ? 'Deploying…' : 'Deploy Certified Batch'}</Button>
           <Button variant="ghost" onClick={onClose}>Cancel</Button>
         </div>
       </div>
