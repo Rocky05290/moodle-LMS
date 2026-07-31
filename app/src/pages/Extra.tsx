@@ -1182,8 +1182,13 @@ export function People() {
   const [editing, setEditing] = useState<Person | null>(null)
   const [showImport, setShowImport] = useState(false)
   const [query, setQuery] = useState('')
-  const [roleFilter, setRoleFilter] = useState('')
-  const [companyFilter, setCompanyFilter] = useState('')
+  const [programFilter, setProgramFilter] = useState('')
+  const [batchFilter, setBatchFilter] = useState('')
+  const [typeFilter, setTypeFilter] = useState('')
+  // per-learner enrolment info: learner_id -> { programs:Set, batches:Set }
+  const [enrolMap, setEnrolMap] = useState<Record<string, { programs: string[]; batches: string[] }>>({})
+  const [programOpts, setProgramOpts] = useState<string[]>([])
+  const [batchOpts, setBatchOpts] = useState<string[]>([])
   const [sp] = useSearchParams()
 
   const load = () => {
@@ -1199,6 +1204,28 @@ export function People() {
         }
         setPeople(data as Person[])
         setLive(true)
+      })
+    // load enrolments joined to batch + course, to power Program / Batch filters
+    supabase
+      .from('enrollments')
+      .select('learner_id, batch:batches(batch_code, course:courses(code,title))')
+      .then(({ data }) => {
+        if (!data) return
+        const map: Record<string, { programs: string[]; batches: string[] }> = {}
+        const progs = new Set<string>()
+        const batches = new Set<string>()
+        for (const e of data as Record<string, unknown>[]) {
+          const lid = e.learner_id as string
+          const b = e.batch as { batch_code?: string; course?: { code?: string; title?: string } } | null
+          const code = b?.batch_code ?? ''
+          const prog = b?.course ? `${b.course.code} — ${b.course.title}` : ''
+          if (!map[lid]) map[lid] = { programs: [], batches: [] }
+          if (prog) { map[lid].programs.push(prog); progs.add(prog) }
+          if (code) { map[lid].batches.push(code); batches.add(code) }
+        }
+        setEnrolMap(map)
+        setProgramOpts([...progs].sort())
+        setBatchOpts([...batches].sort())
       })
   }
   useEffect(load, [])
@@ -1232,14 +1259,12 @@ export function People() {
           role: u.role,
         })))
 
-  // distinct companies for the company filter dropdown
-  const companies = Array.from(new Set(allRows.map((r) => r.company).filter(Boolean))) as string[]
-
-  // apply search + role + company filters (like the demo directory)
+  // apply search + program + batch + profile-type filters (matches the demo directory)
   const q = query.trim().toLowerCase()
   const rows = allRows.filter((u) => {
-    if (roleFilter && u.role !== roleFilter) return false
-    if (companyFilter && (u.company ?? '') !== companyFilter) return false
+    if (typeFilter && u.role !== typeFilter) return false
+    if (programFilter && !(enrolMap[u.id]?.programs ?? []).includes(programFilter)) return false
+    if (batchFilter && !(enrolMap[u.id]?.batches ?? []).includes(batchFilter)) return false
     if (q) {
       const hay = `${u.first_name} ${u.last_name} ${u.email} ${u.cpr ?? ''} ${u.mobile ?? ''} ${u.role}`.toLowerCase()
       if (!hay.includes(q)) return false
@@ -1276,41 +1301,68 @@ export function People() {
         </SectionTitle>
         <LiveTag live={live} />
 
-        {/* ---- filter toolbar (search + role + company) ---- */}
-        <div className="mb-4 grid gap-2.5 sm:grid-cols-2 lg:grid-cols-[1.6fr_1fr_1fr_auto]">
-          <div className="flex items-center gap-2 rounded-md border border-line bg-soft px-3 py-2 focus-within:border-brand-500 focus-within:bg-white">
-            <Search size={14} className="flex-none text-ink-400" />
-            <input
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              placeholder="Search name, CPR, email or mobile…"
-              className="w-full bg-transparent text-[13px] text-ink-700 outline-none placeholder:text-ink-400"
-            />
+        {/* ---- filter toolbar (4 filters, matches the demo directory) ---- */}
+        <div className="mb-4 rounded-xl border border-line bg-soft p-3.5">
+          <div className="mb-2.5 flex items-center justify-between">
+            <span className="text-[11px] font-bold tracking-[0.1em] text-ink-500 uppercase">Profile registry filters</span>
+            <span className="rounded-full border border-brand-500/20 bg-brand-50 px-2.5 py-0.5 text-[11.5px] font-bold text-brand-600">
+              {rows.length} {rows.length === 1 ? 'account registered' : 'accounts registered'}
+            </span>
           </div>
-          <select
-            value={roleFilter}
-            onChange={(e) => setRoleFilter(e.target.value)}
-            className="cursor-pointer rounded-md border border-line bg-white px-3 py-2 text-[13px] font-semibold text-ink-700 outline-none focus:border-brand-500"
-          >
-            <option value="">All roles</option>
-            <option value="learner">Learner</option>
-            <option value="trainer">Trainer</option>
-            <option value="admin">Admin</option>
-            <option value="auditor">Auditor</option>
-            <option value="company">Company</option>
-          </select>
-          <select
-            value={companyFilter}
-            onChange={(e) => setCompanyFilter(e.target.value)}
-            className="cursor-pointer rounded-md border border-line bg-white px-3 py-2 text-[13px] font-semibold text-ink-700 outline-none focus:border-brand-500"
-          >
-            <option value="">All companies</option>
-            {companies.map((c) => (
-              <option key={c} value={c}>{c}</option>
-            ))}
-          </select>
-          <div className="flex items-center justify-center rounded-md border border-brand-500/20 bg-brand-50 px-3 py-2 text-[12px] font-bold whitespace-nowrap text-brand-600">
-            {rows.length} {rows.length === 1 ? 'account' : 'accounts'}
+          <div className="grid gap-2.5 sm:grid-cols-2 lg:grid-cols-4">
+            <div>
+              <label className={labelCls}>Tapered query search</label>
+              <div className="flex items-center gap-2 rounded-md border border-line bg-white px-3 py-2 focus-within:border-brand-500">
+                <Search size={14} className="flex-none text-ink-400" />
+                <input
+                  value={query}
+                  onChange={(e) => setQuery(e.target.value)}
+                  placeholder="Search name, CPR or type…"
+                  className="w-full bg-transparent text-[13px] text-ink-700 outline-none placeholder:text-ink-400"
+                />
+              </div>
+            </div>
+            <div>
+              <label className={labelCls}>Filter by program</label>
+              <select
+                value={programFilter}
+                onChange={(e) => setProgramFilter(e.target.value)}
+                className={`${fieldCls} cursor-pointer`}
+              >
+                <option value="">All Programs</option>
+                {programOpts.map((p) => (
+                  <option key={p} value={p}>{p}</option>
+                ))}
+              </select>
+            </div>
+            <div>
+              <label className={labelCls}>Filter by batch code</label>
+              <select
+                value={batchFilter}
+                onChange={(e) => setBatchFilter(e.target.value)}
+                className={`${fieldCls} cursor-pointer`}
+              >
+                <option value="">All Batches</option>
+                {batchOpts.map((b) => (
+                  <option key={b} value={b}>{b}</option>
+                ))}
+              </select>
+            </div>
+            <div>
+              <label className={labelCls}>Filter by profile type</label>
+              <select
+                value={typeFilter}
+                onChange={(e) => setTypeFilter(e.target.value)}
+                className={`${fieldCls} cursor-pointer`}
+              >
+                <option value="">All Types</option>
+                <option value="learner">Learner</option>
+                <option value="trainer">Trainer</option>
+                <option value="admin">Admin</option>
+                <option value="auditor">Auditor</option>
+                <option value="company">Company</option>
+              </select>
+            </div>
           </div>
         </div>
 
