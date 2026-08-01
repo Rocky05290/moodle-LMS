@@ -133,6 +133,82 @@ export default function Landing({ onSignIn: _onSignIn }: { onSignIn: (u: User) =
         </div>
       </section>
 
+      {/* ====================== PROGRAMME / CHART ===================== */}
+      <section className="relative z-10 border-b border-white/10 bg-navy-950/[0.92] py-20 backdrop-blur-[3px]">
+        <div className="mx-auto grid max-w-6xl items-center gap-10 px-5 sm:px-8 lg:grid-cols-[0.85fr_1.15fr]">
+          {/* left copy */}
+          <Reveal>
+            <div>
+              <span className="text-[11px] font-bold tracking-[0.16em] text-gold-400 uppercase">The programme</span>
+              <h2 className="mt-3 text-[30px] leading-tight font-extrabold tracking-tight text-white sm:text-[38px]">
+                Every batch,<br />
+                <span className="text-gold-400">tracked from day one.</span>
+              </h2>
+              <p className="mt-4 max-w-md text-[14.5px] leading-relaxed text-white/60">
+                Attendance, grades and progress roll up into live Batch Health — so you always know
+                exactly where each learner stands.
+              </p>
+            </div>
+          </Reveal>
+
+          {/* right — attendance chart card */}
+          <Reveal delay={100}>
+            <div className="rounded-2xl border border-white/10 bg-navy-950/80 p-5 shadow-2xl shadow-black/40 backdrop-blur-md sm:p-6">
+              <div className="mb-4 flex items-center justify-between">
+                <span className="text-[11px] font-bold tracking-[0.12em] text-white/45 uppercase">
+                  Batch attendance · CTC-CCNA-2601
+                </span>
+                <span className="text-[15px] font-extrabold text-gold-400">+18.4%</span>
+              </div>
+
+              {/* self-contained SVG line chart (no library) */}
+              <svg viewBox="0 0 560 220" className="w-full" preserveAspectRatio="none">
+                <defs>
+                  <linearGradient id="fillG" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stopColor="#edb43d" stopOpacity="0.35" />
+                    <stop offset="100%" stopColor="#edb43d" stopOpacity="0" />
+                  </linearGradient>
+                </defs>
+                {/* grid lines */}
+                {[44, 88, 132, 176].map((y) => (
+                  <line key={y} x1="0" y1={y} x2="560" y2={y} stroke="#ffffff" strokeOpacity="0.05" strokeWidth="1" />
+                ))}
+                {/* area + line: an upward attendance trend */}
+                <path
+                  d="M0,180 L70,168 L140,172 L210,140 L280,150 L350,110 L420,120 L490,78 L560,62 L560,220 L0,220 Z"
+                  fill="url(#fillG)"
+                />
+                <path
+                  d="M0,180 L70,168 L140,172 L210,140 L280,150 L350,110 L420,120 L490,78 L560,62"
+                  fill="none"
+                  stroke="#edb43d"
+                  strokeWidth="2.5"
+                  strokeLinejoin="round"
+                  strokeLinecap="round"
+                />
+                {/* end dot */}
+                <circle cx="560" cy="62" r="4.5" fill="#edb43d" />
+              </svg>
+
+              {/* stat strip under the chart */}
+              <div className="mt-5 grid grid-cols-4 divide-x divide-white/10 rounded-xl border border-white/10 bg-white/[0.03]">
+                {[
+                  ['Attendance', '92%'],
+                  ['Pass rate', '86%'],
+                  ['Working week', 'Sun–Thu'],
+                  ['Platform', 'Cordoba'],
+                ].map(([k, v]) => (
+                  <div key={k} className="px-3 py-3">
+                    <div className="text-[9.5px] font-bold tracking-[0.1em] text-white/40 uppercase">{k}</div>
+                    <div className="mt-1 text-[13px] font-extrabold text-white">{v}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </Reveal>
+        </div>
+      </section>
+
       {/* ========================= INTRO STRIP ======================== */}
       <section className="relative z-10 py-20">
         {/* soft dark halo behind the text so it stays readable over the animation */}
@@ -144,7 +220,8 @@ export default function Landing({ onSignIn: _onSignIn }: { onSignIn: (u: User) =
                 <span className="h-1.5 w-1.5 rounded-full bg-gold-400" /> The platform
               </span>
               <h2 className="mt-4 text-[30px] leading-tight font-extrabold tracking-tight text-white sm:text-[40px]">
-                A cloud platform built for Tamkeen-funded training providers
+                A cloud platform built<br />
+                <span className="text-gold-400">for Tamkeen-funded providers.</span>
               </h2>
               <p className="mx-auto mt-4 max-w-2xl text-[15px] leading-relaxed text-white/75">
                 Everything a modern training centre needs — replacing spreadsheets, paper registers
@@ -164,7 +241,8 @@ export default function Landing({ onSignIn: _onSignIn }: { onSignIn: (u: User) =
                 Capabilities
               </span>
               <h2 className="mx-auto mt-3 max-w-2xl text-[28px] leading-tight font-extrabold tracking-tight text-white sm:text-[36px]">
-                Everything from enrolment to certificate
+                Everything from enrolment<br />
+                <span className="text-gold-400">to certificate.</span>
               </h2>
             </div>
           </Reveal>
@@ -194,7 +272,8 @@ export default function Landing({ onSignIn: _onSignIn }: { onSignIn: (u: User) =
           <Reveal>
             <div className="[text-shadow:0_2px_18px_rgba(0,0,0,0.6)]">
               <h2 className="text-[30px] leading-tight font-extrabold tracking-tight text-white sm:text-[38px]">
-                The questions training centres ask
+                The questions<br />
+                <span className="text-gold-400">training centres ask.</span>
               </h2>
               <p className="mt-4 max-w-md text-[14.5px] leading-relaxed text-white/70">
                 Clear answers on how Cordoba handles batches, attendance, roles and Tamkeen compliance.
@@ -240,7 +319,8 @@ export default function Landing({ onSignIn: _onSignIn }: { onSignIn: (u: User) =
         <div className="relative mx-auto max-w-3xl px-5 text-center sm:px-8 [text-shadow:0_2px_18px_rgba(0,0,0,0.6)]">
           <Reveal>
             <h2 className="text-[30px] leading-tight font-extrabold tracking-tight text-white sm:text-[40px]">
-              Ready to run every batch from one place?
+              Ready to run every batch<br />
+              <span className="text-gold-400">from one place?</span>
             </h2>
             <p className="mx-auto mt-4 max-w-xl text-[15px] text-white/70">
               Sign in to explore the admin, trainer, learner and auditor portals.
