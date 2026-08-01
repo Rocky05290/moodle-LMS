@@ -134,11 +134,11 @@ export default function Landing({ onSignIn: _onSignIn }: { onSignIn: (u: User) =
       </section>
 
       {/* ====================== PROGRAMME / CHART ===================== */}
-      <section className="relative z-10 border-b border-white/10 bg-navy-950/[0.92] py-20 backdrop-blur-[3px]">
+      <section className="relative z-10 border-b border-white/10 py-20">
         <div className="mx-auto grid max-w-6xl items-center gap-10 px-5 sm:px-8 lg:grid-cols-[0.85fr_1.15fr]">
           {/* left copy */}
           <Reveal>
-            <div>
+            <div className="[text-shadow:0_2px_18px_rgba(0,0,0,0.6)]">
               <span className="text-[11px] font-bold tracking-[0.16em] text-gold-400 uppercase">The programme</span>
               <h2 className="mt-3 text-[30px] leading-tight font-extrabold tracking-tight text-white sm:text-[38px]">
                 Every batch,<br />

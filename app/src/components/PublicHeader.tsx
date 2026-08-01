@@ -75,7 +75,7 @@ export default function PublicHeader() {
           <div className="ml-auto flex items-center gap-2">
             <Link
               to="/login"
-              className="rounded-full bg-gold-400 px-10 py-2.5 text-center text-[14px] font-bold text-navy-950 transition-all hover:-translate-y-0.5 hover:bg-gold-300 sm:px-14"
+              className="rounded-full bg-gold-400 px-10 py-2.5 text-center text-[17px] font-bold text-white transition-all hover:-translate-y-0.5 hover:bg-gold-300 sm:px-14"
             >
               Log in
             </Link>
