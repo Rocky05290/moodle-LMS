@@ -10,6 +10,8 @@ import Reveal from '../components/Reveal'
 import SiteFooter from '../components/SiteFooter'
 import AppBgFx from '../components/AppBgFx'
 import LandingLoader from '../components/LandingLoader'
+import Typewriter from '../components/Typewriter'
+import CountUp from '../components/CountUp'
 
 const FEATURES = [
   { icon: Layers, title: 'Batch management', desc: 'Create batches with auto codes (CTC-CCNA-2601), schedules and contracted hours.' },
@@ -74,10 +76,15 @@ export default function Landing({ onSignIn: _onSignIn }: { onSignIn: (u: User) =
               Tamkeen-registered training platform · Bahrain
             </span>
 
-            <h1 className="rise mt-6 text-[38px] leading-[1.06] font-extrabold tracking-tight text-white sm:text-[50px]" style={{ animationDelay: '.12s' }}>
-              Training, attendance &amp;
-              <br />
-              <span className="text-emerald-400">compliance</span> in one platform.
+            <h1 className="mt-6 min-h-[2.2em] text-[38px] leading-[1.06] font-extrabold tracking-tight text-white sm:text-[50px]">
+              <Typewriter
+                speed={42}
+                segments={[
+                  { text: 'Training, attendance & ' },
+                  { text: 'compliance', className: 'text-emerald-400' },
+                  { text: ' in one platform.' },
+                ]}
+              />
             </h1>
 
             <p className="rise mt-6 max-w-lg text-[15.5px] leading-relaxed text-white/65" style={{ animationDelay: '.24s' }}>
@@ -129,7 +136,9 @@ export default function Landing({ onSignIn: _onSignIn }: { onSignIn: (u: User) =
         <div className="mx-auto grid max-w-6xl grid-cols-2 divide-x divide-y divide-white/10 px-5 sm:px-8 lg:grid-cols-4 lg:divide-y-0">
           {STATS.map(([big, label, sub]) => (
             <div key={label} className="px-4 py-8 text-center sm:py-10">
-              <div className="text-[26px] font-extrabold tracking-tight text-white sm:text-[32px]">{big}</div>
+              <div className="text-[26px] font-extrabold tracking-tight text-white sm:text-[32px]">
+                <CountUp value={big} />
+              </div>
               <div className="mt-1.5 text-[13.5px] font-bold text-gold-400">{label}</div>
               <div className="mt-1 text-[11.5px] text-white/45">{sub}</div>
             </div>
@@ -204,7 +213,9 @@ export default function Landing({ onSignIn: _onSignIn }: { onSignIn: (u: User) =
                 ].map(([k, v]) => (
                   <div key={k} className="px-3 py-3">
                     <div className="text-[9.5px] font-bold tracking-[0.1em] text-white/40 uppercase">{k}</div>
-                    <div className="mt-1 text-[13px] font-extrabold text-white">{v}</div>
+                    <div className="mt-1 text-[13px] font-extrabold text-white">
+                      <CountUp value={v} />
+                    </div>
                   </div>
                 ))}
               </div>
