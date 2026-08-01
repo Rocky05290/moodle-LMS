@@ -8,6 +8,7 @@ import type { Role, User } from '../data/mock'
 import { fullName, initials } from '../data/mock'
 import { Badge } from './ui'
 import SiteFooter from './SiteFooter'
+import AppBgFx from './AppBgFx'
 
 const NAV: Record<Role, { to: string; label: string; icon: ReactNode }[]> = {
   admin: [
@@ -65,11 +66,8 @@ export default function Layout({
 
   return (
     <div className="app-bg flex min-h-full">
-      {/* animated dark background (demo look) — behind everything */}
-      <div className="app-bg__glow" aria-hidden="true">
-        <span className="a" />
-        <span className="b" />
-      </div>
+      {/* interactive animated background (demo look) — click to burst, move to repel */}
+      <AppBgFx />
 
       {/* ------------------------- Sidebar ------------------------- */}
       <aside className="sticky top-0 z-10 hidden h-screen w-[244px] flex-none flex-col bg-gradient-to-b from-navy-800 to-navy-900 p-4 lg:flex">
