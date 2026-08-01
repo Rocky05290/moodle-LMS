@@ -4,6 +4,18 @@ import { ArrowLeft, Eye, EyeOff, Check } from 'lucide-react'
 import type { Role, User } from '../data/mock'
 import { users } from '../data/mock'
 import { supabase, hasSupabase } from '../lib/supabase'
+import AppBgFx from '../components/AppBgFx'
+
+const LOGO_GOLD =
+  'brightness(0) saturate(100%) invert(72%) sepia(48%) saturate(720%) hue-rotate(2deg) brightness(94%) contrast(90%)'
+
+// role tabs — picking one pre-fills the matching demo email
+const ROLE_TABS: { role: Role; label: string; email: string }[] = [
+  { role: 'admin', label: 'Admin', email: 'admin@cordoba.bh' },
+  { role: 'trainer', label: 'Trainer', email: 'sayed@cordoba.bh' },
+  { role: 'learner', label: 'Learner', email: 'ali@batelco.com.bh' },
+  { role: 'auditor', label: 'Auditor', email: 'qa@cordoba.bh' },
+]
 
 function MicrosoftIcon() {
   return (
@@ -30,6 +42,7 @@ const BENEFITS = [
  */
 export default function LoginPage({ onSignIn }: { onSignIn: (u: User) => void }) {
   const [mode, setMode] = useState<'signin' | 'signup'>('signin')
+  const [role, setRole] = useState<Role>('admin')
   const [email, setEmail] = useState('admin@cordoba.bh')
   const [password, setPassword] = useState('demo1234')
   const [showPw, setShowPw] = useState(false)
@@ -114,11 +127,14 @@ export default function LoginPage({ onSignIn }: { onSignIn: (u: User) => void })
   const label = 'mb-1.5 block text-[13px] font-bold text-white'
 
   return (
-    <div className="grid min-h-screen bg-navy-950 lg:grid-cols-2">
+    <div className="relative grid min-h-screen bg-navy-950 lg:grid-cols-2">
+      {/* interactive animated background behind everything */}
+      <AppBgFx />
+
       {/* ---------------- left: form ---------------- */}
-      <div className="flex flex-col px-5 py-8 sm:px-10 lg:px-14 xl:px-20">
+      <div className="relative z-10 flex flex-col bg-navy-950/70 px-5 py-8 backdrop-blur-sm sm:px-10 lg:px-14 xl:px-20">
         <div className="mb-10 flex items-center justify-between">
-          <img src="/logo.png" alt="Cordoba" className="h-9 w-auto brightness-0 invert" />
+          <img src="/logo.png" alt="Cordoba" className="h-10 w-auto" style={{ filter: LOGO_GOLD }} />
           <Link to="/" className="flex items-center gap-1.5 text-[13px] font-semibold text-white/60 hover:text-white">
             <ArrowLeft size={15} /> Back to site
           </Link>
@@ -147,6 +163,21 @@ export default function LoginPage({ onSignIn }: { onSignIn: (u: User) => void })
 
           {mode === 'signin' ? (
             <div className="mt-8 space-y-4">
+              {/* role selection — pick the portal you're signing into */}
+              <div className="grid grid-cols-4 gap-1.5 rounded-xl border border-white/10 bg-white/[0.03] p-1.5">
+                {ROLE_TABS.map((t) => (
+                  <button
+                    key={t.role}
+                    onClick={() => { setRole(t.role); setEmail(t.email); setErr('') }}
+                    className={`rounded-lg py-2 text-[12.5px] font-bold transition-colors ${
+                      role === t.role ? 'bg-gold-400 text-navy-950' : 'text-white/60 hover:bg-white/8 hover:text-white'
+                    }`}
+                  >
+                    {t.label}
+                  </button>
+                ))}
+              </div>
+
               <button
                 onClick={signInMicrosoft}
                 className="flex w-full items-center justify-center gap-2.5 rounded-xl border border-white/12 bg-white/[0.04] py-3 text-[14px] font-semibold text-white transition-colors hover:bg-white/[0.08]"
@@ -246,7 +277,7 @@ export default function LoginPage({ onSignIn }: { onSignIn: (u: User) => void })
       </div>
 
       {/* ---------------- right: benefits panel ---------------- */}
-      <div className="relative hidden overflow-hidden border-l border-white/10 bg-gradient-to-br from-navy-900 to-navy-950 px-14 py-16 lg:flex lg:flex-col xl:px-20">
+      <div className="relative z-10 hidden overflow-hidden border-l border-white/10 bg-gradient-to-br from-navy-900 to-navy-950 px-14 py-16 lg:flex lg:flex-col xl:px-20">
         <div className="pointer-events-none absolute -top-24 -right-24 h-96 w-96 rounded-full bg-gold-400/10 blur-[120px]" />
         <div className="relative my-auto max-w-lg">
           <h2 className="text-[32px] leading-tight font-extrabold tracking-tight text-white">
