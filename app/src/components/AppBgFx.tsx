@@ -24,7 +24,8 @@ export default function AppBgFx() {
     let raf = 0
     const mouse = { x: -9999, y: -9999 }
     const C = ['#6ee7b7', '#60a5fa', '#a78bfa', '#fb923c', '#f472b6', '#34d399', '#fbbf24']
-    const LABELS = ['Approve', 'Review', 'Deploy', 'Analyze', 'Validate', 'Process', 'Start', 'Decide', 'Build', 'Test', 'Launch', 'Plan', 'Execute', 'Monitor', 'Design', 'Ship']
+    // training / LMS vocabulary — matches Cordoba's idea (not generic PM words)
+    const LABELS = ['Enrol', 'Attendance', 'Batch', 'Grade', 'Certificate', 'Trainer', 'Learner', 'Course', 'Module', 'Quiz', 'Report', 'Compliance', 'Tamkeen', 'Audit', 'Schedule', 'Register']
     const SHAPES = ['rect', 'diamond', 'hex', 'pill', 'circle']
     const rand = (a: number, b: number) => a + Math.random() * (b - a)
     const pick = <T,>(a: T[]): T => a[Math.floor(Math.random() * a.length)]
