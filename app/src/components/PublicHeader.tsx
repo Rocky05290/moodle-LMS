@@ -8,6 +8,7 @@ const LINKS = [
   { label: 'Platform', href: '#compliance' },
   { label: 'Features', href: '#features' },
   { label: 'FAQ', href: '#faq' },
+  { label: 'Get started', href: '#get-started' },
 ]
 
 /**

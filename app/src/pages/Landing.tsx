@@ -230,7 +230,7 @@ export default function Landing({ onSignIn: _onSignIn }: { onSignIn: (u: User) =
       </section>
 
       {/* ========================= CTA BAND ========================== */}
-      <section className="relative z-10 border-t border-white/10 py-20">
+      <section id="get-started" className="relative z-10 scroll-mt-24 border-t border-white/10 py-20">
         <div className="pointer-events-none absolute inset-0 [background:radial-gradient(60%_70%_at_50%_50%,rgba(7,9,18,0.85),transparent_75%)]" />
         <div className="relative mx-auto max-w-3xl px-5 text-center sm:px-8 [text-shadow:0_2px_18px_rgba(0,0,0,0.6)]">
           <Reveal>

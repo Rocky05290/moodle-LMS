@@ -57,7 +57,7 @@ export default function SiteFooter() {
                   key={s.label}
                   href="#"
                   aria-label={s.label}
-                  className="flex h-9 w-9 items-center justify-center rounded-md border border-white/12 bg-white/5 text-[#c2c0c7] transition-all hover:border-white/25 hover:bg-white/10 hover:text-white"
+                  className="flex h-9 w-9 items-center justify-center rounded-md border border-white/12 bg-white/5 text-[#c2c0c7] transition-all hover:border-white/25 hover:bg-white/10 hover:text-gold-400"
                 >
                   <Icon size={16} />
                 </a>
@@ -74,7 +74,7 @@ export default function SiteFooter() {
           <ul className="mt-3 space-y-2">
             {PLATFORM.map((c) => (
               <li key={c}>
-                <a href="#" className="text-[13px] text-[#c2c0c7]/85 transition-colors hover:text-white">
+                <a href="#" className="text-[13px] text-[#c2c0c7]/85 transition-colors hover:text-gold-400">
                   {c}
                 </a>
               </li>
@@ -94,7 +94,7 @@ export default function SiteFooter() {
                 <li key={r.label}>
                   <a
                     href="#"
-                    className="flex items-center gap-2.5 text-[13px] text-[#c2c0c7]/85 transition-colors hover:text-white"
+                    className="flex items-center gap-2.5 text-[13px] text-[#c2c0c7]/85 transition-colors hover:text-gold-400"
                   >
                     <Icon size={14} className="text-[#c2c0c7]/55" />
                     {r.label}
@@ -115,7 +115,7 @@ export default function SiteFooter() {
               <a
                 key={l}
                 href="#"
-                className="text-[12px] font-semibold text-[#c2c0c7] transition-colors hover:text-white"
+                className="text-[12px] font-semibold text-[#c2c0c7] transition-colors hover:text-gold-400"
               >
                 {l}
               </a>
