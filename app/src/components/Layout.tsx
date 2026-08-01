@@ -10,6 +10,7 @@ import { fullName, initials } from '../data/mock'
 import { Badge } from './ui'
 import SiteFooter from './SiteFooter'
 import AppBgFx from './AppBgFx'
+import LandingLoader from './LandingLoader'
 
 const NAV: Record<Role, { to: string; label: string; icon: ReactNode }[]> = {
   admin: [
@@ -68,6 +69,9 @@ export default function Layout({
 
   return (
     <div className="app-bg flex min-h-full">
+      {/* 3D intro loader — plays once per session when entering the app (not on every click) */}
+      <LandingLoader once="app-loaded" />
+
       {/* interactive animated background (demo look) — click to burst, move to repel */}
       <AppBgFx />
 

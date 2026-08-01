@@ -5,12 +5,16 @@ import { useEffect, useState } from 'react'
  * Pure CSS 3D (no library): a rotating gold cube + orbiting rings +
  * the Cordoba logo, a progress bar, then a smooth fade-out reveal.
  */
-export default function LandingLoader() {
+export default function LandingLoader({ once }: { once?: string }) {
+  // `once` = a sessionStorage key; if set and already seen this session, skip the loader
+  const skip = !!once && typeof sessionStorage !== 'undefined' && sessionStorage.getItem(once) === '1'
   const [progress, setProgress] = useState(0)
   const [leaving, setLeaving] = useState(false)
-  const [gone, setGone] = useState(false)
+  const [gone, setGone] = useState(skip)
 
   useEffect(() => {
+    if (skip) return
+    if (once && typeof sessionStorage !== 'undefined') sessionStorage.setItem(once, '1')
     // animate a fake progress to 100 over ~1.6s
     let p = 0
     const tick = setInterval(() => {

@@ -5,6 +5,7 @@ import type { Role, User } from '../data/mock'
 import { users } from '../data/mock'
 import { supabase, hasSupabase } from '../lib/supabase'
 import AppBgFx from '../components/AppBgFx'
+import LandingLoader from '../components/LandingLoader'
 
 const LOGO_GOLD =
   'brightness(0) saturate(100%) invert(72%) sepia(48%) saturate(720%) hue-rotate(2deg) brightness(94%) contrast(90%)'
@@ -128,6 +129,9 @@ export default function LoginPage({ onSignIn }: { onSignIn: (u: User) => void })
 
   return (
     <div className="relative grid min-h-screen bg-navy-950 lg:grid-cols-2">
+      {/* 3D intro loader */}
+      <LandingLoader />
+
       {/* interactive animated background behind everything */}
       <AppBgFx />
 
