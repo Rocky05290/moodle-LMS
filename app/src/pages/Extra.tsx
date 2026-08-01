@@ -423,12 +423,6 @@ function CreateBatch({
     }
     return fmtISO(d)
   })()
-  const prettyDate = (iso: string) => {
-    if (!iso) return '—'
-    const [y, m, dd] = iso.split('-').map(Number)
-    const MON = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
-    return `${String(dd).padStart(2, '0')} ${MON[m - 1]} ${y}`
-  }
 
   const save = async () => {
     setErr('')
@@ -525,10 +519,8 @@ function CreateBatch({
             <input type="date" className={fieldCls} value={f.start_date} onChange={set('start_date')} />
           </div>
           <div>
-            <label className={labelCls}>End date (auto)</label>
-            <div className={`${fieldCls} flex items-center`}>
-              {prettyDate(endDate)}
-            </div>
+            <label className={labelCls}>End date</label>
+            <input type="date" className={fieldCls} value={endDate} readOnly tabIndex={-1} />
           </div>
         </div>
 
