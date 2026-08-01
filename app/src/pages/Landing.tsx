@@ -116,7 +116,7 @@ export default function Landing({ onSignIn: _onSignIn }: { onSignIn: (u: User) =
       </section>
 
       {/* ========================= STAT BAND ========================= */}
-      <section id="compliance" className="relative z-10 scroll-mt-24 border-y border-white/10 bg-navy-900">
+      <section id="compliance" className="relative z-10 scroll-mt-24 border-y border-white/10 bg-navy-950/[0.94] backdrop-blur-[3px]">
         <div className="mx-auto grid max-w-6xl grid-cols-2 divide-x divide-y divide-white/10 px-5 sm:px-8 lg:grid-cols-4 lg:divide-y-0">
           {STATS.map(([big, label, sub]) => (
             <div key={label} className="px-4 py-8 text-center sm:py-10">
@@ -129,7 +129,7 @@ export default function Landing({ onSignIn: _onSignIn }: { onSignIn: (u: User) =
       </section>
 
       {/* ========================= INTRO STRIP ======================== */}
-      <section className="relative z-10 bg-navy-950 py-20">
+      <section className="relative z-10 bg-navy-950/[0.94] py-20 backdrop-blur-[3px]">
         <div className="mx-auto max-w-6xl px-5 sm:px-8">
           <Reveal>
             <div className="mx-auto max-w-3xl text-center">
@@ -149,7 +149,7 @@ export default function Landing({ onSignIn: _onSignIn }: { onSignIn: (u: User) =
       </section>
 
       {/* ========================== FEATURES ========================= */}
-      <section id="features" className="relative z-10 scroll-mt-24 border-t border-white/10 bg-navy-900 py-20">
+      <section id="features" className="relative z-10 scroll-mt-24 border-t border-white/10 bg-navy-950/[0.94] py-20 backdrop-blur-[3px]">
         <div className="mx-auto max-w-6xl px-5 sm:px-8">
           <Reveal>
             <div className="mb-12 text-center">
@@ -182,7 +182,7 @@ export default function Landing({ onSignIn: _onSignIn }: { onSignIn: (u: User) =
       </section>
 
       {/* ============================ FAQ ============================ */}
-      <section id="faq" className="relative z-10 scroll-mt-24 bg-navy-950 py-20">
+      <section id="faq" className="relative z-10 scroll-mt-24 bg-navy-950/[0.94] py-20 backdrop-blur-[3px]">
         <div className="mx-auto grid max-w-6xl gap-10 px-5 sm:px-8 lg:grid-cols-[0.9fr_1.1fr]">
           <Reveal>
             <div>
@@ -228,7 +228,7 @@ export default function Landing({ onSignIn: _onSignIn }: { onSignIn: (u: User) =
       </section>
 
       {/* ========================= CTA BAND ========================== */}
-      <section className="relative z-10 border-t border-white/10 bg-navy-900 py-20">
+      <section className="relative z-10 border-t border-white/10 bg-navy-950/[0.94] py-20 backdrop-blur-[3px]">
         <div className="mx-auto max-w-3xl px-5 text-center sm:px-8">
           <Reveal>
             <h2 className="text-[30px] leading-tight font-extrabold tracking-tight text-white sm:text-[40px]">

@@ -27,7 +27,7 @@ const SOCIAL = [
 
 export default function SiteFooter() {
   return (
-    <footer className="border-t border-white/10 bg-navy-950 text-[#c2c0c7]">
+    <footer className="relative z-10 border-t border-white/10 bg-navy-950 text-[#c2c0c7]">
       {/* thin gold accent bar */}
       <div className="mx-auto max-w-6xl px-5 lg:px-8">
         <div className="ml-auto flex h-1.5 w-64 overflow-hidden rounded-full opacity-80">
