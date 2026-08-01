@@ -77,7 +77,7 @@ export default function Landing({ onSignIn: _onSignIn }: { onSignIn: (u: User) =
             <h1 className="rise mt-6 text-[38px] leading-[1.06] font-extrabold tracking-tight text-white sm:text-[50px]" style={{ animationDelay: '.12s' }}>
               Training, attendance &amp;
               <br />
-              <span className="text-gold-400">compliance</span> in one platform.
+              <span className="text-emerald-400">compliance</span> in one platform.
             </h1>
 
             <p className="rise mt-6 max-w-lg text-[15.5px] leading-relaxed text-white/65" style={{ animationDelay: '.24s' }}>
@@ -146,7 +146,7 @@ export default function Landing({ onSignIn: _onSignIn }: { onSignIn: (u: User) =
               <span className="text-[11px] font-bold tracking-[0.16em] text-gold-400 uppercase">The programme</span>
               <h2 className="mt-3 text-[30px] leading-tight font-extrabold tracking-tight text-white sm:text-[38px]">
                 Every batch,<br />
-                <span className="text-gold-400">tracked from day one.</span>
+                <span className="text-emerald-400">tracked from day one.</span>
               </h2>
               <p className="mt-4 max-w-md text-[14.5px] leading-relaxed text-white/60">
                 Attendance, grades and progress roll up into live Batch Health — so you always know
@@ -225,7 +225,7 @@ export default function Landing({ onSignIn: _onSignIn }: { onSignIn: (u: User) =
               </span>
               <h2 className="mt-4 text-[30px] leading-tight font-extrabold tracking-tight text-white sm:text-[40px]">
                 A cloud platform built<br />
-                <span className="text-gold-400">for Tamkeen-funded providers.</span>
+                <span className="text-emerald-400">for Tamkeen-funded providers.</span>
               </h2>
               <p className="mx-auto mt-4 max-w-2xl text-[15px] leading-relaxed text-white/75">
                 Everything a modern training centre needs — replacing spreadsheets, paper registers
@@ -246,7 +246,7 @@ export default function Landing({ onSignIn: _onSignIn }: { onSignIn: (u: User) =
               </span>
               <h2 className="mx-auto mt-3 max-w-2xl text-[28px] leading-tight font-extrabold tracking-tight text-white sm:text-[36px]">
                 Everything from enrolment<br />
-                <span className="text-gold-400">to certificate.</span>
+                <span className="text-emerald-400">to certificate.</span>
               </h2>
             </div>
           </Reveal>
@@ -277,7 +277,7 @@ export default function Landing({ onSignIn: _onSignIn }: { onSignIn: (u: User) =
             <div className="[text-shadow:0_2px_18px_rgba(0,0,0,0.6)]">
               <h2 className="text-[30px] leading-tight font-extrabold tracking-tight text-white sm:text-[38px]">
                 The questions<br />
-                <span className="text-gold-400">training centres ask.</span>
+                <span className="text-emerald-400">training centres ask.</span>
               </h2>
               <p className="mt-4 max-w-md text-[14.5px] leading-relaxed text-white/70">
                 Clear answers on how Cordoba handles batches, attendance, roles and Tamkeen compliance.
@@ -324,7 +324,7 @@ export default function Landing({ onSignIn: _onSignIn }: { onSignIn: (u: User) =
           <Reveal>
             <h2 className="text-[30px] leading-tight font-extrabold tracking-tight text-white sm:text-[40px]">
               Ready to run every batch<br />
-              <span className="text-gold-400">from one place?</span>
+              <span className="text-emerald-400">from one place?</span>
             </h2>
             <p className="mx-auto mt-4 max-w-xl text-[15px] text-white/70">
               Sign in to explore the admin, trainer, learner and auditor portals.

@@ -71,19 +71,35 @@ export default function Layout({
       {/* interactive animated background (demo look) — click to burst, move to repel */}
       <AppBgFx />
 
+      {/* click-outside overlay to close the sidebar */}
+      {sidebarOpen && (
+        <div
+          onClick={() => setSidebarOpen(false)}
+          className="fixed inset-0 z-20 bg-black/40 backdrop-blur-[1px] lg:bg-transparent lg:backdrop-blur-0"
+          aria-hidden="true"
+        />
+      )}
+
       {/* ------------------------- Sidebar ------------------------- */}
       <aside
         className={`sticky top-0 z-30 h-screen flex-none flex-col overflow-hidden bg-gradient-to-b from-navy-800 to-navy-900 transition-all duration-300 ${
           sidebarOpen ? 'flex w-[244px] p-4' : 'w-0 p-0'
         }`}
       >
-        {/* logo */}
-        <div className="mb-7 px-2 pt-1">
+        {/* logo + close button */}
+        <div className="mb-7 flex items-center justify-between px-2 pt-1">
           <img
             src="/logo.png"
             alt="Cordoba Training Center"
             className="h-9 w-auto brightness-0 invert"
           />
+          <button
+            onClick={() => setSidebarOpen(false)}
+            aria-label="Close sidebar"
+            className="flex h-8 w-8 flex-none cursor-pointer items-center justify-center rounded-lg text-white/50 transition-colors hover:bg-white/10 hover:text-white"
+          >
+            <X size={18} />
+          </button>
         </div>
 
         <div className="mb-2 flex items-center gap-2 px-3">
@@ -149,18 +165,18 @@ export default function Layout({
         {/* topbar */}
         <header className="sticky top-0 z-20 border-b border-white/10 bg-navy-950/55 px-5 py-3.5 backdrop-blur-xl lg:px-7">
           <div className="flex items-center gap-4">
-            {/* hamburger — open/close the sidebar */}
-            <button
-              onClick={() => setSidebarOpen((v) => !v)}
-              aria-label={sidebarOpen ? 'Collapse sidebar' : 'Open sidebar'}
-              className="flex h-10 w-10 flex-none cursor-pointer items-center justify-center rounded-lg border border-white/12 bg-white/5 text-white/70 transition-colors hover:border-white/25 hover:text-white"
-            >
-              {sidebarOpen ? <X size={18} /> : <Menu size={18} />}
-            </button>
-
-            {/* logo shown when sidebar is collapsed */}
+            {/* hamburger — opens the sidebar (only shown when it's closed) */}
             {!sidebarOpen && (
-              <img src="/logo.png" alt="Cordoba" className="h-6 w-auto brightness-0 invert" />
+              <>
+                <button
+                  onClick={() => setSidebarOpen(true)}
+                  aria-label="Open sidebar"
+                  className="flex h-10 w-10 flex-none cursor-pointer items-center justify-center rounded-lg border border-white/12 bg-white/5 text-white/70 transition-colors hover:border-white/25 hover:text-white"
+                >
+                  <Menu size={18} />
+                </button>
+                <img src="/logo.png" alt="Cordoba" className="h-6 w-auto brightness-0 invert" />
+              </>
             )}
 
             <div className="min-w-0">
