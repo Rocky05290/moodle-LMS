@@ -1,8 +1,9 @@
-import type { ReactNode } from 'react'
+import { useState, type ReactNode } from 'react'
 import { NavLink, useNavigate } from 'react-router-dom'
 import {
   LayoutDashboard, BookOpen, Layers, Users, CalendarCheck, ClipboardCheck,
   ShieldCheck, FileBarChart, LogOut, Bell, Search, HelpCircle, ChevronRight, Award, FileText, CalendarRange,
+  Menu, X,
 } from 'lucide-react'
 import type { Role, User } from '../data/mock'
 import { fullName, initials } from '../data/mock'
@@ -63,6 +64,7 @@ export default function Layout({
 }) {
   const navigate = useNavigate()
   const items = NAV[user.role]
+  const [sidebarOpen, setSidebarOpen] = useState(true)
 
   return (
     <div className="app-bg flex min-h-full">
@@ -70,7 +72,11 @@ export default function Layout({
       <AppBgFx />
 
       {/* ------------------------- Sidebar ------------------------- */}
-      <aside className="sticky top-0 z-10 hidden h-screen w-[244px] flex-none flex-col bg-gradient-to-b from-navy-800 to-navy-900 p-4 lg:flex">
+      <aside
+        className={`sticky top-0 z-30 h-screen flex-none flex-col overflow-hidden bg-gradient-to-b from-navy-800 to-navy-900 transition-all duration-300 ${
+          sidebarOpen ? 'flex w-[244px] p-4' : 'w-0 p-0'
+        }`}
+      >
         {/* logo */}
         <div className="mb-7 px-2 pt-1">
           <img
@@ -143,8 +149,19 @@ export default function Layout({
         {/* topbar */}
         <header className="sticky top-0 z-20 border-b border-white/10 bg-navy-950/55 px-5 py-3.5 backdrop-blur-xl lg:px-7">
           <div className="flex items-center gap-4">
-            {/* mobile logo */}
-            <img src="/logo.png" alt="Cordoba" className="h-6 w-auto lg:hidden" />
+            {/* hamburger — open/close the sidebar */}
+            <button
+              onClick={() => setSidebarOpen((v) => !v)}
+              aria-label={sidebarOpen ? 'Collapse sidebar' : 'Open sidebar'}
+              className="flex h-10 w-10 flex-none cursor-pointer items-center justify-center rounded-lg border border-white/12 bg-white/5 text-white/70 transition-colors hover:border-white/25 hover:text-white"
+            >
+              {sidebarOpen ? <X size={18} /> : <Menu size={18} />}
+            </button>
+
+            {/* logo shown when sidebar is collapsed */}
+            {!sidebarOpen && (
+              <img src="/logo.png" alt="Cordoba" className="h-6 w-auto brightness-0 invert" />
+            )}
 
             <div className="min-w-0">
               <h1 className="truncate text-[18px] font-bold tracking-tight text-white">
