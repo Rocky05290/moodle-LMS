@@ -8,6 +8,7 @@ import type { User } from '../data/mock'
 import PublicHeader from '../components/PublicHeader'
 import Reveal from '../components/Reveal'
 import SiteFooter from '../components/SiteFooter'
+import AppBgFx from '../components/AppBgFx'
 
 const FEATURES = [
   { icon: Layers, title: 'Batch management', desc: 'Create batches with auto codes (CTC-CCNA-2601), schedules and contracted hours.' },
@@ -44,17 +45,17 @@ export default function Landing({ onSignIn: _onSignIn }: { onSignIn: (u: User) =
   const [openFaq, setOpenFaq] = useState(0)
 
   return (
-    <div id="top" className="min-h-full bg-navy-950 text-white">
+    <div id="top" className="relative min-h-full bg-navy-950 text-white">
+      {/* interactive animated background — ONE fixed layer behind the whole page */}
+      <AppBgFx />
+
       <PublicHeader />
 
       {/* ============================ HERO ============================ */}
+      {/* hero background is transparent so the animation shows THROUGH it, under the text */}
       <section className="relative flex min-h-[92vh] items-center overflow-hidden pt-28">
-        <div
-          className="kenburns absolute inset-0 bg-navy-950 bg-cover bg-center"
-          style={{ backgroundImage: 'url(/hero.jpg)' }}
-        />
-        <div className="absolute inset-0 bg-gradient-to-r from-navy-950 via-navy-950/90 to-navy-950/55" />
-        <div className="absolute inset-0 bg-gradient-to-t from-navy-950 via-transparent to-navy-950/40" />
+        <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-navy-950/85 via-navy-950/55 to-navy-950/25" />
+        <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-navy-950 via-transparent to-transparent" />
         <div className="floaty pointer-events-none absolute -top-24 -left-16 h-96 w-96 rounded-full bg-gold-400/12 blur-[120px]" />
 
         <div className="relative z-10 mx-auto grid w-full max-w-6xl items-center gap-10 px-5 py-16 sm:px-8 lg:grid-cols-[1.05fr_0.95fr]">
@@ -115,7 +116,7 @@ export default function Landing({ onSignIn: _onSignIn }: { onSignIn: (u: User) =
       </section>
 
       {/* ========================= STAT BAND ========================= */}
-      <section id="compliance" className="scroll-mt-24 border-y border-white/10 bg-navy-900/60">
+      <section id="compliance" className="relative z-10 scroll-mt-24 border-y border-white/10 bg-navy-900">
         <div className="mx-auto grid max-w-6xl grid-cols-2 divide-x divide-y divide-white/10 px-5 sm:px-8 lg:grid-cols-4 lg:divide-y-0">
           {STATS.map(([big, label, sub]) => (
             <div key={label} className="px-4 py-8 text-center sm:py-10">
@@ -128,7 +129,7 @@ export default function Landing({ onSignIn: _onSignIn }: { onSignIn: (u: User) =
       </section>
 
       {/* ========================= INTRO STRIP ======================== */}
-      <section className="py-20">
+      <section className="relative z-10 bg-navy-950 py-20">
         <div className="mx-auto max-w-6xl px-5 sm:px-8">
           <Reveal>
             <div className="mx-auto max-w-3xl text-center">
@@ -148,7 +149,7 @@ export default function Landing({ onSignIn: _onSignIn }: { onSignIn: (u: User) =
       </section>
 
       {/* ========================== FEATURES ========================= */}
-      <section id="features" className="scroll-mt-24 border-t border-white/10 bg-navy-900/40 py-20">
+      <section id="features" className="relative z-10 scroll-mt-24 border-t border-white/10 bg-navy-900 py-20">
         <div className="mx-auto max-w-6xl px-5 sm:px-8">
           <Reveal>
             <div className="mb-12 text-center">
@@ -181,7 +182,7 @@ export default function Landing({ onSignIn: _onSignIn }: { onSignIn: (u: User) =
       </section>
 
       {/* ============================ FAQ ============================ */}
-      <section id="faq" className="scroll-mt-24 py-20">
+      <section id="faq" className="relative z-10 scroll-mt-24 bg-navy-950 py-20">
         <div className="mx-auto grid max-w-6xl gap-10 px-5 sm:px-8 lg:grid-cols-[0.9fr_1.1fr]">
           <Reveal>
             <div>
@@ -227,7 +228,7 @@ export default function Landing({ onSignIn: _onSignIn }: { onSignIn: (u: User) =
       </section>
 
       {/* ========================= CTA BAND ========================== */}
-      <section className="border-t border-white/10 bg-navy-900/60 py-20">
+      <section className="relative z-10 border-t border-white/10 bg-navy-900 py-20">
         <div className="mx-auto max-w-3xl px-5 text-center sm:px-8">
           <Reveal>
             <h2 className="text-[30px] leading-tight font-extrabold tracking-tight text-white sm:text-[40px]">

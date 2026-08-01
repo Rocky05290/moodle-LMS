@@ -5,8 +5,8 @@ import { useScrolled } from '../hooks'
 
 const LINKS = [
   { label: 'Home', href: '#top' },
-  { label: 'Capabilities', href: '#features' },
-  { label: 'Compliance', href: '#compliance' },
+  { label: 'Platform', href: '#compliance' },
+  { label: 'Features', href: '#features' },
   { label: 'FAQ', href: '#faq' },
 ]
 
@@ -38,28 +38,32 @@ export default function PublicHeader() {
       {/* floating pill navbar */}
       <div className="px-3 pt-3 sm:px-5 sm:pt-4">
         <nav
-          className={`mx-auto flex max-w-6xl items-center gap-4 rounded-full border px-4 py-2.5 transition-all sm:px-6 ${
+          className={`mx-auto flex max-w-6xl items-center gap-4 rounded-full border px-5 py-4 transition-all sm:px-8 ${
             scrolled
-              ? 'border-white/10 bg-navy-950/85 shadow-[0_10px_40px_-12px_rgba(0,0,0,0.7)] backdrop-blur-xl'
-              : 'border-white/10 bg-white/[0.04] backdrop-blur-md'
+              ? 'border-white/10 bg-navy-950/60 shadow-[0_10px_40px_-12px_rgba(0,0,0,0.7)] backdrop-blur-xl'
+              : 'border-white/10 bg-white/[0.06] backdrop-blur-lg'
           }`}
         >
-          {/* logo */}
+          {/* logo — tinted gold to match the Log in button */}
           <a href="#top" className="flex items-center">
             <img
               src="/logo.png"
               alt="Cordoba Training Center"
-              className="h-8 w-auto brightness-0 invert sm:h-9"
+              className="h-9 w-auto sm:h-11"
+              style={{
+                filter:
+                  'brightness(0) saturate(100%) invert(72%) sepia(48%) saturate(720%) hue-rotate(2deg) brightness(94%) contrast(90%)',
+              }}
             />
           </a>
 
-          {/* desktop links — centred */}
+          {/* desktop links — centred, gold */}
           <div className="mx-auto hidden items-center gap-1 lg:flex">
             {LINKS.map((l) => (
               <a
                 key={l.label}
                 href={l.href}
-                className="rounded-full px-4 py-2 text-[13px] font-semibold text-white/70 transition-colors hover:bg-white/8 hover:text-white"
+                className="rounded-full px-4 py-2.5 text-[14px] font-semibold text-gold-400 transition-colors hover:bg-white/8 hover:text-gold-300"
               >
                 {l.label}
               </a>
@@ -67,27 +71,21 @@ export default function PublicHeader() {
           </div>
 
           {/* right actions */}
-          <div className="ml-auto flex items-center gap-2 lg:ml-0">
+          <div className="ml-auto flex items-center gap-2">
             <Link
               to="/login"
-              className="hidden rounded-full border border-white/20 px-4 py-2 text-[13px] font-semibold text-white transition-colors hover:bg-white/8 sm:inline-flex"
+              className="rounded-full bg-gold-400 px-10 py-2.5 text-center text-[14px] font-bold text-navy-950 transition-all hover:-translate-y-0.5 hover:bg-gold-300 sm:px-14"
             >
               Log in
-            </Link>
-            <Link
-              to="/login"
-              className="rounded-full bg-gold-400 px-4 py-2 text-[13px] font-bold text-navy-950 transition-all hover:-translate-y-0.5 hover:bg-gold-300 sm:px-5"
-            >
-              Get started
             </Link>
 
             {/* mobile toggle */}
             <button
               onClick={() => setOpen((v) => !v)}
-              className="ml-1 flex h-9 w-9 items-center justify-center rounded-full text-white lg:hidden"
+              className="ml-1 flex h-10 w-10 items-center justify-center rounded-full text-white lg:hidden"
               aria-label="Menu"
             >
-              {open ? <X size={20} /> : <Menu size={20} />}
+              {open ? <X size={22} /> : <Menu size={22} />}
             </button>
           </div>
         </nav>
@@ -105,13 +103,6 @@ export default function PublicHeader() {
                 {l.label}
               </a>
             ))}
-            <Link
-              to="/login"
-              onClick={() => setOpen(false)}
-              className="mt-1 block rounded-xl px-4 py-2.5 text-[14px] font-semibold text-gold-400 hover:bg-white/8 sm:hidden"
-            >
-              Log in
-            </Link>
           </div>
         )}
       </div>
