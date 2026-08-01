@@ -1,219 +1,178 @@
+import { useState } from 'react'
+import { Link } from 'react-router-dom'
 import {
   ArrowRight, CalendarCheck, ShieldCheck, Layers, ClipboardCheck, BarChart3,
-  QrCode, FileCheck2, Users, GraduationCap, Play, Check,
+  FileCheck2, Users, GraduationCap, Play, Check, Plus, Minus,
 } from 'lucide-react'
 import type { User } from '../data/mock'
 import PublicHeader from '../components/PublicHeader'
 import Reveal from '../components/Reveal'
-import Tilt from '../components/Tilt'
 import SiteFooter from '../components/SiteFooter'
-import LoginCard from '../components/LoginCard'
-import { type IconTone } from '../components/ui'
 
-const FEATURES: { icon: typeof Layers; title: string; desc: string; tone: IconTone }[] = [
-  { icon: Layers, title: 'Batch management', desc: 'Create batches with auto codes (CTC-CCNA-2601), schedules and contracted hours.', tone: 'blue' },
-  { icon: CalendarCheck, title: 'Smart attendance', desc: 'Daily register with P / L1 / L2 / L3 / A plus rotating QR self check-in.', tone: 'emerald' },
-  { icon: ClipboardCheck, title: 'Rubric grading', desc: 'Criteria-based scoring, return-for-redo and instant learner notifications.', tone: 'violet' },
-  { icon: BarChart3, title: 'Batch Health', desc: 'Live attendance %, grades and progress for every learner in one view.', tone: 'sky' },
-  { icon: ShieldCheck, title: 'Auditor access', desc: 'Read-only compliance role with a full timestamped audit trail.', tone: 'navy' },
-  { icon: FileCheck2, title: 'Tamkeen reports', desc: 'Signed attendance registers and one-click compliance report bundles.', tone: 'amber' },
+const FEATURES = [
+  { icon: Layers, title: 'Batch management', desc: 'Create batches with auto codes (CTC-CCNA-2601), schedules and contracted hours.' },
+  { icon: CalendarCheck, title: 'Smart attendance', desc: 'Daily register with P / L1 / L2 / L3 / A plus rotating QR self check-in.' },
+  { icon: ClipboardCheck, title: 'Rubric grading', desc: 'Criteria-based scoring, return-for-redo and instant learner notifications.' },
+  { icon: BarChart3, title: 'Batch Health', desc: 'Live attendance %, grades and progress for every learner in one view.' },
+  { icon: ShieldCheck, title: 'Auditor access', desc: 'Read-only compliance role with a full timestamped audit trail.' },
+  { icon: FileCheck2, title: 'Tamkeen reports', desc: 'Signed attendance registers and one-click compliance report bundles.' },
 ]
 
-const ROLES: { icon: typeof Users; k: string; v: string; tone: IconTone }[] = [
-  { icon: Users, k: 'Admin', v: 'Courses, batches, bulk import, dashboards', tone: 'blue' },
-  { icon: GraduationCap, k: 'Trainer', v: 'Attendance, grading, learner progress', tone: 'emerald' },
-  { icon: Play, k: 'Learner', v: 'Today view, modules, submissions', tone: 'sky' },
-  { icon: ShieldCheck, k: 'Auditor', v: 'Read-only verification & exports', tone: 'amber' },
+const ROLES = [
+  { icon: Users, k: 'Admin', v: 'Courses, batches, bulk import, dashboards' },
+  { icon: GraduationCap, k: 'Trainer', v: 'Attendance, grading, learner progress' },
+  { icon: Play, k: 'Learner', v: 'Today view, modules, submissions' },
+  { icon: ShieldCheck, k: 'Auditor', v: 'Read-only verification & exports' },
 ]
 
-// iSAMS-style coloured outline per role
-const ROLE_OUTLINE: Record<string, { border: string; text: string; hover: string }> = {
-  blue: { border: 'border-brand-500', text: 'text-brand-600', hover: 'hover:bg-brand-50' },
-  emerald: { border: 'border-emerald-500', text: 'text-emerald-600', hover: 'hover:bg-emerald-50' },
-  sky: { border: 'border-sky-500', text: 'text-sky-600', hover: 'hover:bg-sky-50' },
-  amber: { border: 'border-amber-500', text: 'text-amber-600', hover: 'hover:bg-amber-50' },
-}
+const STATS = [
+  ['5', 'Role portals', 'Admin, trainer, learner, auditor, corporate'],
+  ['Sun–Thu', 'Working week', 'Bahrain schedule, Fri & Sat skipped'],
+  ['100%', 'Audit-tracked', 'Every action timestamped'],
+  ['1-click', 'Compliance', 'Tamkeen report bundles'],
+]
 
-// clean, flat, soft-tinted icon tiles for the feature cards (calmer than glossy gradients)
-const FEATURE_TILE: Record<string, string> = {
-  blue: 'bg-brand-50 text-brand-600',
-  emerald: 'bg-emerald-50 text-emerald-600',
-  violet: 'bg-violet-50 text-violet-600',
-  sky: 'bg-sky-50 text-sky-600',
-  navy: 'bg-soft2 text-navy-800',
-  amber: 'bg-amber-50 text-amber-600',
-}
+const FAQS = [
+  { q: 'What is Cordoba built for?', a: 'Cordoba runs a whole training operation for Tamkeen-funded providers in Bahrain — batches, attendance registers, rubric grading and audit-ready reporting — replacing spreadsheets and paper registers with one connected system.' },
+  { q: 'How does attendance work?', a: 'A daily register with P / L1 / L2 / L3 / A codes, plus a rotating QR self check-in. Attendance percentage feeds Batch Health and the Tamkeen compliance reports automatically.' },
+  { q: 'What are the five portals?', a: 'One core database serves five role-based portals: Admin, Trainer, Learner, Auditor and Corporate — each sees exactly what its role needs, from the same live source of truth.' },
+  { q: 'Is it Tamkeen compliant?', a: 'Yes. Cordoba produces signed attendance registers and one-click compliance bundles, with a full timestamped audit trail from enrolment to certificate.' },
+  { q: 'Who can access the records?', a: 'Access is role-based. Auditors get read-only verification and exports; trainers write only their own batches; admins manage everything. Every change is recorded in the audit log.' },
+]
 
-export default function Landing({ onSignIn }: { onSignIn: (u: User) => void }) {
-  const scrollTop = () => document.getElementById('top')?.scrollIntoView({ behavior: 'smooth' })
+export default function Landing({ onSignIn: _onSignIn }: { onSignIn: (u: User) => void }) {
+  const [openFaq, setOpenFaq] = useState(0)
 
   return (
-    <div id="top" className="min-h-full bg-white">
+    <div id="top" className="min-h-full bg-navy-950 text-white">
       <PublicHeader />
 
       {/* ============================ HERO ============================ */}
-      <section className="relative flex min-h-[92vh] items-center overflow-hidden">
+      <section className="relative flex min-h-[92vh] items-center overflow-hidden pt-28">
         <div
-          className="kenburns absolute inset-0 bg-navy-900 bg-cover bg-center"
+          className="kenburns absolute inset-0 bg-navy-950 bg-cover bg-center"
           style={{ backgroundImage: 'url(/hero.jpg)' }}
         />
-        <div className="absolute inset-0 bg-gradient-to-r from-navy-950/92 via-navy-900/72 to-navy-900/45" />
-        <div className="floaty pointer-events-none absolute -top-24 -left-16 h-96 w-96 rounded-full bg-brand-500/25 blur-[120px]" />
-        <div
-          className="floaty pointer-events-none absolute right-0 bottom-0 h-96 w-96 rounded-full bg-brand-400/18 blur-[120px]"
-          style={{ animationDelay: '-3s' }}
-        />
-        <div
-          className="absolute inset-0 opacity-[0.06]"
-          style={{
-            backgroundImage:
-              'linear-gradient(#fff 1px, transparent 1px), linear-gradient(90deg, #fff 1px, transparent 1px)',
-            backgroundSize: '54px 54px',
-          }}
-        />
+        <div className="absolute inset-0 bg-gradient-to-r from-navy-950 via-navy-950/90 to-navy-950/55" />
+        <div className="absolute inset-0 bg-gradient-to-t from-navy-950 via-transparent to-navy-950/40" />
+        <div className="floaty pointer-events-none absolute -top-24 -left-16 h-96 w-96 rounded-full bg-gold-400/12 blur-[120px]" />
 
-        <div className="relative z-10 mx-auto grid w-full max-w-6xl items-center gap-12 px-5 py-28 lg:grid-cols-[1.08fr_0.92fr] lg:px-8">
-          {/* left — marketing */}
+        <div className="relative z-10 mx-auto grid w-full max-w-6xl items-center gap-10 px-5 py-16 sm:px-8 lg:grid-cols-[1.05fr_0.95fr]">
           <div>
-            <span
-              className="rise inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-3.5 py-1.5 text-[12px] font-bold text-white backdrop-blur-sm"
-              style={{ animationDelay: '.05s' }}
-            >
+            <span className="rise inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/[0.06] px-3.5 py-1.5 text-[12px] font-bold text-white/85 backdrop-blur-sm">
               <span className="h-1.5 w-1.5 rounded-full bg-gold-400" />
               Tamkeen-registered training platform · Bahrain
             </span>
 
-            <h1
-              className="rise mt-6 text-[40px] leading-[1.07] font-extrabold tracking-tight text-white sm:text-[52px]"
-              style={{ animationDelay: '.15s' }}
-            >
+            <h1 className="rise mt-6 text-[38px] leading-[1.06] font-extrabold tracking-tight text-white sm:text-[50px]" style={{ animationDelay: '.12s' }}>
               Training, attendance &amp;
               <br />
-              <span className="bg-gradient-to-r from-brand-300 via-white to-brand-300 bg-clip-text text-transparent">
-                compliance
-              </span>{' '}
-              in one platform.
+              <span className="text-gold-400">compliance</span> in one platform.
             </h1>
 
-            <p
-              className="rise mt-6 max-w-lg text-[16px] leading-relaxed text-white/75"
-              style={{ animationDelay: '.28s' }}
-            >
+            <p className="rise mt-6 max-w-lg text-[15.5px] leading-relaxed text-white/65" style={{ animationDelay: '.24s' }}>
               Cordoba runs your whole training operation — batches, signed attendance registers,
               rubric grading and audit-ready reporting — in one fast, modern system.
             </p>
 
-            <div className="rise mt-9 flex flex-wrap gap-x-8 gap-y-3" style={{ animationDelay: '.4s' }}>
-              {[
-                ['5', 'role-based portals'],
-                ['CTC-2601', 'batch codes'],
-                ['100%', 'audit-tracked'],
-              ].map(([n, l]) => (
-                <div key={l}>
-                  <div className="text-[22px] font-extrabold text-white">{n}</div>
-                  <div className="text-[12px] font-semibold text-white/55">{l}</div>
-                </div>
-              ))}
+            <div className="rise mt-9 flex flex-wrap gap-3" style={{ animationDelay: '.34s' }}>
+              <Link
+                to="/login"
+                className="flex items-center gap-2 rounded-xl bg-gold-400 px-6 py-3.5 text-[14.5px] font-bold text-navy-950 transition-all hover:-translate-y-0.5 hover:bg-gold-300"
+              >
+                Get started <ArrowRight size={17} />
+              </Link>
+              <a
+                href="#features"
+                className="flex items-center gap-2 rounded-xl border border-white/15 bg-white/[0.04] px-6 py-3.5 text-[14.5px] font-bold text-white transition-colors hover:bg-white/[0.08]"
+              >
+                How it works
+              </a>
             </div>
-
-            <button className="rise mt-8 flex items-center gap-2 text-[13.5px] font-bold text-white/80 transition-colors hover:text-white" style={{ animationDelay: '.5s' }}>
-              <span className="flex h-8 w-8 items-center justify-center rounded-full border border-white/25 bg-white/10">
-                <Play size={13} />
-              </span>
-              Watch a 2-minute overview
-            </button>
           </div>
 
-          {/* right — login card (the red-box area) */}
-          <div className="rise mx-auto w-full max-w-[340px] justify-self-stretch lg:mx-0 lg:justify-self-end" style={{ animationDelay: '.2s' }}>
-            <LoginCard onSignIn={onSignIn} />
+          {/* right — role portals preview card */}
+          <div className="rise hidden lg:block" style={{ animationDelay: '.2s' }}>
+            <div className="rounded-2xl border border-white/10 bg-white/[0.04] p-6 backdrop-blur-md">
+              <div className="mb-4 text-[11px] font-bold tracking-[0.14em] text-white/40 uppercase">
+                One database · five portals
+              </div>
+              <div className="grid grid-cols-2 gap-3">
+                {ROLES.map((r) => {
+                  const Icon = r.icon
+                  return (
+                    <div key={r.k} className="rounded-xl border border-white/10 bg-white/[0.03] p-4">
+                      <Icon size={22} className="text-gold-400" strokeWidth={2.2} />
+                      <div className="mt-2.5 text-[14px] font-extrabold text-white">{r.k}</div>
+                      <div className="mt-1 text-[11.5px] leading-relaxed text-white/50">{r.v}</div>
+                    </div>
+                  )
+                })}
+              </div>
+            </div>
           </div>
+        </div>
+      </section>
+
+      {/* ========================= STAT BAND ========================= */}
+      <section id="compliance" className="scroll-mt-24 border-y border-white/10 bg-navy-900/60">
+        <div className="mx-auto grid max-w-6xl grid-cols-2 divide-x divide-y divide-white/10 px-5 sm:px-8 lg:grid-cols-4 lg:divide-y-0">
+          {STATS.map(([big, label, sub]) => (
+            <div key={label} className="px-4 py-8 text-center sm:py-10">
+              <div className="text-[26px] font-extrabold tracking-tight text-white sm:text-[32px]">{big}</div>
+              <div className="mt-1.5 text-[13.5px] font-bold text-gold-400">{label}</div>
+              <div className="mt-1 text-[11.5px] text-white/45">{sub}</div>
+            </div>
+          ))}
         </div>
       </section>
 
       {/* ========================= INTRO STRIP ======================== */}
-      <section id="compliance" className="scroll-mt-24 bg-[#4a90d9] py-16">
-        <div className="mx-auto max-w-6xl px-5 lg:px-8">
+      <section className="py-20">
+        <div className="mx-auto max-w-6xl px-5 sm:px-8">
           <Reveal>
-            <div className="flex justify-center">
-              <span className="inline-flex items-center gap-2 rounded-full border border-white/35 bg-white/15 px-4 py-1.5 text-[11px] font-bold tracking-[0.16em] text-white uppercase shadow-sm backdrop-blur-sm">
-                <span className="h-1.5 w-1.5 rounded-full bg-white" />
-                One core database · five portals
+            <div className="mx-auto max-w-3xl text-center">
+              <span className="inline-flex items-center gap-2 rounded-full border border-gold-400/25 bg-gold-400/10 px-4 py-1.5 text-[11px] font-bold tracking-[0.14em] text-gold-400 uppercase">
+                <span className="h-1.5 w-1.5 rounded-full bg-gold-400" /> The platform
               </span>
+              <h2 className="mt-4 text-[30px] leading-tight font-extrabold tracking-tight text-white sm:text-[40px]">
+                A cloud platform built for Tamkeen-funded training providers
+              </h2>
+              <p className="mx-auto mt-4 max-w-2xl text-[15px] leading-relaxed text-white/60">
+                Everything a modern training centre needs — replacing spreadsheets, paper registers
+                and generic LMS tools with one connected, compliant system.
+              </p>
             </div>
-            <h2 className="mx-auto mt-3 max-w-3xl text-center text-[32px] leading-tight font-semibold text-white sm:text-[40px]">
-              A cloud platform built for Tamkeen-funded training providers
-            </h2>
-            <p className="mx-auto mt-4 max-w-2xl text-center text-[15px] leading-relaxed text-white/85">
-              Everything a modern training centre needs — replacing spreadsheets, paper registers
-              and generic LMS tools with one connected, compliant system.
-            </p>
           </Reveal>
-
-          <div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            {ROLES.map((r, i) => {
-              const Icon = r.icon
-              const c = ROLE_OUTLINE[r.tone]
-              return (
-                <Reveal key={r.k} delay={i * 80}>
-                  <Tilt className="h-full">
-                    <div
-                      className={`h-full rounded-2xl border-2 bg-surface p-5 shadow-[0_10px_28px_-14px_rgba(15,27,53,0.14)] transition-all ${c.border} ${c.hover} hover:shadow-[0_22px_46px_-18px_rgba(15,27,53,0.24)]`}
-                    >
-                      <Icon size={28} className={c.text} strokeWidth={2.2} />
-                      <div className={`mt-3 text-[16px] font-extrabold ${c.text}`}>{r.k}</div>
-                      <div className="mt-1 text-[12.5px] leading-relaxed text-ink-500">{r.v}</div>
-                    </div>
-                  </Tilt>
-                </Reveal>
-              )
-            })}
-          </div>
         </div>
       </section>
 
       {/* ========================== FEATURES ========================= */}
-      <section id="features" className="scroll-mt-24 bg-canvas py-20">
-        <div className="mx-auto max-w-6xl px-5 lg:px-8">
+      <section id="features" className="scroll-mt-24 border-t border-white/10 bg-navy-900/40 py-20">
+        <div className="mx-auto max-w-6xl px-5 sm:px-8">
           <Reveal>
             <div className="mb-12 text-center">
-              <div className="flex justify-center">
-                <span className="inline-flex items-center gap-2 rounded-full border border-brand-500/20 bg-gradient-to-r from-brand-50 to-indigo-50 px-4 py-1.5 text-[11px] font-bold tracking-[0.16em] text-brand-600 uppercase shadow-sm">
-                  <span className="h-1.5 w-1.5 rounded-full bg-gradient-to-r from-brand-500 to-indigo-500" />
-                  Capabilities
-                </span>
-              </div>
-              <h2 className="mx-auto mt-2 max-w-2xl text-[30px] leading-tight font-extrabold tracking-tight text-navy-900 sm:text-[38px]">
+              <span className="inline-flex items-center gap-2 rounded-full border border-white/12 bg-white/[0.04] px-4 py-1.5 text-[11px] font-bold tracking-[0.14em] text-white/60 uppercase">
+                Capabilities
+              </span>
+              <h2 className="mx-auto mt-3 max-w-2xl text-[28px] leading-tight font-extrabold tracking-tight text-white sm:text-[36px]">
                 Everything from enrolment to certificate
               </h2>
-              <div className="mt-6 flex justify-center">
-                <button
-                  onClick={scrollTop}
-                  className="group relative cursor-pointer overflow-hidden rounded-md border-2 border-brand-500 px-6 py-3 text-[13.5px] font-bold text-brand-600 transition-all hover:-translate-y-0.5 hover:text-white hover:shadow-lg hover:shadow-indigo-500/25"
-                >
-                  <span className="absolute inset-0 translate-y-full bg-gradient-to-r from-brand-500 via-indigo-500 to-violet-500 transition-transform duration-300 group-hover:translate-y-0" />
-                  <span className="relative flex items-center gap-2">
-                    Sign in to explore <ArrowRight size={15} />
-                  </span>
-                </button>
-              </div>
             </div>
           </Reveal>
 
-          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {FEATURES.map((f, i) => {
               const Icon = f.icon
               return (
-                <Reveal key={f.title} delay={(i % 3) * 90}>
-                  <Tilt className="h-full">
-                    <div className="group h-full rounded-2xl border border-line bg-surface p-6 shadow-sm transition-all hover:-translate-y-0.5 hover:border-brand-500/30 hover:shadow-md">
-                      <div className={`flex h-12 w-12 items-center justify-center rounded-xl ${FEATURE_TILE[f.tone]}`}>
-                        <Icon size={22} strokeWidth={2} />
-                      </div>
-                      <h3 className="mt-5 text-[16px] font-extrabold text-navy-900">{f.title}</h3>
-                      <p className="mt-2 text-[13.5px] leading-relaxed text-ink-500">{f.desc}</p>
+                <Reveal key={f.title} delay={(i % 3) * 80}>
+                  <div className="group h-full rounded-2xl border border-white/10 bg-white/[0.03] p-6 transition-all hover:-translate-y-0.5 hover:border-gold-400/30 hover:bg-white/[0.05]">
+                    <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gold-400/12 text-gold-400">
+                      <Icon size={22} strokeWidth={2} />
                     </div>
-                  </Tilt>
+                    <h3 className="mt-5 text-[16px] font-extrabold text-white">{f.title}</h3>
+                    <p className="mt-2 text-[13.5px] leading-relaxed text-white/55">{f.desc}</p>
+                  </div>
                 </Reveal>
               )
             })}
@@ -221,31 +180,74 @@ export default function Landing({ onSignIn }: { onSignIn: (u: User) => void }) {
         </div>
       </section>
 
-      {/* ========================= CTA BAND ========================== */}
-      <section className="relative overflow-hidden border-y border-line bg-gradient-to-br from-brand-50 via-white to-brand-50 py-20">
-        <div className="floaty pointer-events-none absolute -top-20 right-10 h-80 w-80 rounded-full bg-brand-400/15 blur-[110px]" />
-        <div className="floaty pointer-events-none absolute -bottom-24 left-10 h-72 w-72 rounded-full bg-gold-400/10 blur-[110px]" style={{ animationDelay: '-3s' }} />
-        <div className="relative z-10 mx-auto max-w-4xl px-5 text-center lg:px-8">
+      {/* ============================ FAQ ============================ */}
+      <section id="faq" className="scroll-mt-24 py-20">
+        <div className="mx-auto grid max-w-6xl gap-10 px-5 sm:px-8 lg:grid-cols-[0.9fr_1.1fr]">
           <Reveal>
-            <QrCode size={54} className="mx-auto text-brand-500" />
-            <h2 className="mt-5 text-[32px] leading-tight font-extrabold tracking-tight text-navy-900 sm:text-[40px]">
+            <div>
+              <h2 className="text-[30px] leading-tight font-extrabold tracking-tight text-white sm:text-[38px]">
+                The questions training centres ask
+              </h2>
+              <p className="mt-4 max-w-md text-[14.5px] leading-relaxed text-white/55">
+                Clear answers on how Cordoba handles batches, attendance, roles and Tamkeen compliance.
+              </p>
+              <Link
+                to="/login"
+                className="mt-8 inline-flex items-center gap-2 rounded-xl border border-white/15 bg-white/[0.04] px-6 py-3 text-[14px] font-bold text-white transition-colors hover:bg-white/[0.08]"
+              >
+                Get started <ArrowRight size={15} />
+              </Link>
+            </div>
+          </Reveal>
+
+          <Reveal delay={100}>
+            <div className="divide-y divide-white/10 overflow-hidden rounded-2xl border border-white/10 bg-white/[0.03]">
+              {FAQS.map((f, i) => {
+                const open = openFaq === i
+                return (
+                  <div key={f.q}>
+                    <button
+                      onClick={() => setOpenFaq(open ? -1 : i)}
+                      className="flex w-full items-center justify-between gap-4 px-5 py-4 text-left"
+                    >
+                      <span className="text-[14.5px] font-bold text-white">{f.q}</span>
+                      <span className="flex h-6 w-6 flex-none items-center justify-center rounded-full border border-white/15 text-gold-400">
+                        {open ? <Minus size={13} /> : <Plus size={13} />}
+                      </span>
+                    </button>
+                    {open && (
+                      <p className="px-5 pb-5 text-[13.5px] leading-relaxed text-white/55">{f.a}</p>
+                    )}
+                  </div>
+                )
+              })}
+            </div>
+          </Reveal>
+        </div>
+      </section>
+
+      {/* ========================= CTA BAND ========================== */}
+      <section className="border-t border-white/10 bg-navy-900/60 py-20">
+        <div className="mx-auto max-w-3xl px-5 text-center sm:px-8">
+          <Reveal>
+            <h2 className="text-[30px] leading-tight font-extrabold tracking-tight text-white sm:text-[40px]">
               Ready to run every batch from one place?
             </h2>
-            <p className="mx-auto mt-4 max-w-xl text-[15px] text-ink-500">
+            <p className="mx-auto mt-4 max-w-xl text-[15px] text-white/55">
               Sign in to explore the admin, trainer, learner and auditor portals.
             </p>
-            <div className="mt-8 flex justify-center">
-              <button
-                onClick={scrollTop}
-                className="flex w-full max-w-[340px] items-center justify-center gap-2 rounded-md bg-brand-500 px-6 py-3.5 text-[14.5px] font-bold text-white shadow-lg shadow-brand-600/25 transition-all hover:-translate-y-0.5 hover:bg-brand-600"
+            <div className="mt-8 flex flex-wrap justify-center gap-3">
+              <Link
+                to="/login"
+                className="flex items-center gap-2 rounded-xl bg-gold-400 px-7 py-3.5 text-[14.5px] font-bold text-navy-950 transition-all hover:-translate-y-0.5 hover:bg-gold-300"
               >
-                Sign in <ArrowRight size={16} />
-              </button>
+                Get started <ArrowRight size={16} />
+              </Link>
             </div>
-            <div className="mt-8 flex flex-wrap justify-center gap-x-7 gap-y-2 text-[12.5px] text-ink-500">
+            <div className="mt-8 flex flex-wrap justify-center gap-x-7 gap-y-2 text-[12.5px] text-white/45">
               {['No spreadsheets', 'Audit-ready', 'Bahrain CPR support'].map((t) => (
                 <span key={t} className="flex items-center gap-1.5">
-                  <Check size={13} className="text-brand-500" /> {t}
+                  <Check size={13} className="text-gold-400" /> {t}
                 </span>
               ))}
             </div>

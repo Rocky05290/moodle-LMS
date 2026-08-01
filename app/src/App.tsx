@@ -5,6 +5,7 @@ import type { Role, User } from './data/mock'
 import { supabase } from './lib/supabase'
 import Layout from './components/Layout'
 import Landing from './pages/Landing'
+import LoginPage from './pages/LoginPage'
 import AdminDashboard from './pages/AdminDashboard'
 import TrainerDashboard from './pages/TrainerDashboard'
 import LearnerToday from './pages/LearnerToday'
@@ -118,7 +119,10 @@ export default function App() {
           path="/"
           element={user ? <Navigate to={`/${user.role}`} replace /> : <Landing onSignIn={setUser} />}
         />
-        <Route path="/login" element={<Navigate to="/" replace />} />
+        <Route
+          path="/login"
+          element={user ? <Navigate to={`/${user.role}`} replace /> : <LoginPage onSignIn={setUser} />}
+        />
 
         <Route path="/admin" element={guard(<AdminDashboard />)} />
         <Route path="/batches" element={guard(<Batches />)} />
