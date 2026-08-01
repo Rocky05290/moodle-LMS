@@ -27,14 +27,12 @@ const SOCIAL = [
 
 export default function SiteFooter() {
   return (
-    <footer className="bg-[#373948] text-[#c2c0c7]">
-      {/* thin colour accent bar */}
+    <footer className="border-t border-white/10 bg-navy-950 text-[#c2c0c7]">
+      {/* thin gold accent bar */}
       <div className="mx-auto max-w-6xl px-5 lg:px-8">
-        <div className="ml-auto flex h-1.5 w-64 overflow-hidden rounded-full">
-          <span className="flex-1 bg-sky-400" />
-          <span className="flex-1 bg-violet-400" />
-          <span className="flex-1 bg-amber-400" />
-          <span className="flex-1 bg-emerald-400" />
+        <div className="ml-auto flex h-1.5 w-64 overflow-hidden rounded-full opacity-80">
+          <span className="flex-1 bg-gold-400" />
+          <span className="flex-1 bg-gold-500" />
         </div>
       </div>
 
