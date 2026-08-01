@@ -64,9 +64,15 @@ export default function Layout({
   const items = NAV[user.role]
 
   return (
-    <div className="flex min-h-full">
+    <div className="app-bg flex min-h-full">
+      {/* animated dark background (demo look) — behind everything */}
+      <div className="app-bg__glow" aria-hidden="true">
+        <span className="a" />
+        <span className="b" />
+      </div>
+
       {/* ------------------------- Sidebar ------------------------- */}
-      <aside className="sticky top-0 hidden h-screen w-[244px] flex-none flex-col bg-gradient-to-b from-navy-800 to-navy-900 p-4 lg:flex">
+      <aside className="sticky top-0 z-10 hidden h-screen w-[244px] flex-none flex-col bg-gradient-to-b from-navy-800 to-navy-900 p-4 lg:flex">
         {/* logo */}
         <div className="mb-7 px-2 pt-1">
           <img
@@ -135,34 +141,34 @@ export default function Layout({
       </aside>
 
       {/* -------------------------- Main --------------------------- */}
-      <div className="flex min-w-0 flex-1 flex-col">
+      <div className="relative z-10 flex min-w-0 flex-1 flex-col">
         {/* topbar */}
-        <header className="sticky top-0 z-20 border-b border-line bg-surface/85 px-5 py-3.5 backdrop-blur-xl lg:px-7">
+        <header className="sticky top-0 z-20 border-b border-white/10 bg-navy-950/55 px-5 py-3.5 backdrop-blur-xl lg:px-7">
           <div className="flex items-center gap-4">
             {/* mobile logo */}
             <img src="/logo.png" alt="Cordoba" className="h-6 w-auto lg:hidden" />
 
             <div className="min-w-0">
-              <h1 className="truncate text-[18px] font-bold tracking-tight text-navy-900">
+              <h1 className="truncate text-[18px] font-bold tracking-tight text-white">
                 {title}
               </h1>
-              {subtitle && <p className="mt-0.5 truncate text-[12.5px] text-ink-500">{subtitle}</p>}
+              {subtitle && <p className="mt-0.5 truncate text-[12.5px] text-white/55">{subtitle}</p>}
             </div>
 
             <div className="ml-auto flex items-center gap-2.5">
-              <div className="hidden items-center gap-2.5 rounded-full border border-line bg-soft px-4 py-2.5 transition-all focus-within:border-brand-500 focus-within:bg-surface focus-within:shadow-sm md:flex">
-                <Search size={15} className="text-ink-400" />
+              <div className="hidden items-center gap-2.5 rounded-full border border-white/12 bg-white/5 px-4 py-2.5 transition-all focus-within:border-brand-400 focus-within:bg-white/10 md:flex">
+                <Search size={15} className="text-white/40" />
                 <input
                   placeholder="Search batch or learner…"
-                  className="w-56 bg-transparent text-[12.5px] text-ink-700 outline-none placeholder:text-ink-400"
+                  className="w-56 bg-transparent text-[12.5px] text-white/85 outline-none placeholder:text-white/40"
                 />
               </div>
               {user.role === 'auditor' && <Badge tone="gold">READ-ONLY</Badge>}
-              <button className="relative flex h-9 w-9 cursor-pointer items-center justify-center rounded-lg border border-line bg-surface text-ink-500 hover:border-line2 hover:text-brand-500 hover:shadow-sm">
+              <button className="relative flex h-9 w-9 cursor-pointer items-center justify-center rounded-lg border border-white/12 bg-white/5 text-white/60 hover:border-white/25 hover:text-white">
                 <Bell size={16} />
                 <span className="absolute top-2 right-2.5 h-1.5 w-1.5 rounded-full bg-bad-600" />
               </button>
-              <button className="hidden h-9 w-9 cursor-pointer items-center justify-center rounded-lg border border-line bg-surface text-ink-500 hover:border-line2 hover:text-brand-500 hover:shadow-sm sm:flex">
+              <button className="hidden h-9 w-9 cursor-pointer items-center justify-center rounded-lg border border-white/12 bg-white/5 text-white/60 hover:border-white/25 hover:text-white sm:flex">
                 <HelpCircle size={16} />
               </button>
               <span className="inline-flex h-9 w-9 items-center justify-center rounded-full bg-brand-50 text-[12px] font-bold text-brand-600 ring-1 ring-brand-500/12 lg:hidden">

@@ -211,3 +211,60 @@ body {
     margin: 12mm;
   }
 }
+
+/* ------------------------------------------------------------------
+   App-shell dark background (demo look) — used on the logged-in app
+   pages (NOT the landing page). Deep navy canvas + two floating glow
+   blobs + a top-right radial glow, all behind the content.
+------------------------------------------------------------------- */
+.app-bg {
+  position: relative;
+  background:
+    radial-gradient(1200px 700px at 82% -10%, rgba(108, 140, 255, 0.14), transparent 60%),
+    #070912;
+}
+.app-bg__glow {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+.app-bg__glow span {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(90px);
+  opacity: 0.42;
+}
+.app-bg__glow .a {
+  width: 520px;
+  height: 520px;
+  background: #2a3a8f;
+  top: -120px;
+  left: -80px;
+  animation: appFloatA 18s ease-in-out infinite;
+}
+.app-bg__glow .b {
+  width: 460px;
+  height: 460px;
+  background: #5b2a8f;
+  bottom: -140px;
+  right: -60px;
+  animation: appFloatB 22s ease-in-out infinite;
+}
+@keyframes appFloatA {
+  50% {
+    transform: translate(120px, 80px);
+  }
+}
+@keyframes appFloatB {
+  50% {
+    transform: translate(-100px, -70px);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .app-bg__glow .a,
+  .app-bg__glow .b {
+    animation: none;
+  }
+}
