@@ -9,6 +9,7 @@ import PublicHeader from '../components/PublicHeader'
 import Reveal from '../components/Reveal'
 import SiteFooter from '../components/SiteFooter'
 import AppBgFx from '../components/AppBgFx'
+import LandingLoader from '../components/LandingLoader'
 
 const FEATURES = [
   { icon: Layers, title: 'Batch management', desc: 'Create batches with auto codes (CTC-CCNA-2601), schedules and contracted hours.' },
@@ -46,6 +47,9 @@ export default function Landing({ onSignIn: _onSignIn }: { onSignIn: (u: User) =
 
   return (
     <div id="top" className="relative min-h-full bg-navy-950 text-white">
+      {/* 3D intro loader — plays every time the landing page loads */}
+      <LandingLoader />
+
       {/* interactive animated background — ONE fixed layer behind the whole page */}
       <AppBgFx />
 

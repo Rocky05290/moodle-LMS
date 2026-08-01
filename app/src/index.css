@@ -268,3 +268,107 @@ body {
     animation: none;
   }
 }
+
+/* ------------------------------------------------------------------
+   Landing 3D intro loader — rotating gold cube + orbiting rings + logo
+------------------------------------------------------------------- */
+.ld-scene {
+  position: relative;
+  width: 160px;
+  height: 160px;
+  display: grid;
+  place-items: center;
+  perspective: 800px;
+}
+.ld-cube {
+  position: relative;
+  width: 76px;
+  height: 76px;
+  transform-style: preserve-3d;
+  animation: ldSpin 3.2s linear infinite;
+}
+.ld-face {
+  position: absolute;
+  inset: 0;
+  border: 1.5px solid rgba(237, 180, 61, 0.55);
+  background: rgba(237, 180, 61, 0.06);
+  box-shadow: inset 0 0 24px rgba(237, 180, 61, 0.15);
+}
+.ld-face--front {
+  transform: translateZ(38px);
+}
+.ld-face--back {
+  transform: rotateY(180deg) translateZ(38px);
+}
+.ld-face--right {
+  transform: rotateY(90deg) translateZ(38px);
+}
+.ld-face--left {
+  transform: rotateY(-90deg) translateZ(38px);
+}
+.ld-face--top {
+  transform: rotateX(90deg) translateZ(38px);
+}
+.ld-face--bottom {
+  transform: rotateX(-90deg) translateZ(38px);
+}
+@keyframes ldSpin {
+  0% {
+    transform: rotateX(-25deg) rotateY(0deg);
+  }
+  100% {
+    transform: rotateX(-25deg) rotateY(360deg);
+  }
+}
+.ld-ring {
+  position: absolute;
+  border-radius: 50%;
+  border: 1.5px solid transparent;
+  border-top-color: rgba(237, 180, 61, 0.8);
+  border-right-color: rgba(237, 180, 61, 0.25);
+}
+.ld-ring--a {
+  width: 130px;
+  height: 130px;
+  animation: ldRingA 1.6s linear infinite;
+}
+.ld-ring--b {
+  width: 150px;
+  height: 150px;
+  border-top-color: rgba(255, 255, 255, 0.35);
+  animation: ldRingB 2.4s linear infinite;
+}
+.ld-ring--c {
+  width: 110px;
+  height: 110px;
+  border-top-color: rgba(237, 180, 61, 0.45);
+  animation: ldRingA 2s linear infinite reverse;
+}
+@keyframes ldRingA {
+  to {
+    transform: rotate(360deg);
+  }
+}
+@keyframes ldRingB {
+  to {
+    transform: rotate(-360deg);
+  }
+}
+.ld-logo {
+  position: absolute;
+  height: 30px;
+  width: auto;
+  filter: brightness(0) invert(1);
+  animation: ldFloat 2.2s ease-in-out infinite;
+}
+@keyframes ldFloat {
+  0%,
+  100% {
+    transform: translateY(0);
+    opacity: 0.9;
+  }
+  50% {
+    transform: translateY(-5px);
+    opacity: 1;
+  }
+}
