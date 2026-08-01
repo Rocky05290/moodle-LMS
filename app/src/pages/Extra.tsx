@@ -1359,36 +1359,26 @@ export function People() {
         </div>
 
         <div className="overflow-x-auto">
-          <table className="w-full min-w-[680px]">
+          <table className="w-full min-w-[760px]">
             <thead>
               <tr>
+                <Th>Avatar</Th>
+                <Th>Profile Type</Th>
                 <Th className="w-full">Name</Th>
-                <Th>CPR</Th>
-                <Th>Contact</Th>
-                <Th>Company</Th>
-                <Th>Role</Th>
-                <Th className="text-right">{''}</Th>
+                <Th>Contact Email</Th>
+                <Th>CPR / ID</Th>
+                <Th>Mobile Code</Th>
+                <Th className="text-right">Action</Th>
               </tr>
             </thead>
             <tbody>
               {rows.map((u) => (
                 <tr key={u.id} className="hover:bg-soft">
+                  {/* Avatar */}
                   <Td>
-                    <div className="flex items-center gap-2.5">
-                      <Avatar text={pInit(u)} size={30} />
-                      <span className="font-semibold">{pName(u)}</span>
-                    </div>
+                    <Avatar text={pInit(u)} size={34} />
                   </Td>
-                  <Td className="font-mono text-[12px] text-ink-500">{u.cpr ?? '—'}</Td>
-                  <Td className="text-[12px] text-ink-500">
-                    <div className="flex items-center gap-1.5">
-                      <Mail size={11} /> {u.email}
-                    </div>
-                    <div className="flex items-center gap-1.5 text-ink-400">
-                      <Phone size={11} /> {u.mobile ?? '—'}
-                    </div>
-                  </Td>
-                  <Td className="text-ink-500">{u.company ?? '—'}</Td>
+                  {/* Profile Type */}
                   <Td>
                     <Badge
                       tone={
@@ -1401,6 +1391,23 @@ export function People() {
                       {u.role.toUpperCase()}
                     </Badge>
                   </Td>
+                  {/* Name */}
+                  <Td className="font-semibold text-navy-900">{pName(u)}</Td>
+                  {/* Contact Email */}
+                  <Td className="text-[12px] text-ink-500">
+                    <div className="flex items-center gap-1.5">
+                      <Mail size={11} /> {u.email}
+                    </div>
+                  </Td>
+                  {/* CPR / ID */}
+                  <Td className="font-mono text-[12px] text-ink-500">{u.cpr || '—'}</Td>
+                  {/* Mobile Code */}
+                  <Td className="text-[12px] text-ink-500">
+                    <div className="flex items-center gap-1.5">
+                      <Phone size={11} /> {u.mobile || '—'}
+                    </div>
+                  </Td>
+                  {/* Action */}
                   <Td className="text-right pr-2">
                     {live && (
                       <div className="flex items-center justify-end gap-1">
