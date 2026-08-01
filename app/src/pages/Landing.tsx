@@ -116,7 +116,7 @@ export default function Landing({ onSignIn: _onSignIn }: { onSignIn: (u: User) =
       </section>
 
       {/* ========================= STAT BAND ========================= */}
-      <section id="compliance" className="relative z-10 scroll-mt-24 border-y border-white/10 bg-navy-950/[0.94] backdrop-blur-[3px]">
+      <section id="compliance" className="relative z-10 scroll-mt-24 border-y border-white/10">
         <div className="mx-auto grid max-w-6xl grid-cols-2 divide-x divide-y divide-white/10 px-5 sm:px-8 lg:grid-cols-4 lg:divide-y-0">
           {STATS.map(([big, label, sub]) => (
             <div key={label} className="px-4 py-8 text-center sm:py-10">
@@ -129,17 +129,19 @@ export default function Landing({ onSignIn: _onSignIn }: { onSignIn: (u: User) =
       </section>
 
       {/* ========================= INTRO STRIP ======================== */}
-      <section className="relative z-10 bg-navy-950/[0.94] py-20 backdrop-blur-[3px]">
-        <div className="mx-auto max-w-6xl px-5 sm:px-8">
+      <section className="relative z-10 py-20">
+        {/* soft dark halo behind the text so it stays readable over the animation */}
+        <div className="pointer-events-none absolute inset-0 [background:radial-gradient(60%_70%_at_50%_50%,rgba(7,9,18,0.85),transparent_75%)]" />
+        <div className="relative mx-auto max-w-6xl px-5 sm:px-8">
           <Reveal>
-            <div className="mx-auto max-w-3xl text-center">
+            <div className="mx-auto max-w-3xl text-center [text-shadow:0_2px_18px_rgba(0,0,0,0.6)]">
               <span className="inline-flex items-center gap-2 rounded-full border border-gold-400/25 bg-gold-400/10 px-4 py-1.5 text-[11px] font-bold tracking-[0.14em] text-gold-400 uppercase">
                 <span className="h-1.5 w-1.5 rounded-full bg-gold-400" /> The platform
               </span>
               <h2 className="mt-4 text-[30px] leading-tight font-extrabold tracking-tight text-white sm:text-[40px]">
                 A cloud platform built for Tamkeen-funded training providers
               </h2>
-              <p className="mx-auto mt-4 max-w-2xl text-[15px] leading-relaxed text-white/60">
+              <p className="mx-auto mt-4 max-w-2xl text-[15px] leading-relaxed text-white/75">
                 Everything a modern training centre needs — replacing spreadsheets, paper registers
                 and generic LMS tools with one connected, compliant system.
               </p>
@@ -149,10 +151,10 @@ export default function Landing({ onSignIn: _onSignIn }: { onSignIn: (u: User) =
       </section>
 
       {/* ========================== FEATURES ========================= */}
-      <section id="features" className="relative z-10 scroll-mt-24 border-t border-white/10 bg-navy-950/[0.94] py-20 backdrop-blur-[3px]">
+      <section id="features" className="relative z-10 scroll-mt-24 border-t border-white/10 py-20">
         <div className="mx-auto max-w-6xl px-5 sm:px-8">
           <Reveal>
-            <div className="mb-12 text-center">
+            <div className="mb-12 text-center [text-shadow:0_2px_18px_rgba(0,0,0,0.6)]">
               <span className="inline-flex items-center gap-2 rounded-full border border-white/12 bg-white/[0.04] px-4 py-1.5 text-[11px] font-bold tracking-[0.14em] text-white/60 uppercase">
                 Capabilities
               </span>
@@ -167,12 +169,12 @@ export default function Landing({ onSignIn: _onSignIn }: { onSignIn: (u: User) =
               const Icon = f.icon
               return (
                 <Reveal key={f.title} delay={(i % 3) * 80}>
-                  <div className="group h-full rounded-2xl border border-white/10 bg-white/[0.03] p-6 transition-all hover:-translate-y-0.5 hover:border-gold-400/30 hover:bg-white/[0.05]">
+                  <div className="group h-full rounded-2xl border border-white/10 bg-navy-950/85 p-6 backdrop-blur-md transition-all hover:-translate-y-0.5 hover:border-gold-400/30 hover:bg-navy-900/85">
                     <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gold-400/12 text-gold-400">
                       <Icon size={22} strokeWidth={2} />
                     </div>
                     <h3 className="mt-5 text-[16px] font-extrabold text-white">{f.title}</h3>
-                    <p className="mt-2 text-[13.5px] leading-relaxed text-white/55">{f.desc}</p>
+                    <p className="mt-2 text-[13.5px] leading-relaxed text-white/70">{f.desc}</p>
                   </div>
                 </Reveal>
               )
@@ -182,14 +184,14 @@ export default function Landing({ onSignIn: _onSignIn }: { onSignIn: (u: User) =
       </section>
 
       {/* ============================ FAQ ============================ */}
-      <section id="faq" className="relative z-10 scroll-mt-24 bg-navy-950/[0.94] py-20 backdrop-blur-[3px]">
+      <section id="faq" className="relative z-10 scroll-mt-24 py-20">
         <div className="mx-auto grid max-w-6xl gap-10 px-5 sm:px-8 lg:grid-cols-[0.9fr_1.1fr]">
           <Reveal>
-            <div>
+            <div className="[text-shadow:0_2px_18px_rgba(0,0,0,0.6)]">
               <h2 className="text-[30px] leading-tight font-extrabold tracking-tight text-white sm:text-[38px]">
                 The questions training centres ask
               </h2>
-              <p className="mt-4 max-w-md text-[14.5px] leading-relaxed text-white/55">
+              <p className="mt-4 max-w-md text-[14.5px] leading-relaxed text-white/70">
                 Clear answers on how Cordoba handles batches, attendance, roles and Tamkeen compliance.
               </p>
               <Link
@@ -202,7 +204,7 @@ export default function Landing({ onSignIn: _onSignIn }: { onSignIn: (u: User) =
           </Reveal>
 
           <Reveal delay={100}>
-            <div className="divide-y divide-white/10 overflow-hidden rounded-2xl border border-white/10 bg-white/[0.03]">
+            <div className="divide-y divide-white/10 overflow-hidden rounded-2xl border border-white/10 bg-navy-950/85 backdrop-blur-md">
               {FAQS.map((f, i) => {
                 const open = openFaq === i
                 return (
@@ -228,13 +230,14 @@ export default function Landing({ onSignIn: _onSignIn }: { onSignIn: (u: User) =
       </section>
 
       {/* ========================= CTA BAND ========================== */}
-      <section className="relative z-10 border-t border-white/10 bg-navy-950/[0.94] py-20 backdrop-blur-[3px]">
-        <div className="mx-auto max-w-3xl px-5 text-center sm:px-8">
+      <section className="relative z-10 border-t border-white/10 py-20">
+        <div className="pointer-events-none absolute inset-0 [background:radial-gradient(60%_70%_at_50%_50%,rgba(7,9,18,0.85),transparent_75%)]" />
+        <div className="relative mx-auto max-w-3xl px-5 text-center sm:px-8 [text-shadow:0_2px_18px_rgba(0,0,0,0.6)]">
           <Reveal>
             <h2 className="text-[30px] leading-tight font-extrabold tracking-tight text-white sm:text-[40px]">
               Ready to run every batch from one place?
             </h2>
-            <p className="mx-auto mt-4 max-w-xl text-[15px] text-white/55">
+            <p className="mx-auto mt-4 max-w-xl text-[15px] text-white/70">
               Sign in to explore the admin, trainer, learner and auditor portals.
             </p>
             <div className="mt-8 flex flex-wrap justify-center gap-3">
