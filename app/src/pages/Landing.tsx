@@ -52,10 +52,15 @@ export default function Landing({ onSignIn: _onSignIn }: { onSignIn: (u: User) =
       <PublicHeader />
 
       {/* ============================ HERO ============================ */}
-      {/* hero background is transparent so the animation shows THROUGH it, under the text */}
       <section className="relative flex min-h-[92vh] items-center overflow-hidden pt-28">
-        <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-navy-950/85 via-navy-950/55 to-navy-950/25" />
-        <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-navy-950 via-transparent to-transparent" />
+        {/* background photo (Bahrain network globe) — subtle, animation + text layer over it */}
+        <div
+          className="kenburns pointer-events-none absolute inset-0 bg-cover bg-center opacity-60"
+          style={{ backgroundImage: 'url(/hero.jpg)' }}
+        />
+        {/* dark wash so the photo stays subtle and text/animation read clearly */}
+        <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-navy-950/92 via-navy-950/70 to-navy-950/45" />
+        <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-navy-950 via-transparent to-navy-950/30" />
         <div className="floaty pointer-events-none absolute -top-24 -left-16 h-96 w-96 rounded-full bg-gold-400/12 blur-[120px]" />
 
         <div className="relative z-10 mx-auto grid w-full max-w-6xl items-center gap-10 px-5 py-16 sm:px-8 lg:grid-cols-[1.05fr_0.95fr]">
