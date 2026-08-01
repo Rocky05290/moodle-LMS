@@ -196,7 +196,7 @@ export default function Landing({ onSignIn: _onSignIn }: { onSignIn: (u: User) =
               </p>
               <Link
                 to="/login"
-                className="mt-8 inline-flex items-center gap-2 rounded-xl border border-white/15 bg-white/[0.04] px-6 py-3 text-[14px] font-bold text-white transition-colors hover:bg-white/[0.08]"
+                className="mt-8 inline-flex items-center gap-2 rounded-xl border border-gold-400/30 bg-white/[0.04] px-6 py-3 text-[14px] font-bold text-gold-400 transition-colors hover:bg-white/[0.08] hover:text-gold-300"
               >
                 Get started <ArrowRight size={15} />
               </Link>
@@ -211,9 +211,9 @@ export default function Landing({ onSignIn: _onSignIn }: { onSignIn: (u: User) =
                   <div key={f.q}>
                     <button
                       onClick={() => setOpenFaq(open ? -1 : i)}
-                      className="flex w-full items-center justify-between gap-4 px-5 py-4 text-left"
+                      className="group flex w-full cursor-pointer items-center justify-between gap-4 px-5 py-4 text-left transition-colors hover:bg-white/[0.03]"
                     >
-                      <span className="text-[14.5px] font-bold text-white">{f.q}</span>
+                      <span className="text-[14.5px] font-bold text-white transition-colors group-hover:text-gold-400">{f.q}</span>
                       <span className="flex h-6 w-6 flex-none items-center justify-center rounded-full border border-white/15 text-gold-400">
                         {open ? <Minus size={13} /> : <Plus size={13} />}
                       </span>
