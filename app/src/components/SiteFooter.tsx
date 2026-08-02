@@ -43,7 +43,11 @@ export default function SiteFooter() {
           <img
             src="/logo.png"
             alt="Cordoba Training Center"
-            className="h-9 w-auto brightness-0 invert"
+            className="h-9 w-auto"
+            style={{
+              filter:
+                'brightness(0) saturate(100%) invert(78%) sepia(38%) saturate(560%) hue-rotate(96deg) brightness(94%) contrast(90%)',
+            }}
           />
           <p className="mt-3 max-w-xs text-[13px] leading-relaxed text-[#c2c0c7]/75">
             The Tamkeen-ready platform for training providers — attendance, grading and audit-proof
