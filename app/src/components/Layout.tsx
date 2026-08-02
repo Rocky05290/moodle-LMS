@@ -3,7 +3,7 @@ import { NavLink, useNavigate } from 'react-router-dom'
 import {
   LayoutDashboard, BookOpen, Layers, Users, CalendarCheck, ClipboardCheck,
   ShieldCheck, FileBarChart, LogOut, Bell, Search, HelpCircle, ChevronRight, Award, FileText, CalendarRange,
-  Menu, X,
+  Menu, X, BarChart3,
 } from 'lucide-react'
 import type { Role, User } from '../data/mock'
 import { fullName, initials } from '../data/mock'
@@ -14,7 +14,8 @@ import LandingLoader from './LandingLoader'
 
 const NAV: Record<Role, { to: string; label: string; icon: ReactNode }[]> = {
   admin: [
-    { to: '/admin', label: 'Dashboard', icon: <LayoutDashboard size={17} /> },
+    { to: '/admin', label: 'Registrar', icon: <LayoutDashboard size={17} /> },
+    { to: '/dashboard', label: 'KPI Dashboard', icon: <BarChart3 size={17} /> },
     { to: '/batches', label: 'Batches', icon: <Layers size={17} /> },
     { to: '/courses', label: 'Courses', icon: <BookOpen size={17} /> },
     { to: '/people', label: 'People', icon: <Users size={17} /> },

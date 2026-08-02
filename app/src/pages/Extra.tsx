@@ -14,9 +14,9 @@ import Loading from '../components/Loading'
 import { Avatar, Badge, Button, Card, ProgressBar, SectionTitle, Td, Th } from '../components/ui'
 
 /* ------------------------ shared little bits ---------------------- */
-const fieldCls =
+export const fieldCls =
   'w-full rounded-lg border border-line bg-soft px-3 py-2 text-[13px] font-medium text-navy-900 outline-none transition-colors focus:border-brand-500 focus:ring-2 focus:ring-brand-500/15'
-const labelCls = 'mb-1 block text-[11px] font-bold tracking-wide text-ink-500 uppercase'
+export const labelCls = 'mb-1 block text-[11px] font-bold tracking-wide text-ink-500 uppercase'
 
 function LiveTag({ live }: { live: boolean }) {
   if (!hasSupabase) return null
@@ -348,7 +348,7 @@ function EditBatch({
   )
 }
 
-function CreateBatch({
+export function CreateBatch({
   courses,
   trainers,
   onClose,
@@ -1461,7 +1461,7 @@ export function People() {
   )
 }
 
-function AddPerson({ onClose, onDone }: { onClose: () => void; onDone: () => void }) {
+export function AddPerson({ onClose, onDone }: { onClose: () => void; onDone: () => void }) {
   const [f, setF] = useState({
     first_name: '',
     last_name: '',

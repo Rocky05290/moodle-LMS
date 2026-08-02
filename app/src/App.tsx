@@ -7,6 +7,7 @@ import Layout from './components/Layout'
 import Landing from './pages/Landing'
 import LoginPage from './pages/LoginPage'
 import AdminDashboard from './pages/AdminDashboard'
+import Registrar from './pages/Registrar'
 import TrainerDashboard from './pages/TrainerDashboard'
 import LearnerToday from './pages/LearnerToday'
 import AuditorDashboard from './pages/AuditorDashboard'
@@ -124,7 +125,8 @@ export default function App() {
           element={user ? <Navigate to={`/${user.role}`} replace /> : <LoginPage onSignIn={setUser} />}
         />
 
-        <Route path="/admin" element={guard(<AdminDashboard />)} />
+        <Route path="/admin" element={guard(<Registrar />)} />
+        <Route path="/dashboard" element={guard(<AdminDashboard />)} />
         <Route path="/batches" element={guard(<Batches />)} />
         <Route path="/courses" element={guard(<Courses />)} />
         <Route path="/people" element={guard(<People />)} />
