@@ -359,6 +359,25 @@ export function CreateBatch({
   onClose: () => void
   onDone: () => void
 }) {
+  return (
+    <Modal title="Deploy Certified Training Batch" onClose={onClose} wide>
+      <CreateBatchForm courses={courses} trainers={trainers} onClose={onClose} onDone={onDone} />
+    </Modal>
+  )
+}
+
+/** the actual form body — usable standalone (Registrar workspace) or inside a Modal (Batches page) */
+export function CreateBatchForm({
+  courses,
+  trainers,
+  onClose,
+  onDone,
+}: {
+  courses: { id: number; code: string; title: string; total_hours: number }[]
+  trainers: { id: string; first_name: string; last_name: string }[]
+  onClose?: () => void
+  onDone: () => void
+}) {
   const thisYear = new Date().getFullYear()
   const [f, setF] = useState({
     course_id: courses[0]?.id ? String(courses[0].id) : '',
@@ -459,7 +478,7 @@ export function CreateBatch({
   const seqs = Array.from({ length: 20 }, (_, i) => String(i + 1).padStart(2, '0'))
 
   return (
-    <Modal title="Deploy Certified Training Batch" onClose={onClose} wide>
+    <>
       <div className="space-y-4">
         {/* program */}
         <div>
@@ -573,10 +592,10 @@ export function CreateBatch({
         )}
         <div className="flex gap-2 pt-1">
           <Button onClick={save} className="flex-1">{busy ? 'Deploying…' : 'Deploy Certified Batch'}</Button>
-          <Button variant="ghost" onClick={onClose}>Cancel</Button>
+          {onClose && <Button variant="ghost" onClick={onClose}>Cancel</Button>}
         </div>
       </div>
-    </Modal>
+    </>
   )
 }
 
@@ -1462,6 +1481,23 @@ export function People() {
 }
 
 export function AddPerson({ onClose, onDone }: { onClose: () => void; onDone: () => void }) {
+  return (
+    <Modal title="Add person" onClose={onClose}>
+      <AddPersonForm onClose={onClose} onDone={onDone} submitLabel="Add person" />
+    </Modal>
+  )
+}
+
+/** the actual form body — usable standalone (Registrar workspace) or inside a Modal (People page) */
+export function AddPersonForm({
+  onClose,
+  onDone,
+  submitLabel = 'Add person',
+}: {
+  onClose?: () => void
+  onDone: () => void
+  submitLabel?: string
+}) {
   const [f, setF] = useState({
     first_name: '',
     last_name: '',
@@ -1503,11 +1539,12 @@ export function AddPerson({ onClose, onDone }: { onClose: () => void; onDone: ()
         .eq('id', res.id)
     }
     setBusy(false)
+    setF({ first_name: '', last_name: '', email: '', role: 'learner', cpr: '', mobile: '', company: '', password: 'demo1234' })
     onDone()
   }
 
   return (
-    <Modal title="Add person" onClose={onClose}>
+    <>
       <div className="space-y-3">
         <div className="grid grid-cols-2 gap-3">
           <div>
@@ -1563,11 +1600,11 @@ export function AddPerson({ onClose, onDone }: { onClose: () => void; onDone: ()
           confirmed.
         </p>
         <div className="flex gap-2 pt-1">
-          <Button onClick={save} className="flex-1">{busy ? 'Creating…' : 'Add person'}</Button>
-          <Button variant="ghost" onClick={onClose}>Cancel</Button>
+          <Button onClick={save} className="flex-1">{busy ? 'Creating…' : submitLabel}</Button>
+          {onClose && <Button variant="ghost" onClick={onClose}>Cancel</Button>}
         </div>
       </div>
-    </Modal>
+    </>
   )
 }
 

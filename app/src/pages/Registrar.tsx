@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { SlidersHorizontal, CalendarDays, Users, UserPlus, Layers, CheckSquare, CalendarRange, FileDown } from 'lucide-react'
 import { useLiveData, hasSupabase } from '../lib/live'
 import { supabase } from '../lib/supabase'
-import { People, CreateBatch, AddPerson, fieldCls, labelCls } from './Extra'
+import { People, CreateBatchForm, AddPersonForm, fieldCls, labelCls } from './Extra'
 import { downloadAttendanceRegister } from '../lib/reports'
 import Loading from '../components/Loading'
 
@@ -97,24 +97,28 @@ function Workspace() {
   )
 }
 
-/* ---- step 1: create profile (reuses AddPerson form, inline) ---- */
+/* ---- step 1: create profile (inline form, no modal) ---- */
 function StepProfile() {
-  const [key, setKey] = useState(0)
+  const [msg, setMsg] = useState('')
   return (
     <div className={CARD}>
       <h3 className="mb-5 flex items-center gap-2.5 text-[16px] font-extrabold text-white">
         <UserPlus size={20} className="text-gold-400" /> Initialize New Registry Profile
       </h3>
-      {/* AddPerson renders inside its own Modal; we key it to re-open after save */}
-      <AddPerson key={key} onClose={() => setKey((k) => k + 1)} onDone={() => setKey((k) => k + 1)} />
+      {msg && (
+        <p className="mb-4 rounded-md border border-emerald-400/25 bg-emerald-400/10 px-3 py-2 text-[12.5px] font-semibold text-emerald-300">
+          {msg}
+        </p>
+      )}
+      <AddPersonForm submitLabel="Create Profile" onDone={() => setMsg('✓ Profile created — appears in the directory immediately.')} />
     </div>
   )
 }
 
-/* ---- step 2: create batch (reuses CreateBatch form) ---- */
+/* ---- step 2: create batch (inline form, no modal) ---- */
 function StepBatch() {
   const d = useLiveData()
-  const [key, setKey] = useState(0)
+  const [msg, setMsg] = useState('')
   if (hasSupabase && d.loading) return <Loading label="Loading programs…" />
   const courses = d.courses.map((c) => ({ id: c.id, code: c.code ?? '', title: c.title, total_hours: c.total_hours ?? 0 }))
   const trainers = d.profiles.filter((p) => p.role === 'trainer').map((p) => ({ id: p.id, first_name: p.first_name, last_name: p.last_name }))
@@ -123,7 +127,12 @@ function StepBatch() {
       <h3 className="mb-5 flex items-center gap-2.5 text-[16px] font-extrabold text-white">
         <Layers size={20} className="text-gold-400" /> Deploy Certified Training Batch
       </h3>
-      <CreateBatch key={key} courses={courses} trainers={trainers} onClose={() => setKey((k) => k + 1)} onDone={() => setKey((k) => k + 1)} />
+      {msg && (
+        <p className="mb-4 rounded-md border border-emerald-400/25 bg-emerald-400/10 px-3 py-2 text-[12.5px] font-semibold text-emerald-300">
+          {msg}
+        </p>
+      )}
+      <CreateBatchForm courses={courses} trainers={trainers} onDone={() => setMsg('✓ Batch deployed — visible in the Batch Registry now.')} />
     </div>
   )
 }
