@@ -8,7 +8,7 @@ import {
 import type { Role, User } from '../data/mock'
 import { fullName, initials } from '../data/mock'
 import { Badge } from './ui'
-import SiteFooter from './SiteFooter'
+import AppFooter from './AppFooter'
 import AppBgFx from './AppBgFx'
 import LandingLoader from './LandingLoader'
 
@@ -206,7 +206,7 @@ export default function Layout({
 
         <main className="flex-1 px-5 py-6 lg:px-7">{children}</main>
 
-        <SiteFooter />
+        <AppFooter />
       </div>
     </div>
   )
