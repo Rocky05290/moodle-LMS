@@ -463,8 +463,12 @@ export function CreateBatchForm({
 
   const save = async () => {
     setErr('')
-    if (!f.course_id || !f.start_date) {
-      setErr('Program and start date are required.')
+    if (!f.course_id) {
+      setErr('Select a registered core program first.')
+      return
+    }
+    if (!f.start_date) {
+      setErr('Pick a start date — click the Start date field below and choose a day.')
       return
     }
     if (!endDate) {
@@ -553,7 +557,12 @@ export function CreateBatchForm({
         <div className="grid grid-cols-2 gap-3">
           <div>
             <label className={labelCls}>Start date</label>
-            <input type="date" className={fieldCls} value={f.start_date} onChange={setStartDate} />
+            <input
+              type="date"
+              className={`${fieldCls} ${!f.start_date && err ? 'border-bad-600 ring-2 ring-bad-600/25' : ''}`}
+              value={f.start_date}
+              onChange={setStartDate}
+            />
             {dateNotice && <p className="mt-1 text-[11px] font-semibold text-warn-600">⚠️ {dateNotice}</p>}
           </div>
           <div>
@@ -1614,10 +1623,6 @@ export function AddPersonForm({
             {err}
           </p>
         )}
-        <p className="rounded-md border border-brand-500/15 bg-brand-50 px-3 py-2 text-[11.5px] text-ink-700">
-          The account is created immediately and appears in the directory. It becomes a working login once its email is
-          confirmed.
-        </p>
         <div className="flex gap-2 pt-1">
           <Button onClick={save} className="flex-1">{busy ? 'Creating…' : submitLabel}</Button>
           {onClose && <Button variant="ghost" onClick={onClose}>Cancel</Button>}
