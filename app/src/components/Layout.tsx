@@ -77,7 +77,7 @@ export default function Layout({
 
       {/* ------------------------- Sidebar ------------------------- */}
       <aside
-        className={`sticky top-0 z-30 h-screen flex-none flex-col overflow-hidden bg-gradient-to-b from-navy-800 to-navy-900 transition-all duration-300 ${
+        className={`sticky top-0 z-30 h-screen flex-none flex-col overflow-hidden border-r border-white/10 bg-gradient-to-b from-[#0b1120] to-[#070912] transition-all duration-300 ${
           sidebarOpen ? 'flex w-[244px] p-4' : 'w-0 p-0'
         }`}
       >
@@ -98,7 +98,7 @@ export default function Layout({
         </div>
 
         <div className="mb-2 flex items-center gap-2 px-3">
-          <span className="h-1 w-1 rounded-full bg-brand-400" />
+          <span className="h-1 w-1 rounded-full bg-gold-400" />
           <span className="text-[10px] font-bold tracking-[0.12em] text-white/40 uppercase">
             {ROLE_LABEL[user.role]}
           </span>
@@ -120,7 +120,7 @@ export default function Layout({
               {({ isActive }) => (
                 <>
                   <span
-                    className={`absolute top-1/2 left-0 h-5 -translate-y-1/2 rounded-r bg-brand-400 ${
+                    className={`absolute top-1/2 left-0 h-5 -translate-y-1/2 rounded-r bg-gold-400 ${
                       isActive ? 'w-1 opacity-100' : 'w-0 opacity-0'
                     }`}
                   />
