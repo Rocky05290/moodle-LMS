@@ -75,15 +75,6 @@ export default function Layout({
       {/* interactive animated background (demo look) — click to burst, move to repel */}
       <AppBgFx />
 
-      {/* click-outside overlay to close the sidebar */}
-      {sidebarOpen && (
-        <div
-          onClick={() => setSidebarOpen(false)}
-          className="fixed inset-0 z-20 bg-black/40 backdrop-blur-[1px] lg:bg-transparent lg:backdrop-blur-0"
-          aria-hidden="true"
-        />
-      )}
-
       {/* ------------------------- Sidebar ------------------------- */}
       <aside
         className={`sticky top-0 z-30 h-screen flex-none flex-col overflow-hidden bg-gradient-to-b from-navy-800 to-navy-900 transition-all duration-300 ${
