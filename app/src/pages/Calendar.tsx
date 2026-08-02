@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
-import { CalendarDays, Printer } from 'lucide-react'
+import { Link, useSearchParams } from 'react-router-dom'
+import { CalendarDays, Printer, ArrowLeft, Lightbulb } from 'lucide-react'
 import { useLiveData, hasSupabase } from '../lib/live'
 import { supabase } from '../lib/supabase'
 import { Card } from '../components/ui'
@@ -41,8 +42,11 @@ type DayInfo = { session?: number; holiday?: string; inRange: boolean }
 
 export default function Calendar() {
   const d = useLiveData()
-  const [batchId, setBatchId] = useState<number | null>(null)
+  const [sp] = useSearchParams()
+  const fromBatchParam = sp.get('batch')
+  const [batchId, setBatchId] = useState<number | null>(fromBatchParam ? Number(fromBatchParam) : null)
   const [holidays, setHolidays] = useState<Record<string, string>>({})
+  const cameFromRegistry = !!fromBatchParam
 
   const loadHolidays = () => {
     if (!supabase) return
@@ -115,6 +119,33 @@ export default function Calendar() {
 
   return (
     <div className="space-y-5">
+      {/* Tamkeen exporter banner — shown when arriving from the Batch Registry */}
+      {cameFromRegistry && (
+        <div className="no-print flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-gold-400/25 bg-gradient-to-r from-navy-900 to-navy-950 p-5 text-white">
+          <div>
+            <h1 className="text-[19px] font-extrabold">Tamkeen Document Exporter Engine</h1>
+            <p className="mt-1 flex items-center gap-1.5 text-[12px] text-white/60">
+              <Lightbulb size={13} className="text-gold-400" />
+              Pro-tip: click any operational day cell below to toggle a holiday exception.
+            </p>
+          </div>
+          <div className="flex gap-2">
+            <button
+              onClick={() => window.print()}
+              className="flex cursor-pointer items-center gap-2 rounded-lg bg-gradient-to-r from-gold-500 to-gold-400 px-4 py-2.5 text-[13px] font-bold text-navy-950 transition-all hover:-translate-y-0.5"
+            >
+              <Printer size={14} /> Print / Export PDF
+            </button>
+            <Link
+              to="/admin"
+              className="flex items-center gap-2 rounded-lg border border-white/15 bg-white/[0.05] px-4 py-2.5 text-[13px] font-bold text-white transition-colors hover:bg-white/[0.1]"
+            >
+              <ArrowLeft size={14} /> Back to Registry
+            </Link>
+          </div>
+        </div>
+      )}
+
       {/* toolbar (hidden when printing) */}
       <Card className="no-print flex flex-wrap items-center gap-3 p-4">
         <div className="flex items-center gap-2.5">

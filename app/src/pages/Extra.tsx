@@ -392,7 +392,25 @@ export function CreateBatchForm({
   })
   const [err, setErr] = useState('')
   const [busy, setBusy] = useState(false)
+  const [dateNotice, setDateNotice] = useState('')
   const set = (k: keyof typeof f) => (e: { target: { value: string } }) => setF({ ...f, [k]: e.target.value })
+
+  // Sun–Thu working week only — snap Fri/Sat start dates forward to the next Sunday
+  const setStartDate = (e: { target: { value: string } }) => {
+    const val = e.target.value
+    if (!val) { setDateNotice(''); setF({ ...f, start_date: val }); return }
+    const d = new Date(val + 'T00:00:00')
+    const dow = d.getDay() // 5 = Fri, 6 = Sat
+    if (dow === 5 || dow === 6) {
+      d.setDate(d.getDate() + (dow === 5 ? 2 : 1))
+      const snapped = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
+      setDateNotice('Fri & Sat are holidays — moved to the next working day (Sunday).')
+      setF({ ...f, start_date: snapped })
+    } else {
+      setDateNotice('')
+      setF({ ...f, start_date: val })
+    }
+  }
 
   // --- derived values (auto-calculated, like the demo) ---
   const course = courses.find((c) => String(c.id) === f.course_id)
@@ -535,7 +553,8 @@ export function CreateBatchForm({
         <div className="grid grid-cols-2 gap-3">
           <div>
             <label className={labelCls}>Start date</label>
-            <input type="date" className={fieldCls} value={f.start_date} onChange={set('start_date')} />
+            <input type="date" className={fieldCls} value={f.start_date} onChange={setStartDate} />
+            {dateNotice && <p className="mt-1 text-[11px] font-semibold text-warn-600">⚠️ {dateNotice}</p>}
           </div>
           <div>
             <label className={labelCls}>End date</label>

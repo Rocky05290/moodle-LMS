@@ -1,9 +1,9 @@
 import { useState } from 'react'
+import { Link } from 'react-router-dom'
 import { SlidersHorizontal, CalendarDays, Users, UserPlus, Layers, CheckSquare, CalendarRange, FileDown } from 'lucide-react'
 import { useLiveData, hasSupabase } from '../lib/live'
 import { supabase } from '../lib/supabase'
 import { People, CreateBatchForm, AddPersonForm, fieldCls, labelCls } from './Extra'
-import { downloadAttendanceRegister } from '../lib/reports'
 import Loading from '../components/Loading'
 
 type Tab = 'workspace' | 'registry' | 'dossiers'
@@ -274,19 +274,6 @@ function BatchRegistry() {
       return hay.includes(q.trim().toLowerCase())
     })
 
-  const extract = ({ b, c, t }: (typeof rows)[number]) => {
-    downloadAttendanceRegister(
-      {
-        batchCode: b.batch_code,
-        courseTitle: c?.title ?? '—',
-        dateRange: `${b.start_date} → ${b.end_date}`,
-        trainer: t ? `${t.first_name} ${t.last_name}` : 'Unassigned',
-        totalHours: b.total_hours,
-        sessions: 0,
-      },
-      [],
-    )
-  }
 
   return (
     <div className="space-y-5">
@@ -327,12 +314,12 @@ function BatchRegistry() {
                   <div className="flex justify-between"><span className="text-white/45">Daily timing:</span> <b className="text-white/85">{b.start_time?.slice(0, 5)} - {b.end_time?.slice(0, 5)}</b></div>
                   <div className="flex justify-between"><span className="text-white/45">Total program hours:</span> <b className="text-gold-400">{b.total_hours} Hours</b></div>
                 </div>
-                <button
-                  onClick={() => extract({ b, c, t })}
+                <Link
+                  to={`/calendar?batch=${b.id}`}
                   className="mt-3 flex items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-gold-500 to-gold-400 px-4 py-2.5 text-[12.5px] font-bold text-navy-950 transition-all hover:-translate-y-0.5"
                 >
                   <FileDown size={14} /> Extract Tamkeen Calendar Document
-                </button>
+                </Link>
               </div>
             ))}
           </div>
