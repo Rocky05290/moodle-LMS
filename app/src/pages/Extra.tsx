@@ -43,9 +43,9 @@ function Modal({
 }) {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-      <div className="absolute inset-0 bg-navy-950/50 backdrop-blur-sm" onClick={onClose} />
+      <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={onClose} />
       <div
-        className={`relative z-10 max-h-[90vh] w-full overflow-y-auto rounded-2xl border border-line bg-white p-6 shadow-2xl ${
+        className={`relative z-10 max-h-[90vh] w-full overflow-y-auto rounded-2xl border border-line bg-surface p-6 shadow-2xl shadow-black/50 ${
           wide ? 'max-w-2xl' : 'max-w-md'
         }`}
       >
@@ -830,8 +830,8 @@ function CourseDetail({ course, onClose }: { course: CourseCard; onClose: () => 
       .join(', ')}${course.modules.length > 3 ? ' and more' : ''}.`
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-      <div className="absolute inset-0 bg-navy-950/50 backdrop-blur-sm" onClick={onClose} />
-      <div className="relative z-10 max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-2xl border border-line bg-white shadow-2xl">
+      <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={onClose} />
+      <div className="relative z-10 max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-2xl border border-line bg-surface shadow-2xl shadow-black/50">
         <div className="relative h-36 overflow-hidden">
           <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: 'url(/hero.jpg)' }} />
           <div className={`absolute inset-0 bg-gradient-to-br ${cat.grad} opacity-80`} />
@@ -1070,12 +1070,12 @@ function CourseForm({ course, onClose, onDone }: { course: CourseCard | null; on
               <div key={i} className="space-y-1.5 rounded-lg border border-line bg-soft p-2.5">
                 <div className="flex gap-2">
                   <input
-                    className="w-10 flex-none rounded border border-line bg-white px-1 text-center text-[12px] font-bold outline-none"
+                    className="w-10 flex-none rounded border border-line bg-surface px-1 text-center text-[12px] font-bold text-navy-900 outline-none"
                     value={m.num}
                     onChange={(e) => setMod(i, 'num', e.target.value)}
                   />
                   <input
-                    className="min-w-0 flex-1 rounded border border-line bg-white px-2 py-1 text-[12px] font-semibold outline-none"
+                    className="min-w-0 flex-1 rounded border border-line bg-surface px-2 py-1 text-[12px] font-semibold text-navy-900 outline-none"
                     placeholder="Module title"
                     value={m.title}
                     onChange={(e) => setMod(i, 'title', e.target.value)}
@@ -1085,14 +1085,14 @@ function CourseForm({ course, onClose, onDone }: { course: CourseCard | null; on
                   </button>
                 </div>
                 <input
-                  className="w-full rounded border border-line bg-white px-2 py-1 text-[11px] outline-none"
+                  className="w-full rounded border border-line bg-surface px-2 py-1 text-[11px] text-navy-900 outline-none"
                   placeholder="Short description"
                   value={m.desc}
                   onChange={(e) => setMod(i, 'desc', e.target.value)}
                 />
                 <div className="flex gap-1.5">
                   <input
-                    className="min-w-0 flex-1 rounded border border-line bg-white px-2 py-1 text-[11px] outline-none"
+                    className="min-w-0 flex-1 rounded border border-line bg-surface px-2 py-1 text-[11px] text-navy-900 outline-none"
                     placeholder="📎 Paste a PDF / video / slides link — or upload a file →"
                     value={m.material ?? ''}
                     onChange={(e) => setMod(i, 'material', e.target.value)}
@@ -1116,7 +1116,7 @@ function CourseForm({ course, onClose, onDone }: { course: CourseCard | null; on
                   </label>
                 </div>
 
-                <div className="rounded border border-line bg-white p-1.5">
+                <div className="rounded border border-line bg-surface p-1.5">
                   <div className="flex items-center justify-between px-0.5">
                     <span className="text-[10px] font-bold tracking-wide text-ink-400 uppercase">
                       Quiz · {(m.quiz ?? []).length} question{(m.quiz ?? []).length === 1 ? '' : 's'}
@@ -1132,7 +1132,7 @@ function CourseForm({ course, onClose, onDone }: { course: CourseCard | null; on
                     <div key={qi} className="mt-1.5 space-y-1 rounded border border-line bg-soft p-1.5">
                       <div className="flex gap-1">
                         <input
-                          className="min-w-0 flex-1 rounded border border-line bg-white px-2 py-1 text-[11.5px] font-semibold outline-none"
+                          className="min-w-0 flex-1 rounded border border-line bg-surface px-2 py-1 text-[11.5px] font-semibold text-navy-900 outline-none"
                           placeholder={`Question ${qi + 1}`}
                           value={qq.q}
                           onChange={(e) => setQ(i, qi, { q: e.target.value })}
@@ -1151,7 +1151,7 @@ function CourseForm({ course, onClose, onDone }: { course: CourseCard | null; on
                               onChange={() => setQ(i, qi, { correct: oi })}
                             />
                             <input
-                              className="min-w-0 flex-1 rounded border border-line bg-white px-1.5 py-0.5 text-[11px] outline-none"
+                              className="min-w-0 flex-1 rounded border border-line bg-surface px-1.5 py-0.5 text-[11px] text-navy-900 outline-none"
                               placeholder={String.fromCharCode(65 + oi)}
                               value={o}
                               onChange={(e) => setOpt(i, qi, oi, e.target.value)}
@@ -1342,7 +1342,7 @@ export function People() {
           <div className="grid gap-2.5 sm:grid-cols-2 lg:grid-cols-4">
             <div>
               <label className={labelCls}>Tapered query search</label>
-              <div className="flex items-center gap-2 rounded-md border border-line bg-white px-3 py-2 focus-within:border-brand-500">
+              <div className="flex items-center gap-2 rounded-md border border-line bg-surface px-3 py-2 focus-within:border-brand-500">
                 <Search size={14} className="flex-none text-ink-400" />
                 <input
                   value={query}
@@ -2194,8 +2194,8 @@ export function MyCourse() {
 
       {lesson !== null && modules[lesson] && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-          <div className="absolute inset-0 bg-navy-950/50 backdrop-blur-sm" onClick={() => openLesson(null)} />
-          <div className="relative z-10 max-h-[88vh] w-full max-w-lg overflow-y-auto rounded-2xl border border-line bg-white p-6 shadow-2xl">
+          <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={() => openLesson(null)} />
+          <div className="relative z-10 max-h-[88vh] w-full max-w-lg overflow-y-auto rounded-2xl border border-line bg-surface p-6 shadow-2xl shadow-black/50">
             <div className="flex items-center justify-between">
               <span className="text-[11px] font-bold tracking-wide text-brand-600 uppercase">
                 Module {modules[lesson].num} · Lesson {lesson + 1} of {modules.length}

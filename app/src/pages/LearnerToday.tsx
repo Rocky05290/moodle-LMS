@@ -263,8 +263,8 @@ export default function LearnerToday() {
 
       {lesson !== null && vm.modules[lesson] && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-          <div className="absolute inset-0 bg-navy-950/50 backdrop-blur-sm" onClick={() => goLesson(null)} />
-          <div className="relative z-10 max-h-[88vh] w-full max-w-lg overflow-y-auto rounded-2xl border border-line bg-white p-6 shadow-2xl">
+          <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={() => goLesson(null)} />
+          <div className="relative z-10 max-h-[88vh] w-full max-w-lg overflow-y-auto rounded-2xl border border-line bg-surface p-6 shadow-2xl shadow-black/50">
             <div className="flex items-center justify-between">
               <span className="text-[11px] font-bold tracking-wide text-brand-600 uppercase">
                 Module {vm.modules[lesson].num} · Lesson {lesson + 1} of {vm.modules.length}

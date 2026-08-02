@@ -426,8 +426,8 @@ function EnrolModal({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-      <div className="absolute inset-0 bg-navy-950/50 backdrop-blur-sm" onClick={onClose} />
-      <div className="relative z-10 max-h-[85vh] w-full max-w-md overflow-y-auto rounded-2xl border border-line bg-white p-6 shadow-2xl">
+      <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={onClose} />
+      <div className="relative z-10 max-h-[85vh] w-full max-w-md overflow-y-auto rounded-2xl border border-line bg-surface p-6 shadow-2xl shadow-black/50">
         <div className="mb-4 flex items-center justify-between">
           <h3 className="text-[16px] font-extrabold text-navy-900">Enrol learners</h3>
           <button onClick={onClose} className="cursor-pointer text-ink-400 transition-colors hover:text-navy-900">

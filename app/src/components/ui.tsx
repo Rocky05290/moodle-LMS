@@ -233,7 +233,7 @@ export function Th({ children, className = '' }: { children: ReactNode; classNam
 
 export function Td({ children, className = '' }: { children: ReactNode; className?: string }) {
   return (
-    <td className={`border-b border-line px-3 py-3 text-[13px] text-ink-700 ${className}`}>
+    <td className={`border-b border-line/70 px-3 py-3 text-[13px] text-ink-700 ${className}`}>
       {children}
     </td>
   )
