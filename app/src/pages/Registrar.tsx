@@ -23,7 +23,7 @@ const STEPS: { key: Step; label: string; icon: typeof UserPlus }[] = [
 ]
 
 /* dark card shell that matches the landing theme */
-const CARD = 'rounded-2xl border border-white/10 bg-white/[0.03] p-6 backdrop-blur-sm'
+const CARD = 'rounded-lg border border-white/10 bg-white/[0.03] p-6 backdrop-blur-sm'
 
 export default function Registrar() {
   const [tab, setTab] = useState<Tab>('workspace')
@@ -75,7 +75,7 @@ function Workspace() {
               <button
                 key={s.key}
                 onClick={() => setStep(s.key)}
-                className={`flex cursor-pointer items-center justify-center gap-2 rounded-xl border px-4 py-3.5 text-[13.5px] font-bold transition-all ${
+                className={`flex cursor-pointer items-center justify-center gap-2 rounded-lg border px-4 py-3.5 text-[13.5px] font-bold transition-all ${
                   active
                     ? 'border-gold-400 bg-gold-400 text-navy-950 shadow-lg shadow-gold-400/20'
                     : 'border-white/10 bg-white/[0.03] text-white/70 hover:border-white/25 hover:text-white'
@@ -234,7 +234,7 @@ function StepCalendar() {
           </select>
         </div>
         {batch && (
-          <div className="rounded-xl border border-white/10 bg-white/[0.03] p-4">
+          <div className="rounded-lg border border-white/10 bg-white/[0.03] p-4">
             <div className="mb-3 text-[11px] font-bold tracking-[0.12em] text-white/45 uppercase">Active schedule parameters</div>
             <div className="grid gap-x-8 gap-y-2 text-[13px] text-white/80 sm:grid-cols-2">
               <div><span className="text-white/45">Trainer instructor:</span> <b>{trainer ? `${trainer.first_name} ${trainer.last_name}` : 'Unassigned'}</b></div>
@@ -295,17 +295,17 @@ function BatchRegistry() {
       <div className={CARD}>
         <div className="mb-4 flex items-center justify-between">
           <span className="text-[13px] font-bold tracking-[0.1em] text-gold-400 uppercase">Ongoing &amp; scheduled tracks</span>
-          <span className="rounded-full border border-white/15 bg-white/[0.04] px-3 py-1 text-[11.5px] font-bold text-white/70">Total tracks: {rows.length}</span>
+          <span className="rounded-md border border-white/15 bg-white/[0.04] px-3 py-1 text-[11.5px] font-bold text-white/70">Total tracks: {rows.length}</span>
         </div>
         {rows.length === 0 ? (
           <p className="py-8 text-center text-[13px] text-white/45">No batches match your search.</p>
         ) : (
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
             {rows.map(({ b, c, t }) => (
-              <div key={b.id} className="flex flex-col rounded-xl border border-white/10 bg-white/[0.03] p-4">
+              <div key={b.id} className="flex flex-col rounded-lg border border-white/10 bg-white/[0.03] p-4">
                 <div className="mb-2 flex items-center justify-between">
-                  <span className="rounded-full border border-white/15 bg-white/[0.05] px-2.5 py-1 font-mono text-[11px] font-bold text-white/80">{b.batch_code}</span>
-                  <span className="rounded-full border border-gold-400/30 bg-gold-400/10 px-2.5 py-0.5 text-[10px] font-bold tracking-wide text-gold-400 uppercase">{b.status}</span>
+                  <span className="rounded-md border border-white/15 bg-white/[0.05] px-2.5 py-1 font-mono text-[11px] font-bold text-white/80">{b.batch_code}</span>
+                  <span className="rounded-md border border-gold-400/30 bg-gold-400/10 px-2.5 py-0.5 text-[10px] font-bold tracking-wide text-gold-400 uppercase">{b.status}</span>
                 </div>
                 <h3 className="text-[14.5px] font-extrabold text-white">{c?.title ?? '—'}</h3>
                 <p className="mt-0.5 text-[12px] text-white/55">Instructor: <b className="text-white/80">{t ? `${t.first_name} ${t.last_name}` : 'Unassigned'}</b></p>
