@@ -223,6 +223,35 @@ body {
     radial-gradient(1200px 700px at 82% -10%, rgba(108, 140, 255, 0.14), transparent 60%),
     #070912;
 }
+
+/* Dark theme for the logged-in app: remap the light surface/ink/line tokens
+   to dark values so every card + text + border matches the dark shell (and
+   the landing page) instead of being harsh white. Scoped to .app-bg only, so
+   the landing/login pages are untouched. */
+.app-bg {
+  --color-canvas: #070d1c;
+  --color-surface: #0f1626;
+  --color-soft: #131b2e;
+  --color-soft2: #1a2338;
+  --color-line: #263149;
+  --color-line2: #33405c;
+
+  --color-ink-900: #f1f5fc;
+  --color-ink-700: #cbd5e6;
+  --color-ink-500: #93a2bd;
+  --color-ink-400: #6b7a96;
+
+  --color-navy-900: #f1f5fc;
+  --color-navy-800: #e2e8f4;
+
+  /* softer tinted backgrounds for badges/tiles so they read on dark */
+  --color-brand-50: #16233f;
+  --color-brand-100: #1c2c4d;
+  --color-ok-50: #10241c;
+  --color-warn-50: #241a10;
+  --color-bad-50: #2a1414;
+  --color-gold-100: #2a2410;
+}
 .app-bg__glow {
   position: fixed;
   inset: 0;
