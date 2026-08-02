@@ -1614,7 +1614,7 @@ export function AddPersonForm({
             {err}
           </p>
         )}
-        <p className="rounded-md border border-brand-500/15 bg-brand-50 px-3 py-2 text-[11.5px] text-ink-600">
+        <p className="rounded-md border border-brand-500/15 bg-brand-50 px-3 py-2 text-[11.5px] text-ink-700">
           The account is created immediately and appears in the directory. It becomes a working login once its email is
           confirmed.
         </p>

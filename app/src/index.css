@@ -41,6 +41,7 @@
 
   --color-ink-900: #0f1b35;
   --color-ink-700: #33415c;
+  --color-ink-600: #475269;
   --color-ink-500: #64748b;
   --color-ink-400: #8996ad;
 }
@@ -238,6 +239,7 @@ body {
 
   --color-ink-900: #f1f5fc;
   --color-ink-700: #cbd5e6;
+  --color-ink-600: #b3c0d6;
   --color-ink-500: #93a2bd;
   --color-ink-400: #6b7a96;
 
