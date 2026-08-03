@@ -37,9 +37,9 @@ export default function PublicHeader() {
       </div>
 
       {/* floating pill navbar */}
-      <div className="px-3 pt-3 sm:px-5 sm:pt-4">
+      <div className="px-3 pt-3 sm:px-5 sm:pt-4 lg:px-10 xl:px-16">
         <nav
-          className={`mx-auto flex max-w-6xl items-center gap-4 rounded-full border px-5 py-4 transition-all sm:px-8 ${
+          className={`flex items-center gap-4 rounded-full border px-5 py-4 transition-all sm:px-8 ${
             scrolled
               ? 'border-white/10 bg-navy-950/60 shadow-[0_10px_40px_-12px_rgba(0,0,0,0.7)] backdrop-blur-xl'
               : 'border-white/10 bg-white/[0.06] backdrop-blur-lg'
