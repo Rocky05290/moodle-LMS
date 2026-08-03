@@ -143,6 +143,7 @@ export default function Layout({
   const location = useLocation()
   const items = NAV[user.role]
   const [sidebarOpen, setSidebarOpen] = useState(true)
+  const [userMenuOpen, setUserMenuOpen] = useState(false)
 
   return (
     <div className="app-bg flex min-h-full">
@@ -214,26 +215,6 @@ export default function Layout({
           )}
         </nav>
 
-        <div className="mt-auto border-t border-white/10 pt-3">
-          <div className="mb-1 flex items-center gap-2.5 rounded-lg px-2 py-2 hover:bg-white/6">
-            <span className="inline-flex h-8 w-8 flex-none items-center justify-center rounded-full bg-brand-400/25 text-[11px] font-bold text-white ring-1 ring-white/15">
-              {initials(user)}
-            </span>
-            <div className="min-w-0 leading-tight">
-              <div className="truncate text-[12.5px] font-semibold text-white">{fullName(user)}</div>
-              <div className="truncate text-[10.5px] text-white/45">{user.email}</div>
-            </div>
-          </div>
-          <button
-            onClick={() => {
-              onSignOut()
-              navigate('/')
-            }}
-            className="flex w-full cursor-pointer items-center gap-3 rounded-lg px-3 py-2.5 text-[13px] font-semibold text-white/55 hover:bg-white/6 hover:text-white"
-          >
-            <LogOut size={16} /> Sign out
-          </button>
-        </div>
       </aside>
 
       {/* -------------------------- Main --------------------------- */}
@@ -275,9 +256,43 @@ export default function Layout({
               <button className="hidden h-9 w-9 cursor-pointer items-center justify-center rounded-lg border border-white/12 bg-white/5 text-white/60 hover:border-white/25 hover:text-white sm:flex">
                 <HelpCircle size={16} />
               </button>
-              <span className="inline-flex h-9 w-9 items-center justify-center rounded-full bg-brand-50 text-[12px] font-bold text-brand-600 ring-1 ring-brand-500/12 lg:hidden">
-                {initials(user)}
-              </span>
+
+              {/* user menu — avatar + name, click to reveal Sign out */}
+              <div className="relative">
+                <button
+                  onClick={() => setUserMenuOpen((v) => !v)}
+                  className="flex cursor-pointer items-center gap-2 rounded-lg border border-white/12 bg-white/5 py-1.5 pr-2.5 pl-1.5 transition-colors hover:border-white/25 hover:bg-white/10"
+                >
+                  <span className="inline-flex h-7 w-7 flex-none items-center justify-center rounded-full bg-brand-400/25 text-[11px] font-bold text-white ring-1 ring-white/15">
+                    {initials(user)}
+                  </span>
+                  <span className="hidden min-w-0 text-left leading-tight sm:block">
+                    <span className="block truncate text-[12px] font-semibold text-white">{fullName(user)}</span>
+                  </span>
+                  <ChevronDown size={14} className={`text-white/40 transition-transform ${userMenuOpen ? 'rotate-180' : ''}`} />
+                </button>
+
+                {userMenuOpen && (
+                  <>
+                    <div className="fixed inset-0 z-10" onClick={() => setUserMenuOpen(false)} aria-hidden="true" />
+                    <div className="absolute top-full right-0 z-20 mt-2 w-56 overflow-hidden rounded-lg border border-white/10 bg-navy-950 shadow-2xl shadow-black/50">
+                      <div className="border-b border-white/10 px-3.5 py-3">
+                        <div className="truncate text-[13px] font-semibold text-white">{fullName(user)}</div>
+                        <div className="truncate text-[11.5px] text-white/45">{user.email}</div>
+                      </div>
+                      <button
+                        onClick={() => {
+                          onSignOut()
+                          navigate('/')
+                        }}
+                        className="flex w-full cursor-pointer items-center gap-2.5 px-3.5 py-2.5 text-[13px] font-semibold text-white/70 transition-colors hover:bg-white/6 hover:text-white"
+                      >
+                        <LogOut size={15} /> Sign out
+                      </button>
+                    </div>
+                  </>
+                )}
+              </div>
             </div>
           </div>
         </header>
