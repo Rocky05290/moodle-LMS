@@ -31,7 +31,7 @@ export default function Registrar() {
   return (
     <div className="space-y-6">
       {/* ---- top tabs ---- */}
-      <div className="flex flex-wrap gap-1 border-b border-white/10">
+      <div className="sticky top-0 z-10 -mx-5 flex flex-wrap gap-1 border-b border-white/10 bg-navy-950/95 px-5 backdrop-blur-md lg:-mx-7 lg:px-7">
         {TABS.map((t) => {
           const Icon = t.icon
           const active = tab === t.key
