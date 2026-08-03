@@ -18,7 +18,7 @@ import Calendar from './pages/Calendar'
 import { Batches, Courses, People, Grading, MyCourse } from './pages/Extra'
 
 const META: Record<string, { title: string; subtitle?: string }> = {
-  '/admin': { title: 'Dashboard', subtitle: 'Overview of every batch, learner and trainer' },
+  '/admin': { title: 'Registrar', subtitle: 'Overview of every batch, learner and trainer' },
   '/batches': { title: 'Batches', subtitle: 'Create and manage training batches' },
   '/courses': { title: 'Master Course Inventory', subtitle: 'Courses, modules and contracted hours' },
   '/people': { title: 'People', subtitle: 'Learners, trainers, corporates and auditors' },

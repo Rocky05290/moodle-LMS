@@ -31,22 +31,24 @@ export default function Registrar() {
   return (
     <div className="space-y-6">
       {/* ---- top tabs ---- */}
-      <div className="sticky top-0 z-10 -mx-5 flex flex-wrap gap-1 border-b border-white/10 bg-navy-950/95 px-5 backdrop-blur-md lg:-mx-7 lg:px-7">
-        {TABS.map((t) => {
-          const Icon = t.icon
-          const active = tab === t.key
-          return (
-            <button
-              key={t.key}
-              onClick={() => setTab(t.key)}
-              className={`flex cursor-pointer items-center gap-2 border-b-2 px-4 py-3 text-[13.5px] font-bold transition-colors ${
-                active ? 'border-gold-400 text-gold-400' : 'border-transparent text-white/55 hover:text-white'
-              }`}
-            >
-              <Icon size={16} /> {t.label}
-            </button>
-          )
-        })}
+      <div className="sticky top-0 z-10 -mx-5 bg-navy-950/95 px-5 py-3 backdrop-blur-md lg:-mx-7 lg:px-7">
+        <div className="inline-flex flex-wrap gap-1 rounded-lg border border-white/10 bg-white/[0.03] p-1">
+          {TABS.map((t) => {
+            const Icon = t.icon
+            const active = tab === t.key
+            return (
+              <button
+                key={t.key}
+                onClick={() => setTab(t.key)}
+                className={`flex cursor-pointer items-center gap-2 rounded-md px-4 py-2.5 text-[13.5px] font-bold transition-colors ${
+                  active ? 'bg-white/10 text-gold-400' : 'text-white/55 hover:text-white'
+                }`}
+              >
+                <Icon size={16} /> {t.label}
+              </button>
+            )
+          })}
+        </div>
       </div>
 
       {tab === 'workspace' && <Workspace />}
