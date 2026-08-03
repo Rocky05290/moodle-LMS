@@ -243,16 +243,13 @@ export default function Layout({
           <div className="flex items-center gap-4">
             {/* hamburger — opens the sidebar (only shown when it's closed) */}
             {!sidebarOpen && (
-              <>
-                <button
-                  onClick={() => setSidebarOpen(true)}
-                  aria-label="Open sidebar"
-                  className="flex h-10 w-10 flex-none cursor-pointer items-center justify-center rounded-lg border border-white/12 bg-white/5 text-white/70 transition-colors hover:border-white/25 hover:text-white"
-                >
-                  <Menu size={18} />
-                </button>
-                <img src="/logo.png" alt="Cordoba" className="h-6 w-auto brightness-0 invert" />
-              </>
+              <button
+                onClick={() => setSidebarOpen(true)}
+                aria-label="Open sidebar"
+                className="flex h-10 w-10 flex-none cursor-pointer items-center justify-center rounded-lg border border-white/12 bg-white/5 text-white/70 transition-colors hover:border-white/25 hover:text-white"
+              >
+                <Menu size={18} />
+              </button>
             )}
 
             <div className="min-w-0">

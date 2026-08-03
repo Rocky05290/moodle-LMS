@@ -23,7 +23,7 @@ const STEPS: { key: Step; label: string; icon: typeof UserPlus }[] = [
 ]
 
 /* dark card shell that matches the landing theme */
-const CARD = 'rounded-lg border border-white/10 bg-white/[0.03] p-6 backdrop-blur-sm'
+const CARD = 'glow-border rounded-lg border border-white/10 bg-white/[0.03] p-6 backdrop-blur-sm'
 
 export default function Registrar() {
   const [tab, setTab] = useState<Tab>('workspace')

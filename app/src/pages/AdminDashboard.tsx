@@ -143,7 +143,7 @@ export default function AdminDashboard() {
   return (
     <div className="space-y-5">
       {/* ---------------- hero band ---------------- */}
-      <Card className="relative overflow-hidden border-navy-900/10 bg-gradient-to-br from-navy-800 to-navy-900 p-6">
+      <Card className="relative overflow-hidden border-white/10 bg-gradient-to-br from-[#131f3c] to-[#070d1c] p-6">
         <div className="relative z-10 flex flex-wrap items-center gap-5">
           <div className="min-w-0">
             <div className="flex items-center gap-2">
@@ -299,7 +299,7 @@ export default function AdminDashboard() {
             <div
               key={c.id}
               onClick={() => navigate('/courses')}
-              className="group relative cursor-pointer overflow-hidden rounded-2xl border border-line bg-surface p-5 shadow-[0_10px_28px_-16px_rgba(15,27,53,0.18)] transition-all hover:-translate-y-1 hover:border-brand-500/30 hover:shadow-[0_24px_50px_-20px_rgba(15,27,53,0.32)]"
+              className="glow-border group relative cursor-pointer overflow-hidden rounded-lg border border-line bg-surface p-5 shadow-[0_10px_28px_-16px_rgba(15,27,53,0.18)] transition-all hover:-translate-y-1 hover:border-brand-500/30 hover:shadow-[0_24px_50px_-20px_rgba(15,27,53,0.32)]"
             >
               {/* decorative gradient glow on hover */}
               <div className="pointer-events-none absolute -top-12 -right-12 h-32 w-32 rounded-full bg-gradient-to-br from-brand-400/25 via-violet-400/15 to-transparent opacity-0 blur-2xl transition-opacity duration-300 group-hover:opacity-100" />

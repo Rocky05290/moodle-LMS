@@ -633,7 +633,7 @@ const COURSE_CAT: Record<string, { grad: string; Icon: typeof Network }> = {
   Cybersecurity: { grad: 'from-violet-500 via-violet-600 to-fuchsia-700', Icon: ShieldCheck },
   'Cloud Systems': { grad: 'from-sky-500 via-sky-600 to-cyan-700', Icon: Cloud },
 }
-const courseCat = (cat?: string) => COURSE_CAT[cat ?? ''] ?? { grad: 'from-navy-700 via-navy-800 to-navy-900', Icon: BookOpen }
+const courseCat = (cat?: string) => COURSE_CAT[cat ?? ''] ?? { grad: 'from-[#21304f] via-[#131f3c] to-[#070d1c]', Icon: BookOpen }
 const courseLevel = (h: number) => (h >= 90 ? 'Advanced' : h >= 60 ? 'Intermediate' : 'Foundation')
 type CourseCard = Omit<Course, 'modules'> & {
   modules: CourseModule[]

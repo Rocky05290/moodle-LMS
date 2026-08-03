@@ -14,7 +14,7 @@ const iconTones: Record<IconTone, string> = {
   rose: 'from-rose-500 to-rose-700 shadow-rose-600/25',
   sky: 'from-sky-500 to-sky-700 shadow-sky-600/25',
   cyan: 'from-cyan-500 to-cyan-700 shadow-cyan-600/25',
-  navy: 'from-navy-700 to-navy-900 shadow-navy-900/25',
+  navy: 'from-[#21304f] to-[#070d1c] shadow-black/25',
 }
 
 /** A premium gradient icon tile (white glyph on a soft coloured gradient). */
@@ -31,7 +31,7 @@ export function IconTile({
 }) {
   return (
     <div
-      className={`relative flex flex-none items-center justify-center overflow-hidden rounded-2xl bg-gradient-to-br text-white shadow-lg ring-1 ring-white/15 ${iconTones[tone]} ${className}`}
+      className={`relative flex flex-none items-center justify-center overflow-hidden rounded-lg bg-gradient-to-br text-white shadow-lg ring-1 ring-white/15 ${iconTones[tone]} ${className}`}
       style={{ width: size, height: size }}
     >
       {/* glossy top highlight */}
@@ -70,7 +70,7 @@ export function Card({
       ref={ref}
       onMouseMove={hover ? onMove : undefined}
       onMouseLeave={hover ? onLeave : undefined}
-      className={`panel rounded-2xl ${
+      className={`panel glow-border rounded-lg ${
         hover ? 'transition-transform duration-200 ease-out will-change-transform hover:shadow-[0_20px_44px_-18px_rgba(15,27,53,0.28)]' : ''
       } ${className}`}
     >
