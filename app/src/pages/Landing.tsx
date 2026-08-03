@@ -69,7 +69,7 @@ export default function Landing({ onSignIn: _onSignIn }: { onSignIn: (u: User) =
         <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-navy-950 via-transparent to-navy-950/30" />
         <div className="floaty pointer-events-none absolute -top-24 -left-16 h-96 w-96 rounded-full bg-gold-400/12 blur-[120px]" />
 
-        <div className="relative z-10 mx-auto grid w-full max-w-6xl items-center gap-10 px-5 py-16 sm:px-8 lg:grid-cols-[1.05fr_0.95fr]">
+        <div className="relative z-10 mx-auto grid w-full items-center gap-10 px-5 py-16 sm:px-8 lg:grid-cols-[1.05fr_0.95fr] lg:px-16 xl:px-24">
           <div>
             <span className="rise inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/[0.06] px-3.5 py-1.5 text-[12px] font-bold text-white/85 backdrop-blur-sm">
               <span className="h-1.5 w-1.5 rounded-full bg-gold-400" />
@@ -133,7 +133,7 @@ export default function Landing({ onSignIn: _onSignIn }: { onSignIn: (u: User) =
 
       {/* ========================= STAT BAND ========================= */}
       <section id="compliance" className="relative z-10 scroll-mt-24 border-y border-white/10">
-        <div className="mx-auto grid max-w-6xl grid-cols-2 divide-x divide-y divide-white/10 px-5 sm:px-8 lg:grid-cols-4 lg:divide-y-0">
+        <div className="mx-auto grid grid-cols-2 divide-x divide-y divide-white/10 px-5 sm:px-8 lg:grid-cols-4 lg:divide-y-0 lg:px-16 xl:px-24">
           {STATS.map(([big, label, sub]) => (
             <div key={label} className="px-4 py-8 text-center sm:py-10">
               <div className="text-[26px] font-extrabold tracking-tight text-white sm:text-[32px]">
@@ -148,7 +148,7 @@ export default function Landing({ onSignIn: _onSignIn }: { onSignIn: (u: User) =
 
       {/* ====================== PROGRAMME / CHART ===================== */}
       <section className="relative z-10 border-b border-white/10 py-20">
-        <div className="mx-auto grid max-w-6xl items-center gap-10 px-5 sm:px-8 lg:grid-cols-[0.85fr_1.15fr]">
+        <div className="mx-auto grid items-center gap-10 px-5 sm:px-8 lg:grid-cols-[0.85fr_1.15fr] lg:px-16 xl:px-24">
           {/* left copy */}
           <Reveal>
             <div className="[text-shadow:0_2px_18px_rgba(0,0,0,0.6)]">
@@ -228,7 +228,7 @@ export default function Landing({ onSignIn: _onSignIn }: { onSignIn: (u: User) =
       <section className="relative z-10 py-20">
         {/* soft dark halo behind the text so it stays readable over the animation */}
         <div className="pointer-events-none absolute inset-0 [background:radial-gradient(60%_70%_at_50%_50%,rgba(7,9,18,0.85),transparent_75%)]" />
-        <div className="relative mx-auto max-w-6xl px-5 sm:px-8">
+        <div className="relative mx-auto px-5 sm:px-8 lg:px-16 xl:px-24">
           <Reveal>
             <div className="mx-auto max-w-3xl text-center [text-shadow:0_2px_18px_rgba(0,0,0,0.6)]">
               <span className="inline-flex items-center gap-2 rounded-full border border-gold-400/25 bg-gold-400/10 px-4 py-1.5 text-[11px] font-bold tracking-[0.14em] text-gold-400 uppercase">
@@ -249,7 +249,7 @@ export default function Landing({ onSignIn: _onSignIn }: { onSignIn: (u: User) =
 
       {/* ========================== FEATURES ========================= */}
       <section id="features" className="relative z-10 scroll-mt-24 border-t border-white/10 py-20">
-        <div className="mx-auto max-w-6xl px-5 sm:px-8">
+        <div className="mx-auto px-5 sm:px-8 lg:px-16 xl:px-24">
           <Reveal>
             <div className="mb-12 text-center [text-shadow:0_2px_18px_rgba(0,0,0,0.6)]">
               <span className="inline-flex items-center gap-2 rounded-full border border-white/12 bg-white/[0.04] px-4 py-1.5 text-[11px] font-bold tracking-[0.14em] text-white/60 uppercase">
@@ -283,7 +283,7 @@ export default function Landing({ onSignIn: _onSignIn }: { onSignIn: (u: User) =
 
       {/* ============================ FAQ ============================ */}
       <section id="faq" className="relative z-10 scroll-mt-24 py-20">
-        <div className="mx-auto grid max-w-6xl gap-10 px-5 sm:px-8 lg:grid-cols-[0.9fr_1.1fr]">
+        <div className="mx-auto grid gap-10 px-5 sm:px-8 lg:grid-cols-[0.9fr_1.1fr] lg:px-16 xl:px-24">
           <Reveal>
             <div className="[text-shadow:0_2px_18px_rgba(0,0,0,0.6)]">
               <h2 className="text-[30px] leading-tight font-extrabold tracking-tight text-white sm:text-[38px]">

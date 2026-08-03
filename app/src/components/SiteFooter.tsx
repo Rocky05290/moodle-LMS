@@ -29,7 +29,7 @@ export default function SiteFooter() {
   return (
     <footer className="relative z-10 border-t border-white/10 bg-navy-950 text-[#c2c0c7]">
       {/* thin gold accent bar */}
-      <div className="mx-auto max-w-6xl px-5 lg:px-8">
+      <div className="mx-auto px-5 lg:px-16 xl:px-24">
         <div className="ml-auto flex h-1.5 w-64 overflow-hidden rounded-full opacity-80">
           <span className="flex-1 bg-gold-400" />
           <span className="flex-1 bg-gold-500" />
@@ -37,7 +37,7 @@ export default function SiteFooter() {
       </div>
 
       {/* main */}
-      <div className="mx-auto grid max-w-6xl gap-8 px-5 py-9 lg:grid-cols-[1.7fr_1fr_1.1fr] lg:px-8">
+      <div className="mx-auto grid gap-8 px-5 py-9 lg:grid-cols-[1.7fr_1fr_1.1fr] lg:px-16 xl:px-24">
         {/* brand */}
         <div>
           <img
@@ -113,7 +113,7 @@ export default function SiteFooter() {
 
       {/* bottom bar */}
       <div className="border-t border-white/10">
-        <div className="mx-auto flex max-w-6xl flex-wrap items-center gap-x-6 gap-y-3 px-5 py-4 lg:px-8">
+        <div className="mx-auto flex flex-wrap items-center gap-x-6 gap-y-3 px-5 py-4 lg:px-16 xl:px-24">
           <div className="flex flex-wrap gap-x-5 gap-y-2">
             {['Compliance', 'Privacy', 'Terms', 'Trademark'].map((l) => (
               <a
