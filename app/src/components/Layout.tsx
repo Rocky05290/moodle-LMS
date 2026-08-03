@@ -11,8 +11,6 @@ import LandingLoader from './LandingLoader'
 export default function Layout({
   user,
   onSignOut,
-  title,
-  subtitle,
   children,
 }: {
   user: User
@@ -37,14 +35,15 @@ export default function Layout({
         {/* topbar */}
         <header className="sticky top-0 z-20 border-b border-white/10 bg-navy-950/55 px-5 py-3.5 backdrop-blur-xl lg:px-7">
           <div className="flex items-center gap-4">
-            <img src="/logo.png" alt="Cordoba Training Center" className="h-7 w-auto brightness-0 invert" />
-
-            <div className="min-w-0">
-              <h1 className="truncate text-[18px] font-bold tracking-tight text-white">
-                {title}
-              </h1>
-              {subtitle && <p className="mt-0.5 truncate text-[12.5px] text-white/55">{subtitle}</p>}
-            </div>
+            <img
+              src="/logo.png"
+              alt="Cordoba Training Center"
+              className="h-7 w-auto"
+              style={{
+                filter:
+                  'brightness(0) saturate(100%) invert(72%) sepia(60%) saturate(447%) hue-rotate(93deg) brightness(95%) contrast(87%)',
+              }}
+            />
 
             <div className="ml-auto flex items-center gap-2.5">
               <div className="hidden items-center gap-2.5 rounded-full border border-white/12 bg-white/5 px-4 py-2.5 transition-all focus-within:border-brand-400 focus-within:bg-white/10 md:flex">

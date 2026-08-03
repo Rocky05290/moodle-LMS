@@ -254,6 +254,12 @@ body {
   --color-bad-50: #2a1414;
   --color-gold-100: #2a2410;
 }
+/* native date/time picker icons default to dark and are invisible on our
+   dark inputs — color-scheme flips them to a light rendering */
+.app-bg input[type='date'],
+.app-bg input[type='time'] {
+  color-scheme: dark;
+}
 .app-bg__glow {
   position: fixed;
   inset: 0;

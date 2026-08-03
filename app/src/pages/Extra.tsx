@@ -534,7 +534,7 @@ export function CreateBatchForm({
           </div>
           <div>
             <label className={labelCls}>Resulting batch code</label>
-            <div className="flex h-[38px] items-center rounded-md border border-brand-500/25 bg-brand-50 px-3 font-mono text-[13px] font-bold text-brand-600">
+            <div className="flex h-[38px] items-center rounded-md border border-brand-400/40 bg-brand-400/10 px-3 font-mono text-[13px] font-bold text-brand-400">
               {batchCode}
             </div>
           </div>
