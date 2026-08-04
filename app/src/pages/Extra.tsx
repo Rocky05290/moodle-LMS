@@ -1411,8 +1411,8 @@ export function People() {
               <tr>
                 <Th>Avatar</Th>
                 <Th>Profile Type</Th>
-                <Th className="w-full">Name</Th>
-                <Th>Contact Email</Th>
+                <Th>Name</Th>
+                <Th className="w-full">Contact Email</Th>
                 <Th>CPR / ID</Th>
                 <Th>Mobile Code</Th>
                 <Th className="text-right">Action</Th>

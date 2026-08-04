@@ -460,3 +460,15 @@ body {
     animation: none;
   }
 }
+
+/* Chrome/Edge force a light autofill background that ignores normal CSS —
+   this keeps autofilled fields dark on the login/landing/app dark surfaces. */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus {
+  -webkit-text-fill-color: #fff;
+  -webkit-box-shadow: 0 0 0px 1000px rgba(15, 22, 38, 0.95) inset;
+  box-shadow: 0 0 0px 1000px rgba(15, 22, 38, 0.95) inset;
+  caret-color: #fff;
+  transition: background-color 9999s ease-in-out 0s;
+}

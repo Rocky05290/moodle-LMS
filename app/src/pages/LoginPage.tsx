@@ -56,6 +56,7 @@ export default function LoginPage({ onSignIn }: { onSignIn: (u: User) => void })
   const [suLast, setSuLast] = useState('')
   const [suEmail, setSuEmail] = useState('')
   const [suPass, setSuPass] = useState('')
+  const [suPass2, setSuPass2] = useState('')
 
   const navigate = useNavigate()
 
@@ -105,8 +106,9 @@ export default function LoginPage({ onSignIn }: { onSignIn: (u: User) => void })
   const register = async () => {
     setErr('')
     setNotice('')
-    if (!suFirst || !suLast || !suEmail || !suPass) { setErr('Please fill in every field.'); return }
+    if (!suFirst || !suLast || !suEmail || !suPass || !suPass2) { setErr('Please fill in every field.'); return }
     if (suPass.length < 6) { setErr('Password must be at least 6 characters.'); return }
+    if (suPass !== suPass2) { setErr('Passwords do not match.'); return }
     if (!hasSupabase || !supabase) { setErr('The backend is not connected yet.'); return }
     setBusy(true)
     const { error } = await supabase.auth.signUp({
@@ -120,7 +122,7 @@ export default function LoginPage({ onSignIn }: { onSignIn: (u: User) => void })
     setEmail(suEmail)
     setPassword('')
     setMode('signin')
-    setSuFirst(''); setSuLast(''); setSuEmail(''); setSuPass('')
+    setSuFirst(''); setSuLast(''); setSuEmail(''); setSuPass(''); setSuPass2('')
   }
 
   const field =
@@ -258,9 +260,15 @@ export default function LoginPage({ onSignIn }: { onSignIn: (u: User) => void })
                 <label className={label}>Email address</label>
                 <input className={field} type="email" placeholder="you@cordoba.bh" value={suEmail} onChange={(e) => setSuEmail(e.target.value)} />
               </div>
-              <div>
-                <label className={label}>Password</label>
-                <input className={field} type="password" placeholder="At least 6 characters" value={suPass} onChange={(e) => setSuPass(e.target.value)} />
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className={label}>Password</label>
+                  <input className={field} type="password" placeholder="At least 6 characters" value={suPass} onChange={(e) => setSuPass(e.target.value)} />
+                </div>
+                <div>
+                  <label className={label}>Confirm password</label>
+                  <input className={field} type="password" placeholder="Re-enter password" value={suPass2} onChange={(e) => setSuPass2(e.target.value)} />
+                </div>
               </div>
               <button
                 onClick={register}
