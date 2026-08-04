@@ -1614,10 +1614,6 @@ export function AddPersonForm({
             <input className={fieldCls} placeholder="e.g. +973 3900 0000" value={f.mobile} onChange={set('mobile')} />
           </div>
         </div>
-        <div>
-          <label className={labelCls}>Company / sponsor</label>
-          <input className={fieldCls} placeholder="Batelco, Tamkeen…" value={f.company} onChange={set('company')} />
-        </div>
         {err && (
           <p className="rounded-md border border-bad-600/20 bg-bad-50 px-3 py-2 text-[12px] font-semibold text-bad-600">
             {err}
@@ -1705,15 +1701,9 @@ function EditPerson({ person, onClose, onDone }: { person: Person; onClose: () =
             <input className={fieldCls} placeholder="e.g. +973 3900 0000" value={f.mobile} onChange={set('mobile')} />
           </div>
         </div>
-        <div className="grid grid-cols-2 gap-3">
-          <div>
-            <label className={labelCls}>CPR (national ID)</label>
-            <input className={fieldCls} placeholder="e.g. 990012345" value={f.cpr} onChange={set('cpr')} />
-          </div>
-          <div>
-            <label className={labelCls}>Company / sponsor</label>
-            <input className={fieldCls} placeholder="Batelco, Tamkeen…" value={f.company} onChange={set('company')} />
-          </div>
+        <div>
+          <label className={labelCls}>CPR (national ID)</label>
+          <input className={fieldCls} placeholder="e.g. 990012345" value={f.cpr} onChange={set('cpr')} />
         </div>
         {err && (
           <p className="rounded-md border border-bad-600/20 bg-bad-50 px-3 py-2 text-[12px] font-semibold text-bad-600">
