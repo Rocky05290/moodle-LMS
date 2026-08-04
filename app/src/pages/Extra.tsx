@@ -1220,7 +1220,8 @@ export function People() {
   const [open, setOpen] = useState(false)
   const [editing, setEditing] = useState<Person | null>(null)
   const [showImport, setShowImport] = useState(false)
-  const [query, setQuery] = useState('')
+  const [sp] = useSearchParams()
+  const [query, setQuery] = useState(sp.get('q') ?? '')
   const [programFilter, setProgramFilter] = useState('')
   const [batchFilter, setBatchFilter] = useState('')
   const [typeFilter, setTypeFilter] = useState('')
@@ -1228,7 +1229,6 @@ export function People() {
   const [enrolMap, setEnrolMap] = useState<Record<string, { programs: string[]; batches: string[] }>>({})
   const [programOpts, setProgramOpts] = useState<string[]>([])
   const [batchOpts, setBatchOpts] = useState<string[]>([])
-  const [sp] = useSearchParams()
 
   const load = () => {
     if (!supabase) return
