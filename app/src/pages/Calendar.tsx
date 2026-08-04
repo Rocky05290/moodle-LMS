@@ -121,7 +121,7 @@ export default function Calendar() {
     <div className="space-y-5">
       {/* Tamkeen exporter banner — shown when arriving from the Batch Registry */}
       {cameFromRegistry && (
-        <div className="no-print flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-gold-400/25 bg-gradient-to-r from-navy-900 to-navy-950 p-5 text-white">
+        <div className="glow-border no-print flex flex-wrap items-center justify-between gap-3 rounded-lg border border-gold-400/25 bg-gradient-to-r from-[#131f3c] to-[#070d1c] p-5 text-white">
           <div>
             <h1 className="text-[19px] font-extrabold">Tamkeen Document Exporter Engine</h1>
             <p className="mt-1 flex items-center gap-1.5 text-[12px] text-white/60">
@@ -149,7 +149,7 @@ export default function Calendar() {
       {/* toolbar (hidden when printing) */}
       <Card className="no-print flex flex-wrap items-center gap-3 p-4">
         <div className="flex items-center gap-2.5">
-          <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-brand-50 text-brand-500">
+          <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-gold-400/12 text-gold-400">
             <CalendarDays size={18} />
           </div>
           <div className="leading-tight">
@@ -176,7 +176,7 @@ export default function Calendar() {
           </span>
           <button
             onClick={() => window.print()}
-            className="flex cursor-pointer items-center gap-2 rounded-md bg-gradient-to-r from-brand-500 to-indigo-500 px-4 py-2 font-bold text-white shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-md"
+            className="flex cursor-pointer items-center gap-2 rounded-md bg-gradient-to-r from-gold-500 to-gold-400 px-4 py-2 font-bold text-navy-950 shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-md"
           >
             <Printer size={14} /> Print / Save PDF
           </button>
