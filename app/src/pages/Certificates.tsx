@@ -92,17 +92,17 @@ export default function Certificates() {
     <div className="space-y-5">
       <Card className="flex flex-wrap items-center gap-3 p-4">
         <div className="flex items-center gap-2.5">
-          <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-brand-50 text-brand-500">
+          <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-gold-400/12 text-gold-400">
             <Award size={18} />
           </div>
           <div className="leading-tight">
             <select
               value={curId ?? ''}
               onChange={(e) => setBatchId(Number(e.target.value))}
-              className="cursor-pointer rounded-md border border-line bg-surface px-2 py-1 text-[13.5px] font-bold outline-none"
+              className="cursor-pointer rounded-md border border-line bg-surface px-2 py-1 text-[13.5px] font-bold text-ink-900 outline-none"
             >
               {batchList.map((b) => (
-                <option key={b.id} value={b.id}>
+                <option key={b.id} value={b.id} className="bg-surface text-ink-900">
                   {b.code}
                 </option>
               ))}
